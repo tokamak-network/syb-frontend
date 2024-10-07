@@ -34,7 +34,9 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
   const connectWallet = async () => {
     if (isMetaMaskInstalled) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum as any
+        );
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
         const userAddress = await signer.getAddress();

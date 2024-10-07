@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Button from "./Button";
 import { useWallet } from "@/context/WalletContext";
-import { cn } from "@/utils/cn";
 
 interface HeaderProps {
   setModalOpen: (open: boolean) => void;

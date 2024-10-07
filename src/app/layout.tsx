@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import React, { useState } from "react";
+import React from "react";
 import "./globals.css";
 import { WalletProvider } from "@/context/WalletContext";
 import dynamic from "next/dynamic";
