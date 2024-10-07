@@ -3,8 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import Button from "./Button";
+import { useWallet } from "@/context/WalletContext";
 
 const Header: React.FC = () => {
+  const { account, connectWallet } = useWallet();
   return (
     <header className="flex flex-col md:flex-row justify-center items-center p-8 text-white relative">
       <nav className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4 md:mb-0 text-xl font-bold">
@@ -39,12 +41,19 @@ const Header: React.FC = () => {
           Settings
         </Link>
       </nav>
-      <Button
-        backgroundImage="/images/button1.png"
-        className="absolute right-5 font-bold w-80"
-      >
-        Connect Wallet
-      </Button>
+      <div>
+        {account ? (
+          <p>{account}</p>
+        ) : (
+          <Button
+            backgroundImage="/images/button1.png"
+            className="absolute right-5 font-bold w-80"
+            onClick={connectWallet}
+          >
+            Connect Wallet
+          </Button>
+        )}
+      </div>
     </header>
   );
 };
