@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import React from "react";
+import React, { useState } from "react";
 import "./globals.css";
-import Header from "@/components/Header";
 import { WalletProvider } from "@/context/WalletContext";
+import dynamic from "next/dynamic";
+
+const MainContainer = dynamic(() => import("@/containers/MainContainer"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "SYB",
@@ -18,7 +22,6 @@ export default function RootLayout({
     <html lang="en">
       <WalletProvider>
         <body
-          className="flex flex-col min-h-screen"
           style={{
             backgroundImage: "url(/images/back0.png)",
             backgroundSize: "cover",
@@ -34,14 +37,8 @@ export default function RootLayout({
               height: "1000px",
             }}
           >
-            <Header />
-            {/* Main content area */}
-            <main className="flex-grow  px-4 w-full">{children}</main>
-            {/* Footer or additional layout */}
+            <MainContainer>{children}</MainContainer>
           </div>
-          <footer className="bg-gray-800 text-white p-4 text-center">
-            @ {`${new Date().getUTCFullYear()} SYB. All rights reserved.`}
-          </footer>
         </body>
       </WalletProvider>
     </html>

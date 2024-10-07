@@ -4,13 +4,20 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Button from "./Button";
 import { useWallet } from "@/context/WalletContext";
-import Modal from "./Modal";
 import { cn } from "@/utils/cn";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  setModalOpen: (open: boolean) => void;
+  isLoading: boolean;
+  setLoading: (loading: boolean) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  setModalOpen,
+  setLoading,
+  isLoading,
+}) => {
   const { account, connectWallet, isMetaMaskInstalled } = useWallet();
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
 
   const handleConnectWallet = async () => {
     setLoading(true);
@@ -18,14 +25,15 @@ const Header: React.FC = () => {
       setModalOpen(true);
       setLoading(true);
     } else {
-      await connectWallet();
-      setModalOpen(false);
+      try {
+        setLoading(true);
+        await connectWallet();
+        setLoading(false);
+      } catch (error) {
+        console.error("Error connection to wallet:", error);
+        setLoading(false);
+      }
     }
-  };
-
-  const handleModalClose = () => {
-    setModalOpen(false);
-    setLoading(false);
   };
 
   return (
@@ -76,34 +84,6 @@ const Header: React.FC = () => {
           </Button>
         )}
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        className="bg-black"
-      >
-        <h2 className="text-lg font-bold mb-4">MetaMask Not Installed</h2>
-        <p className="mb-4">You need to install MetaMask to continue.</p>
-        <div className="flex justify-end space-x-4">
-          <Button
-            onClick={() => {
-              window.open(
-                "https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn",
-                "_blank"
-              );
-              setLoading(false);
-            }}
-            className={cn("bg-blue-500 text-white px-4 py-2 rounded")}
-          >
-            Add MetaMask
-          </Button>
-          <Button
-            onClick={handleModalClose}
-            className={cn("bg-gray-500 text-white px-4 py-2 rounded")}
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
     </header>
   );
 };

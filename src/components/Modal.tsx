@@ -8,6 +8,8 @@ interface ModalProps {
   onClose: () => void;
   className?: string;
   children: React.ReactNode;
+  title: string;
+  content: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -15,6 +17,8 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   className,
   children,
+  title,
+  content,
 }) => {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -25,6 +29,8 @@ const Modal: React.FC<ModalProps> = ({
           className
         )}
       >
+        <Dialog.Title className="text-lg font-bold mb-4">{title}</Dialog.Title>
+        <p className="mb-4">{content}</p>
         {children}
         <Dialog.Close asChild>
           <Button
