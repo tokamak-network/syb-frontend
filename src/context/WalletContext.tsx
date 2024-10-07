@@ -1,12 +1,19 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import { ethers } from "ethers";
 
 interface WalletContextType {
   account: string | null;
   balance: string | null;
   connectWallet: () => Promise<void>;
+  isMetaMaskInstalled: boolean;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -16,9 +23,16 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [account, setAccount] = useState<string | null>(null);
   const [balance, setBalance] = useState<string | null>(null);
+  const [isMetaMaskInstalled, setMetaMaskInstalled] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMetaMaskInstalled(typeof window.ethereum !== "undefined");
+    }
+  }, []);
 
   const connectWallet = async () => {
-    if (typeof window.ethereum !== "undefined") {
+    if (isMetaMaskInstalled) {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
@@ -31,13 +45,13 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
       } catch (error) {
         console.error("Error connecting to wallet", error);
       }
-    } else {
-      alert("MetaMask is not installed!");
     }
   };
 
   return (
-    <WalletContext.Provider value={{ account, balance, connectWallet }}>
+    <WalletContext.Provider
+      value={{ account, balance, connectWallet, isMetaMaskInstalled }}
+    >
       {children}
     </WalletContext.Provider>
   );

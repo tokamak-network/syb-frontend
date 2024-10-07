@@ -21,7 +21,7 @@ const Modal: React.FC<ModalProps> = ({
       <Dialog.Overlay className={cn("fixed inset-0 bg-black bg-opacity-0")} />
       <Dialog.Content
         className={cn(
-          "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded shadow-lg w-80",
+          "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black p-6 rounded shadow-lg w-80",
           className
         )}
       >
