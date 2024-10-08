@@ -24,6 +24,8 @@ const LandingPage: React.FC = () => {
         src="/images/artwork.png"
         className="absolute right-5 w-2/4 md:w-auto"
         alt="background"
+        width={300}
+        height={300}
       />
     </div>
   );

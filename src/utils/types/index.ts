@@ -10,3 +10,10 @@ export interface WalletContextType {
   balance: string | null;
   connectWallet: () => Promise<void>;
 }
+
+export interface User {
+  address: string;
+  balance: number;
+  vouchesReceived: { address: string; amount: number }[];
+  score: number;
+}
