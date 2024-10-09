@@ -2,6 +2,8 @@
 
 import Button from "@/components/Button";
 import React from "react";
+import Image from "next/image";
+
 const LandingPage: React.FC = () => {
   return (
     <div className="py-20 flex md:flex-row flex-col items-center">
@@ -18,9 +20,12 @@ const LandingPage: React.FC = () => {
           </Button>
         </div>
       </div>
-      <img
+      <Image
         src="/images/artwork.png"
         className="absolute right-5 w-2/4 md:w-auto"
+        alt="background"
+        width={300}
+        height={300}
       />
     </div>
   );
