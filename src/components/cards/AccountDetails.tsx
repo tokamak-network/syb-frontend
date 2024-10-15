@@ -13,9 +13,9 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
   address,
 }) => {
   return (
-    <div className="flex flex-col space-y-8">
+    <div className="flex flex-col space-y-8 w-[400px]">
       <div
-        className="relative w-[400px] h-[250px] bg-cover bg-center rounded-lg shadow-lg py-3 px-2 space-y-20"
+        className="relative h-[250px] bg-cover bg-center rounded-lg shadow-lg py-3 px-2 space-y-20"
         style={{ backgroundImage: "url('/images/accountinfo-Eth.png')" }}
       >
         <div className="space-y-10 px-8">
@@ -26,7 +26,7 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
       </div>
       <div className="flex justify-between">
         <Button
-          leftIcon={FiArrowDownCircle}
+          leftIcon={FiArrowUpCircle}
           className="text-[#60BC63] border-2 border-[#60BC63] text-xl font-semibold rounded-lg min-w-1/3"
         >
           Withdraw
