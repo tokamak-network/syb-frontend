@@ -7,7 +7,7 @@ import AccountDetailsCard from "./cards/AccountDetails";
 const AccountInfo: React.FC = () => {
   const { account, balance } = useWallet();
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-5">
       <p className="text-4xl">Account Information</p>
       <div className="flex justify-between">
         {balance && account && (
