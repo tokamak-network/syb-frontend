@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useWallet } from "@/context/WalletContext";
-import { shortenAddress } from "@/utils";
 
 const AccountInfo: React.FC = () => {
   const { account, balance } = useWallet();

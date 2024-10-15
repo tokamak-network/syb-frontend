@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
   Node,
   Edge,
   NodeChange,
@@ -43,7 +42,7 @@ const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        textAlign: "center" as "center",
+        textAlign: "center" as const,
       },
     };
 
@@ -71,7 +70,7 @@ const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
           let y = centerY + radius * Math.sin(angle);
 
           // Collision detection and resolution
-          for (let otherNode of nodeMap.values()) {
+          for (const otherNode of nodeMap.values()) {
             if (otherNode.id !== node.address) {
               const distance = Math.sqrt(
                 Math.pow(x - otherNode.position.x, 2) +
@@ -112,7 +111,7 @@ const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              textAlign: "center" as "center",
+              textAlign: "center" as const,
             },
           };
           nodeMap.set(vouch.address, newNode);
