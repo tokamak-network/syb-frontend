@@ -2,7 +2,7 @@ import { User } from "@/utils/types";
 
 export const users: User[] = [
   {
-    address: "0x800b181d71c23B25A9BCa9981c13C757043075b7",
+    address: "0xBC48B3C191D1296f7749fC0bc931Fb2bD29a8D16",
     balance: 2.5,
     vouchesReceived: [
       { address: "0xUser2", amount: 1.0 },
