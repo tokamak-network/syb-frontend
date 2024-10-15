@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Button from "./Button";
 import { useWallet } from "@/context/WalletContext";
+import { shortenAddress } from "@/utils";
 
 interface HeaderProps {
   setModalOpen: (open: boolean) => void;
@@ -71,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({
       </nav>
       <div>
         {account ? (
-          <p>{account}</p>
+          <Button>{shortenAddress(account)}</Button>
         ) : (
           <Button
             backgroundImage="/images/button1.png"
