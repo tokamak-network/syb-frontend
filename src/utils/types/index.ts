@@ -17,3 +17,16 @@ export interface User {
   vouchesReceived: { address: string; amount: number }[];
   score: number;
 }
+
+export enum ActionType {
+  DEPOSIT = "DEPOSIT",
+  WITHDRAW = "WITHDRAW",
+  EXPLODE = "EXPLODE",
+  VOUCH = "VOUCH",
+}
+
+export enum ActionStatus {
+  SUCCESS,
+  PENDING,
+  FAILED,
+}

@@ -5,6 +5,7 @@ import { useWallet } from "@/context/WalletContext";
 import AccountDetailsCard from "./cards/AccountDetails";
 import VouchDetailsCard from "./cards/VouchDetails";
 import RankDetailsCard from "./cards/RankDetails";
+import ActivityDetailsCard from "./cards/ActivityDetails";
 
 const AccountInfo: React.FC = () => {
   const { account, balance } = useWallet();
@@ -17,6 +18,7 @@ const AccountInfo: React.FC = () => {
             <AccountDetailsCard balance={Number(balance)} address={account} />
             <VouchDetailsCard vouches={500} />
             <RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
+            <ActivityDetailsCard />
           </>
         )}
       </div>

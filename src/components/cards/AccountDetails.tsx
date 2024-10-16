@@ -22,18 +22,18 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
           <p className="font-poppins text-2xl">Balance</p>
           <p className="font-roboto text-3xl">{balance}</p>
         </div>
-        <p className="text-sm text-center">{address}</p>
+        <p className="text-xs text-center">{address}</p>
       </div>
       <div className="flex justify-between">
         <Button
           leftIcon={FiArrowUpCircle}
-          className="text-[#60BC63] border-2 border-[#60BC63] text-xl font-semibold rounded-lg min-w-1/3"
+          className="text-[#60BC63] border-2 border-[#60BC63] text-xl font-semibold rounded-lg min-w-[33%]"
         >
           Withdraw
         </Button>
         <Button
           leftIcon={FiArrowDownCircle}
-          className="text-white border-2 border-[#60BC63] bg-[#60BC63] text-xl font-semibold rounded-lg w-1/3"
+          className="text-white border-2 border-[#60BC63] bg-[#60BC63] text-xl font-semibold rounded-lg "
         >
           Deposit
         </Button>
