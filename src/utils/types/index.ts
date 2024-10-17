@@ -19,14 +19,23 @@ export interface User {
 }
 
 export enum ActionType {
-  DEPOSIT = "DEPOSIT",
-  WITHDRAW = "WITHDRAW",
-  EXPLODE = "EXPLODE",
-  VOUCH = "VOUCH",
+  DEPOSIT = "Deposit",
+  WITHDRAW = "Withdraw",
+  EXPLODE = "Explode",
+  VOUCH = "Vouch",
 }
 
 export enum ActionStatus {
-  SUCCESS,
-  PENDING,
-  FAILED,
+  SUCCESS = "Success",
+  PENDING = "Pending",
+  FAILED = "Failed",
+}
+
+export interface TransactionType {
+  from: string;
+  to: string;
+  time: Date;
+  amount: number;
+  type: ActionType;
+  staus: ActionStatus;
 }
