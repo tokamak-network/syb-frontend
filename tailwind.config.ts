@@ -12,6 +12,15 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+        roboto: ["Roboto", "sans-serif"],
+      },
+      backgroundImage: {
+        "gradient-to-r": "linear-gradient(to right, #30CEDF, #1940B5)",
+        "rank-card-gradient-to-r":
+          "linear-gradient(to right, #BF3A3A, #591B1B)",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

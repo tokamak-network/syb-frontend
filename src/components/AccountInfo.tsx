@@ -2,19 +2,25 @@
 
 import React from "react";
 import { useWallet } from "@/context/WalletContext";
+import AccountDetailsCard from "./cards/AccountDetails";
+import VouchDetailsCard from "./cards/VouchDetails";
+import RankDetailsCard from "./cards/RankDetails";
+import ActivityDetailsCard from "./cards/ActivityDetails";
 
 const AccountInfo: React.FC = () => {
   const { account, balance } = useWallet();
   return (
-    <div className="p-4 bg-gray-100 rounded-lg shadow-md">
-      <h3 className="text-xl font-semibold mb-2">Account Information</h3>
-      <div className="text-gray-700">
-        <p>
-          <strong>Address:</strong> {account || "Not connected"}
-        </p>
-        <p>
-          <strong>Balance:</strong> {balance ? `${balance} ETH` : "0 ETH"}
-        </p>
+    <div className="flex flex-col space-y-5">
+      <p className="text-4xl">Account Information</p>
+      <div className="flex lg:flex-row flex-col gap-5 justify-between items-center">
+        {balance && account && (
+          <>
+            <AccountDetailsCard balance={Number(balance)} address={account} />
+            <VouchDetailsCard vouches={500} />
+            <RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
+            <ActivityDetailsCard />
+          </>
+        )}
       </div>
     </div>
   );
