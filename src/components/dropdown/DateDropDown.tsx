@@ -12,7 +12,7 @@ const DateDropdownMenu: React.FC<DateDropdownMenuProps> = ({
   const [displayDate, setDisplayDate] = useState<string>("Today");
 
   const handleSelectDate = (label: string) => {
-    let date = new Date();
+    const date = new Date();
     switch (label) {
       case "Yesterday":
         date.setDate(date.getDate() - 1);

@@ -3,8 +3,6 @@ import { ActionStatus, ActionType, TransactionType } from "@/utils/types";
 import { formatDate, formatTime } from "@/utils";
 
 const TransactionListDetailsCard: React.FC<TransactionType> = ({
-  from,
-  to,
   time,
   amount,
   type,
