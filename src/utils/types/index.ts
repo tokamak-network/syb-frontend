@@ -37,5 +37,5 @@ export interface TransactionType {
   time: Date;
   amount: number;
   type: ActionType;
-  staus: ActionStatus;
+  status: ActionStatus;
 }

@@ -33,3 +33,7 @@ body {
   background-clip: text;
   text-fill-color: transparent;
 }
+
+.bg-even-row {
+  background-color: #F7F6FE;
+}

@@ -4,9 +4,14 @@ import transactionData from "@/data/transactionData";
 import TransactionListDetailsCard from "./TransactionListDetails";
 import Button from "../Button";
 
-const ActivityDetailsCard: React.FC = () => {
+interface ActivityDetailsCardProps {
+  onShowMore: () => void;
+}
+
+const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
+  onShowMore,
+}) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [showAll, setShowAll] = useState<boolean>(false);
 
   const filteredTransactions = transactionData.filter((transaction) => {
     return selectedDate
@@ -14,9 +19,7 @@ const ActivityDetailsCard: React.FC = () => {
       : true;
   });
 
-  const transactionsToShow = showAll
-    ? filteredTransactions
-    : filteredTransactions.slice(0, 3);
+  const transactionsToShow = filteredTransactions.slice(0, 3);
 
   return (
     <div className="flex flex-col space-y-1 w-[400px] bg-white rounded-lg p-4 h-[330px]">
@@ -38,7 +41,7 @@ const ActivityDetailsCard: React.FC = () => {
         </div>
         {filteredTransactions.length > 3 && (
           <Button
-            onClick={() => setShowAll(true)}
+            onClick={() => onShowMore()}
             className="mt-2 text-blue-500 hover:underline"
           >
             Show More

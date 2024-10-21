@@ -7,7 +7,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2024-10-16T10:30:00Z"),
     amount: 1.5,
     type: ActionType.DEPOSIT,
-    staus: ActionStatus.SUCCESS,
+    status: ActionStatus.SUCCESS,
   },
   {
     from: "0xUser2",
@@ -15,7 +15,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2024-10-16T14:45:00Z"),
     amount: 0.75,
     type: ActionType.WITHDRAW,
-    staus: ActionStatus.PENDING,
+    status: ActionStatus.PENDING,
   },
   {
     from: "0xUser3",
@@ -23,7 +23,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2024-10-16T09:15:00Z"),
     amount: 0,
     type: ActionType.EXPLODE,
-    staus: ActionStatus.FAILED,
+    status: ActionStatus.FAILED,
   },
   {
     from: "0xUser4",
@@ -31,7 +31,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2024-10-16T17:00:00Z"),
     amount: 0,
     type: ActionType.VOUCH,
-    staus: ActionStatus.SUCCESS,
+    status: ActionStatus.SUCCESS,
   },
   {
     from: "0xUser5",
@@ -39,7 +39,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2023-11-05T11:30:00Z"),
     amount: 2.0,
     type: ActionType.DEPOSIT,
-    staus: ActionStatus.PENDING,
+    status: ActionStatus.PENDING,
   },
   {
     from: "0xUser6",
@@ -47,7 +47,7 @@ export const transactionData: TransactionType[] = [
     time: new Date("2023-11-06T15:20:00Z"),
     amount: 1.25,
     type: ActionType.WITHDRAW,
-    staus: ActionStatus.SUCCESS,
+    status: ActionStatus.SUCCESS,
   },
 ];
 
