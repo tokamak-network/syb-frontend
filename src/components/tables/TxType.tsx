@@ -1,4 +1,4 @@
-import { ActionType } from "@/utils/types";
+import { ActionType } from "@/types";
 
 interface TxTypesProps {
   txType: ActionType;

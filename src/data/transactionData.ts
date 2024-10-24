@@ -1,4 +1,4 @@
-import { ActionStatus, ActionType, TransactionType } from "@/utils/types";
+import { ActionStatus, ActionType, TransactionType } from "@/types";
 
 export const transactionData: TransactionType[] = [
   {

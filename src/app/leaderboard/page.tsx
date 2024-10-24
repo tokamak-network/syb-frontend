@@ -1,5 +1,5 @@
 import React from "react";
-import { LeaderboardEntry } from "@/utils/types";
+import { LeaderboardEntry } from "@/types";
 
 const LeaderboardPage: React.FC = () => {
   const leaderboardData: LeaderboardEntry[] = [

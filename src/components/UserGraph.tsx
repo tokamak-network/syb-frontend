@@ -11,7 +11,7 @@ import ReactFlow, {
   Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { User } from "@/utils/types";
+import { User } from "@/types";
 import { useWallet } from "@/context/WalletContext";
 import { randomColor } from "@/utils/color"; // Assuming this utility function is defined
 

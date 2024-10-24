@@ -1,12 +1,56 @@
 "use client";
 
-import React from "react";
-import { formatFullTime, formatTime } from "@/utils"; // Ensure this path is correct
+import React, { useState } from "react";
+import { formatFullTime } from "@/utils"; // Ensure this path is correct
 import { transactionData } from "@/data/transactionData";
 import TxStatus from "./TxStatus";
 import TxTypes from "./TxType";
 
-const TransactionTable: React.FC = () => {
+interface TransactionTableProps {
+  selectedDate: Date;
+}
+
+const TransactionTable: React.FC<TransactionTableProps> = ({
+  selectedDate,
+}) => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 3; // Number of transactions per page
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
+  const filteredTransactions = transactionData.filter((transaction) =>
+    selectedDate ? isSameDay(transaction.time, selectedDate) : true
+  );
+
+  // Calculate the transactions to display on the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="overflow-x-auto rounded-lg shadow-lg">
       <table className="min-w-full table-auto divide-y divide-gray-300 rounded-lg">
@@ -39,41 +83,70 @@ const TransactionTable: React.FC = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {transactionData.map((transaction, index) => (
-            <tr
-              key={index}
-              className={`${
-                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-              } text-gray-700 hover:bg-gray-100 transition-colors duration-300`}
-            >
-              <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
-                {`0xHash${index}`}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
-                {formatFullTime(transaction.time)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-left">
-                <TxTypes txType={transaction.type} />
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
-                {transaction.from}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
-                {transaction.to}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right font-normal">
-                {transaction.amount} ETH
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right font-normal">
-                {transaction.amount * 0.01} ETH
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-left">
-                <TxStatus status={transaction.status} />
+          {currentTransactions.length > 0 ? (
+            currentTransactions.map((transaction, index) => (
+              <tr
+                key={index}
+                className={`${
+                  index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                } text-gray-700 hover:bg-gray-100 transition-colors duration-300`}
+              >
+                <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
+                  {`0xHash${index}`}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
+                  {formatFullTime(transaction.time)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-left">
+                  <TxTypes txType={transaction.type} />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
+                  {transaction.from}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-left font-normal">
+                  {transaction.to}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right font-normal">
+                  {transaction.amount} ETH
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right font-normal">
+                  {transaction.amount * 0.01} ETH
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-left">
+                  <TxStatus status={transaction.status} />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
+                No transactions found for the selected date.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+      {filteredTransactions.length > itemsPerPage && (
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

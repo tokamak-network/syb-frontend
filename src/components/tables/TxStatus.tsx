@@ -3,7 +3,7 @@ import {
   AiOutlineCheckCircle,
   AiOutlineMinusCircle,
 } from "react-icons/ai";
-import { ActionStatus } from "@/utils/types";
+import { ActionStatus } from "@/types";
 
 interface TxStatusProps {
   status: ActionStatus;

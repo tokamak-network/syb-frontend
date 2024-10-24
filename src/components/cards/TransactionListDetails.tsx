@@ -1,12 +1,12 @@
 import React from "react";
-import { ActionStatus, ActionType, TransactionType } from "@/utils/types";
+import { ActionStatus, ActionType, TransactionType } from "@/types";
 import { formatDate, formatTime } from "@/utils";
 
 const TransactionListDetailsCard: React.FC<TransactionType> = ({
   time,
   amount,
   type,
-  staus,
+  status,
 }) => {
   // Define color styles based on ActionType
   const typeStyles = {
@@ -28,8 +28,8 @@ const TransactionListDetailsCard: React.FC<TransactionType> = ({
       {/* Transaction Information */}
       <div className="flex flex-col">
         <p className={`font-poppins font-medium ${typeStyles[type]}`}>{type}</p>
-        <p className={`font-poppins font-normal ${statusStyles[staus]}`}>
-          {staus}
+        <p className={`font-poppins font-normal ${statusStyles[status]}`}>
+          {status}
         </p>
       </div>
       <div className="flex flex-col text-right">
