@@ -39,3 +39,17 @@ export const formatTime = (date: Date) => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 };
+
+export function formatFullTime(date: Date): string {
+  // Ensure the input is a Date object
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false, // Use 24-hour format
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}

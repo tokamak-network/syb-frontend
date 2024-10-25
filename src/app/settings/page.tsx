@@ -1,5 +1,5 @@
 import React from "react";
-import AccountInfo from "@/components/AccountInfo";
+// import AccountInfo from "@/components/AccountInfo";
 import SecuritySettings from "@/components/SecuritySettings";
 
 const SettingsPage: React.FC = () => {
@@ -7,7 +7,7 @@ const SettingsPage: React.FC = () => {
     <div className="p-8">
       <h2 className="text-2xl font-bold mb-4">Settings</h2>
       <div className="space-y-6">
-        <AccountInfo />
+        {/* <AccountInfo /> */}
         <div>
           <SecuritySettings />
           <button className="bg-red-500 px-4 py-2 rounded text-white mt-2">

@@ -7,7 +7,17 @@ import VouchDetailsCard from "./cards/VouchDetails";
 import RankDetailsCard from "./cards/RankDetails";
 import ActivityDetailsCard from "./cards/ActivityDetails";
 
-const AccountInfo: React.FC = () => {
+interface AccountInfoProps {
+  onShowMore: () => void;
+  selectedDate: Date;
+  onDateSelect: (date: Date) => void;
+}
+
+const AccountInfo: React.FC<AccountInfoProps> = ({
+  onShowMore,
+  selectedDate,
+  onDateSelect,
+}) => {
   const { account, balance } = useWallet();
   return (
     <div className="flex flex-col space-y-5">
@@ -18,7 +28,11 @@ const AccountInfo: React.FC = () => {
             <AccountDetailsCard balance={Number(balance)} address={account} />
             <VouchDetailsCard vouches={500} />
             <RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
-            <ActivityDetailsCard />
+            <ActivityDetailsCard
+              onShowMore={onShowMore}
+              selectedDate={selectedDate}
+              onDateSelect={onDateSelect}
+            />
           </>
         )}
       </div>

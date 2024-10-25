@@ -11,7 +11,7 @@ import ReactFlow, {
   Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { User } from "@/utils/types";
+import { User } from "@/types";
 import { useWallet } from "@/context/WalletContext";
 import { randomColor } from "@/utils/color"; // Assuming this utility function is defined
 
@@ -161,7 +161,7 @@ const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
   }, []);
 
   return (
-    <div className="w-full h-[600px]">
+    <div className="w-full h-[600px] bg-gray-300 bg-opacity-25 rounded-lg p-4 shadow-lg">
       <ReactFlow
         nodes={nodes}
         edges={edges}

@@ -26,13 +26,13 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
       </div>
       <div className="flex justify-between">
         <Button
-          leftIcon={FiArrowUpCircle}
+          leftIcon={FiArrowDownCircle}
           className="text-[#60BC63] border-2 border-[#60BC63] text-xl font-semibold rounded-lg min-w-[33%]"
         >
           Withdraw
         </Button>
         <Button
-          leftIcon={FiArrowDownCircle}
+          leftIcon={FiArrowUpCircle}
           className="text-white border-2 border-[#60BC63] bg-[#60BC63] text-xl font-semibold rounded-lg "
         >
           Deposit
