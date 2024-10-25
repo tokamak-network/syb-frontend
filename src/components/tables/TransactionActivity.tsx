@@ -5,6 +5,7 @@ import { formatFullTime } from "@/utils"; // Ensure this path is correct
 import { transactionData } from "@/data/transactionData";
 import TxStatus from "./TxStatus";
 import TxTypes from "./TxType";
+import TableDropdown from "../dropdown/TableDropDown";
 
 interface TransactionTableProps {
   selectedDate: Date;
@@ -14,7 +15,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   selectedDate,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 3; // Number of transactions per page
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   const isSameDay = (date1: Date, date2: Date) => {
     return (
@@ -51,8 +52,49 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
     }
   };
 
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="overflow-x-auto rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <label
+            htmlFor="itemsPerPage"
+            className="mr-2 text-gray-100 bg-item-per-page-label p-3 text-center"
+          >
+            Items per page:
+          </label>
+          <TableDropdown
+            items={[5, 10, 20, 50, 100]}
+            defaultValue={10}
+            onChange={handleItemsPerPageChange}
+          />
+        </div>
+        {filteredTransactions.length > itemsPerPage && (
+          <div className="flex">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 mr-2"
+            >
+              Previous
+            </button>
+            <span className="text-gray-700">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ml-2"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
       <table className="min-w-full table-auto divide-y divide-gray-300 rounded-lg">
         <thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
           <tr>
@@ -126,27 +168,6 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
           )}
         </tbody>
       </table>
-      {filteredTransactions.length > itemsPerPage && (
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-gray-700">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 };
