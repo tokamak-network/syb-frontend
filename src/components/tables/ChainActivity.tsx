@@ -97,10 +97,10 @@ const ChainActivityTable: React.FC = () => {
                     <UserAddress address={transaction.txUser.to} />
                   </div>
                 </td>
-                <td className="px-6 py-2 whitespace-nowrap text-right font-acme font-normal">
+                <td className="px-6 py-2 whitespace-nowrap text-right text-white font-acme font-normal">
                   {transaction.value}
                 </td>
-                <td className="px-6 py-2 whitespace-nowrap text-right font-acme font-normal">
+                <td className="px-6 py-2 whitespace-nowrap text-right text-white font-acme font-normal">
                   {transaction.fee}
                 </td>
               </tr>

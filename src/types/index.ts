@@ -58,4 +58,5 @@ export interface ExplorerType {
   };
   value: number;
   fee: number;
+  timestamp: Date;
 }

@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import SearchBarComponent from "@/components/SearchBar";
 import ChainActivityTable from "@/components/tables/ChainActivity";
+import UserActivityChart from "@/components/UserAcrivityChart";
 import React from "react";
 import { PiUserCircleFill } from "react-icons/pi";
 
@@ -18,24 +19,26 @@ const ExplorerPage: React.FC = () => {
       </div>
       <div className="flex">
         <div className="flex flex-col space-y-10 text-[#9E9EA3] font-narnoor">
-          <div className="flex flex-col space-y-24 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
+          <div className="flex flex-col space-y-20 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
             {" "}
             {/** Transactions */}
-            <span className="text-[40px]">Transactions</span>
+            <span className="text-[36px]">Transactions</span>
             <span className="text-xl">
               <span className="text-white text-3xl">1,129,100</span> (24h)
             </span>
           </div>
-          <div className="flex flex-col space-y-24 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
+          <div className="flex flex-col space-y-20 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
             {" "}
             {/** Pending Transactions */}
-            <span className="text-[40px]">Pending transactions</span>
+            <span className="text-[36px]">Pending transactions</span>
             <span className="text-xl">
               <span className="text-white text-3xl">151</span> (24h)
             </span>
           </div>
         </div>
-        <div className="bg-[#1E1F20]"></div>
+        <div className="bg-[#1E1F20]">
+          <UserActivityChart />
+        </div>
       </div>
       <ChainActivityTable />
     </div>
