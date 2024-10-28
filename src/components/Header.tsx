@@ -58,10 +58,10 @@ const Header: React.FC<HeaderProps> = ({
           Dashboard
         </Link>
         <Link
-          href="/leaderboard"
+          href="/explore"
           className="hover:bg-blue-500 rounded px-8 py-1 transition-colors duration-200"
         >
-          Leaderboard
+          Explore
         </Link>
         <Link
           href="/settings"

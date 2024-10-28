@@ -42,11 +42,11 @@ const Button: React.FC<ButtonProps> = ({
       {isLoading ? (
         <ImSpinner2 className="animate-spin text-white" />
       ) : (
-        <>
-          {LeftIcon && <LeftIcon className="mr-2 flex-shrink-0" size={20} />}{" "}
-          <span className="flex-grow">{children}</span>{" "}
-          {RightIcon && <RightIcon className="ml-2 flex-shrink-0" size={20} />}{" "}
-        </>
+        <div className="flex items-center justify-center w-full whitespace-nowrap">
+          {LeftIcon && <LeftIcon className="mr-2 flex-shrink-0" size={20} />}
+          <span>{children}</span>
+          {RightIcon && <RightIcon className="ml-2 flex-shrink-0" size={20} />}
+        </div>
       )}
     </button>
   );
