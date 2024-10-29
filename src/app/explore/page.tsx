@@ -17,26 +17,26 @@ const ExplorerPage: React.FC = () => {
           Connect Wallet
         </Button>
       </div>
-      <div className="flex">
-        <div className="flex flex-col space-y-10 text-[#9E9EA3] font-narnoor">
-          <div className="flex flex-col space-y-20 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
+      <div className="flex justify-between space-x-10">
+        <div className="flex flex-col space-y-14 text-[#9E9EA3] font-narnoor w-full">
+          <div className="flex flex-col space-y-14 bg-[#1E1F2090] px-2.5 pt-5 rounded-lg">
             {" "}
             {/** Transactions */}
-            <span className="text-[36px]">Transactions</span>
+            <span className="text-3xl">Transactions</span>
             <span className="text-xl">
               <span className="text-white text-3xl">1,129,100</span> (24h)
             </span>
           </div>
-          <div className="flex flex-col space-y-20 bg-[#1E1F20] px-2.5 pt-5 rounded-lg">
+          <div className="flex flex-col space-y-14 bg-[#1E1F2090] px-2.5 pt-5 rounded-lg">
             {" "}
             {/** Pending Transactions */}
-            <span className="text-[36px]">Pending transactions</span>
+            <span className="text-3xl">Pending transactions</span>
             <span className="text-xl">
               <span className="text-white text-3xl">151</span> (24h)
             </span>
           </div>
         </div>
-        <div className="bg-[#1E1F20]">
+        <div className="bg-[#1E1F2090] w-full">
           <UserActivityChart />
         </div>
       </div>

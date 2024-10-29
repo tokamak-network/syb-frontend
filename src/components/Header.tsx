@@ -2,9 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import Button from "./Button";
-import { useWallet } from "@/context/WalletContext";
-import { shortenAddress } from "@/utils";
 
 interface HeaderProps {
   setModalOpen: (open: boolean) => void;
@@ -17,25 +14,6 @@ const Header: React.FC<HeaderProps> = ({
   setLoading,
   isLoading,
 }) => {
-  const { account, connectWallet, isMetaMaskInstalled } = useWallet();
-
-  const handleConnectWallet = async () => {
-    setLoading(true);
-    if (!isMetaMaskInstalled) {
-      setModalOpen(true);
-      setLoading(true);
-    } else {
-      try {
-        setLoading(true);
-        await connectWallet();
-        setLoading(false);
-      } catch (error) {
-        console.error("Error connection to wallet:", error);
-        setLoading(false);
-      }
-    }
-  };
-
   return (
     <header className="flex flex-col md:flex-row justify-center items-center p-8 text-white relative">
       <nav className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4 md:mb-0 text-xl font-bold">
@@ -70,20 +48,6 @@ const Header: React.FC<HeaderProps> = ({
           Settings
         </Link>
       </nav>
-      <div>
-        {account ? (
-          <Button>{shortenAddress(account)}</Button>
-        ) : (
-          <Button
-            backgroundImage="/images/button1.png"
-            className="absolute right-5 font-bold w-80"
-            isLoading={isLoading}
-            onClick={handleConnectWallet}
-          >
-            Connect Wallet
-          </Button>
-        )}
-      </div>
     </header>
   );
 };
