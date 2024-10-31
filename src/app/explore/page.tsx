@@ -1,94 +1,97 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Button from "@/components/Button";
-import SearchBarComponent from "@/components/SearchBar";
-import ChainActivityTable from "@/components/tables/ChainActivity";
-import UserActivityChart from "@/components/UserAcrivityChart";
-import { PiUserCircleFill } from "react-icons/pi";
-import { useWallet } from "@/context/WalletContext";
-import Modal from "@/components/Modal";
+import React, { useState } from 'react';
+import { PiUserCircleFill } from 'react-icons/pi';
+
+import {
+	Button,
+	SearchBarComponent,
+	Modal,
+	UserActivityLineChart,
+} from '@/components';
+import ChainActivityTable from '@/components/tables/ChainActivity';
+import { useWallet } from '@/context/WalletContext';
 
 const ExplorerPage: React.FC = () => {
-  const { account, balance, connectWallet, isMetaMaskInstalled } = useWallet();
-  const [isModalOpen, setModalOpen] = useState(false);
+	const { account, balance, connectWallet, isMetaMaskInstalled } = useWallet();
+	const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleConnectWallet = () => {
-    if (isMetaMaskInstalled) {
-      connectWallet();
-    } else {
-      setModalOpen(true);
-    }
-  };
+	const handleConnectWallet = () => {
+		if (isMetaMaskInstalled) {
+			connectWallet();
+		} else {
+			setModalOpen(true);
+		}
+	};
 
-  return (
-    <div className="p-8 space-y-4">
-      <div className="flex space-x-3 items-center">
-        <SearchBarComponent
-          placeholder={"Search by address / txn hash / block / token..."}
-        />
-        <PiUserCircleFill size={39} />
-        {!account ? (
-          <Button
-            onClick={handleConnectWallet}
-            className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
-          >
-            Connect Wallet
-          </Button>
-        ) : (
-          <div className="flex flex-col items-start">
-            <span className="text-white font-kanit">{`Account: ${account}`}</span>
-            <span className="text-white font-kanit">{`Balance: ${balance} ETH`}</span>
-          </div>
-        )}
-      </div>
-      <div className="flex justify-between space-x-10">
-        <div className="flex flex-col space-y-14 text-[#9E9EA3] font-narnoor w-full">
-          <div className="flex flex-col space-y-14 bg-[#1E1F2090] px-2.5 pt-5 rounded-lg">
-            <span className="text-3xl">Transactions</span>
-            <span className="text-xl">
-              <span className="text-white text-3xl">1,129,100</span> (24h)
-            </span>
-          </div>
-          <div className="flex flex-col space-y-14 bg-[#1E1F2090] px-2.5 pt-5 rounded-lg">
-            <span className="text-3xl">Pending transactions</span>
-            <span className="text-xl">
-              <span className="text-white text-3xl">151</span> (24h)
-            </span>
-          </div>
-        </div>
-        <div className="bg-[#1E1F2090] w-full">
-          <UserActivityChart />
-        </div>
-      </div>
-      <ChainActivityTable />
+	return (
+		<div className="space-y-4 p-8">
+			<div className="flex items-center space-x-3">
+				<SearchBarComponent
+					placeholder={'Search by address / txn hash / block / token...'}
+				/>
+				<PiUserCircleFill size={39} />
+				{!account ? (
+					<Button
+						className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
+						onClick={handleConnectWallet}
+					>
+						Connect Wallet
+					</Button>
+				) : (
+					<div className="flex flex-col items-start">
+						<span className="font-kanit text-white">{`Account: ${account}`}</span>
+						<span className="font-kanit text-white">{`Balance: ${balance} ETH`}</span>
+					</div>
+				)}
+			</div>
+			<div className="flex justify-between space-x-10">
+				<div className="flex w-full flex-col space-y-14 font-narnoor text-[#9E9EA3]">
+					<div className="flex flex-col space-y-14 rounded-lg bg-[#1E1F2090] px-2.5 pt-5">
+						<span className="text-3xl">Transactions</span>
+						<span className="text-xl">
+							<span className="text-3xl text-white">1,129,100</span> (24h)
+						</span>
+					</div>
+					<div className="flex flex-col space-y-14 rounded-lg bg-[#1E1F2090] px-2.5 pt-5">
+						<span className="text-3xl">Pending transactions</span>
+						<span className="text-xl">
+							<span className="text-3xl text-white">151</span> (24h)
+						</span>
+					</div>
+				</div>
+				<div className="w-full bg-[#1E1F2090]">
+					<UserActivityLineChart />
+				</div>
+			</div>
+			<ChainActivityTable />
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        title="MetaMask Not Installed"
-        content="Please install MetaMask to connect your wallet."
-      >
-        <Button
-          onClick={() => {
-            window.open(
-              "https://chromewebstore.google.com/search/MetaMask",
-              "_blank"
-            );
-          }}
-          className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
-        >
-          Add MetaMask
-        </Button>
-        <Button
-          className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
-          onClick={() => setModalOpen(false)}
-        >
-          Close
-        </Button>
-      </Modal>
-    </div>
-  );
+			<Modal
+				content="Please install MetaMask to connect your wallet."
+				isOpen={isModalOpen}
+				title="MetaMask Not Installed"
+				onClose={() => setModalOpen(false)}
+			>
+				<Button
+					className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
+					onClick={() => {
+						window.open(
+							'https://chromewebstore.google.com/search/MetaMask',
+							'_blank',
+						);
+					}}
+				>
+					Add MetaMask
+				</Button>
+				<Button
+					className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
+					onClick={() => setModalOpen(false)}
+				>
+					Close
+				</Button>
+			</Modal>
+		</div>
+	);
 };
 
 export default ExplorerPage;
