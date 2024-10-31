@@ -1,12 +1,14 @@
 //components/cards/VouchDetails.tsx
 
-import Button from "../Button";
+import { Button } from "@/components";
 
 interface VouchDetailsCardProps {
   vouches: number;
 }
 
-const VouchDetailsCard: React.FC<VouchDetailsCardProps> = ({ vouches }) => {
+export const VouchDetailsCard: React.FC<VouchDetailsCardProps> = ({
+  vouches,
+}) => {
   return (
     <div className="flex flex-col space-y-8 w-[400px]">
       <div
@@ -31,5 +33,3 @@ const VouchDetailsCard: React.FC<VouchDetailsCardProps> = ({ vouches }) => {
     </div>
   );
 };
-
-export default VouchDetailsCard;

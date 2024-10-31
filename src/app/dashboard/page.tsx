@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import AccountInfo from "@/components/AccountInfo";
-import UserGraph from "@/components/UserGraph";
+import { AccountInfo, UserGraph } from "@/components";
 import { users } from "@/data/userData";
 import TransactionTable from "@/components/tables/TransactionActivity";
 

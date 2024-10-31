@@ -1,6 +1,6 @@
 // app/page.tsx
 
-import Button from "@/components/Button";
+import { Button } from "@/components/common/Button";
 import React from "react";
 import Image from "next/image";
 

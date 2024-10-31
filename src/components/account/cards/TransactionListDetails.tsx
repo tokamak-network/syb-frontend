@@ -2,7 +2,7 @@ import React from "react";
 import { ActionStatus, ActionType, TransactionType } from "@/types";
 import { formatDate, formatTime } from "@/utils";
 
-const TransactionListDetailsCard: React.FC<TransactionType> = ({
+export const TransactionListDetailsCard: React.FC<TransactionType> = ({
   time,
   amount,
   type,
@@ -43,5 +43,3 @@ const TransactionListDetailsCard: React.FC<TransactionType> = ({
     </div>
   );
 };
-
-export default TransactionListDetailsCard;

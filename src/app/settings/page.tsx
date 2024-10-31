@@ -1,6 +1,6 @@
 import React from "react";
 // import AccountInfo from "@/components/AccountInfo";
-import SecuritySettings from "@/components/SecuritySettings";
+import { SecuritySettings } from "@/components";
 
 const SettingsPage: React.FC = () => {
   return (

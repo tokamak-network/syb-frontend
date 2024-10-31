@@ -19,7 +19,7 @@ interface UserGraphProps {
   users: User[];
 }
 
-const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
+export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const { account } = useWallet();
@@ -178,5 +178,3 @@ const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
     </div>
   );
 };
-
-export default UserGraph;

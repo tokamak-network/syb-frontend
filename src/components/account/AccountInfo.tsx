@@ -2,10 +2,12 @@
 
 import React from "react";
 import { useWallet } from "@/context/WalletContext";
-import AccountDetailsCard from "./cards/AccountDetails";
-import VouchDetailsCard from "./cards/VouchDetails";
-import RankDetailsCard from "./cards/RankDetails";
-import ActivityDetailsCard from "./cards/ActivityDetails";
+import {
+  AccountDetailsCard,
+  VouchDetailsCard,
+  RankDetailsCard,
+  ActivityDetailsCard,
+} from "./cards";
 
 interface AccountInfoProps {
   onShowMore: () => void;
@@ -13,7 +15,7 @@ interface AccountInfoProps {
   onDateSelect: (date: Date) => void;
 }
 
-const AccountInfo: React.FC<AccountInfoProps> = ({
+export const AccountInfo: React.FC<AccountInfoProps> = ({
   onShowMore,
   selectedDate,
   onDateSelect,
@@ -39,5 +41,3 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
     </div>
   );
 };
-
-export default AccountInfo;

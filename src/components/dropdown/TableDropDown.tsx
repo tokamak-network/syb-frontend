@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import * as RadixDropdownMenu from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/utils/cn";
@@ -9,7 +11,7 @@ interface TableDropdownProps {
   className?: string;
 }
 
-const TableDropdown: React.FC<TableDropdownProps> = ({
+export const TableDropdown: React.FC<TableDropdownProps> = ({
   items,
   defaultValue,
   onChange,
@@ -46,5 +48,3 @@ const TableDropdown: React.FC<TableDropdownProps> = ({
     </RadixDropdownMenu.Root>
   );
 };
-
-export default TableDropdown;

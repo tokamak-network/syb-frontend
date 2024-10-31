@@ -5,7 +5,7 @@ import { formatFullTime } from "@/utils"; // Ensure this path is correct
 import { transactionData } from "@/data/transactionData";
 import TxStatus from "./TxStatus";
 import TxTypes from "./TxType";
-import TableDropdown from "../dropdown/TableDropDown";
+import { TableDropdown } from "@/components";
 
 interface TransactionTableProps {
   selectedDate: Date;

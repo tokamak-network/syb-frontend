@@ -1,7 +1,7 @@
 import React from "react";
 import * as CheckBox from "@radix-ui/react-checkbox";
 
-const SecuritySettings: React.FC = () => {
+export const SecuritySettings: React.FC = () => {
   return (
     <div className="p-8">
       <h3 className="text-xl font-semibold">Security Settings</h3>
@@ -14,5 +14,3 @@ const SecuritySettings: React.FC = () => {
     </div>
   );
 };
-
-export default SecuritySettings;

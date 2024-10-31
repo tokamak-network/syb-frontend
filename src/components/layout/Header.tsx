@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
   return (
     <header className="flex flex-col md:flex-row justify-center items-center p-8 text-white relative">
       <nav className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4 md:mb-0 text-xl font-bold">
@@ -41,5 +41,3 @@ const Header: React.FC = () => {
     </header>
   );
 };
-
-export default Header;

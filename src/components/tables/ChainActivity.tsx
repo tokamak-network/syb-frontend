@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../Button";
+import { Button } from "@/components";
 import explorerData from "@/data/explorerData";
 import TxTypes from "./TxType";
 import TxStatus from "./TxStatus";

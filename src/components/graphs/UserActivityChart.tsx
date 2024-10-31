@@ -31,7 +31,7 @@ ChartJS.register(
   TimeScale
 );
 
-const UserActivityLineChart: React.FC = () => {
+export const UserActivityLineChart: React.FC = () => {
   const chartRef = useRef(null);
 
   const activityCounts = explorerData.reduce((acc, transaction) => {
@@ -160,5 +160,3 @@ const UserActivityLineChart: React.FC = () => {
     </div>
   );
 };
-
-export default UserActivityLineChart;

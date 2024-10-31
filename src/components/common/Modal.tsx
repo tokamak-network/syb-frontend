@@ -1,7 +1,7 @@
 import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { cn } from "@/utils/cn";
-import Button from "./Button";
+import { Button } from "@/components";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface ModalProps {
   content: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   className,
@@ -45,5 +45,3 @@ const Modal: React.FC<ModalProps> = ({
     </Dialog.Root>
   );
 };
-
-export default Modal;

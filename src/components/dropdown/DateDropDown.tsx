@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -6,7 +8,7 @@ interface DateDropdownMenuProps {
   onDateSelect: (date: Date) => void;
 }
 
-const DateDropdownMenu: React.FC<DateDropdownMenuProps> = ({
+export const DateDropdownMenu: React.FC<DateDropdownMenuProps> = ({
   onDateSelect,
 }) => {
   const [displayDate, setDisplayDate] = useState<string>("Today");
@@ -88,5 +90,3 @@ const DateDropdownMenu: React.FC<DateDropdownMenuProps> = ({
     </DropdownMenu.Root>
   );
 };
-
-export default DateDropdownMenu;

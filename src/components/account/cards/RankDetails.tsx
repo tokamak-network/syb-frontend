@@ -1,6 +1,6 @@
 //components/cards/RankDetails.tsx
 
-import Button from "../Button";
+import { Button } from "@/components";
 
 interface RankDetailsCardProps {
   score: number;
@@ -8,7 +8,7 @@ interface RankDetailsCardProps {
   totalUsers: number;
 }
 
-const RankDetailsCard: React.FC<RankDetailsCardProps> = ({
+export const RankDetailsCard: React.FC<RankDetailsCardProps> = ({
   score,
   rank,
   totalUsers,
@@ -38,5 +38,3 @@ const RankDetailsCard: React.FC<RankDetailsCardProps> = ({
     </div>
   );
 };
-
-export default RankDetailsCard;

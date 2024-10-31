@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "@/components/Header";
+import { Header, Footer } from "@/components";
 
 const MainContainer: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -9,10 +9,8 @@ const MainContainer: React.FC<{ children: React.ReactNode }> = ({
       <main className="flex-grow px-4 w-full">
         <Header />
         {children}
+        <Footer />
       </main>
-      <footer className="bg-gray-800 text-white p-4 text-center">
-        @ {`${new Date().getUTCFullYear()} SYB. All rights reserved.`}
-      </footer>
     </div>
   );
 };

@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Button from "@/components/Button";
-import SearchBarComponent from "@/components/SearchBar";
+import {
+  Button,
+  SearchBarComponent,
+  Modal,
+  UserActivityLineChart,
+} from "@/components";
 import ChainActivityTable from "@/components/tables/ChainActivity";
-import UserActivityChart from "@/components/UserAcrivityChart";
 import { PiUserCircleFill } from "react-icons/pi";
 import { useWallet } from "@/context/WalletContext";
-import Modal from "@/components/Modal";
 
 const ExplorerPage: React.FC = () => {
   const { account, balance, connectWallet, isMetaMaskInstalled } = useWallet();
@@ -58,7 +60,7 @@ const ExplorerPage: React.FC = () => {
           </div>
         </div>
         <div className="bg-[#1E1F2090] w-full">
-          <UserActivityChart />
+          <UserActivityLineChart />
         </div>
       </div>
       <ChainActivityTable />

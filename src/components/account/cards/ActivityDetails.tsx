@@ -1,8 +1,7 @@
 import React from "react";
 import transactionData from "@/data/transactionData";
-import DateSelector from "@/components/DateSelector";
-import TransactionListDetailsCard from "./TransactionListDetails";
-import Button from "../Button";
+import { TransactionListDetailsCard } from "./TransactionListDetails";
+import { Button, DateSelector } from "@/components";
 
 interface ActivityDetailsCardProps {
   onShowMore: () => void;
@@ -10,7 +9,7 @@ interface ActivityDetailsCardProps {
   onDateSelect: (date: Date) => void;
 }
 
-const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
+export const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
   onShowMore,
   selectedDate,
   onDateSelect,
@@ -57,5 +56,3 @@ const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
     </div>
   );
 };
-
-export default ActivityDetailsCard;

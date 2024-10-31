@@ -5,7 +5,9 @@ interface SearchBarProps {
   placeholder: string;
 }
 
-const SearchBarComponent: React.FC<SearchBarProps> = ({ placeholder }) => {
+export const SearchBarComponent: React.FC<SearchBarProps> = ({
+  placeholder,
+}) => {
   return (
     <div className="border border-white items-center flex space-x-2 justify-start px-4 py-2 rounded-lg w-full font-montserrat">
       <CiSearch className="text-xl" />
@@ -17,5 +19,3 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({ placeholder }) => {
     </div>
   );
 };
-
-export default SearchBarComponent;

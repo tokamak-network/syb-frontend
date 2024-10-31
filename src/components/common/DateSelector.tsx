@@ -5,7 +5,7 @@ interface DateSelectorProps {
   onDateSelect: (date: Date) => void;
 }
 
-const DateSelector: React.FC<DateSelectorProps> = ({
+export const DateSelector: React.FC<DateSelectorProps> = ({
   selectedDate,
   onDateSelect,
 }) => {
@@ -23,5 +23,3 @@ const DateSelector: React.FC<DateSelectorProps> = ({
     />
   );
 };
-
-export default DateSelector;

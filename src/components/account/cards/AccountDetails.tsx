@@ -1,14 +1,14 @@
 //components/cards/AccountDetails.tsx
 
 import { FiArrowDownCircle, FiArrowUpCircle } from "react-icons/fi";
-import Button from "../Button";
+import { Button } from "@/components";
 
 interface AccountDetailsCardProps {
   balance: number;
   address: string;
 }
 
-const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
+export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
   balance,
   address,
 }) => {
@@ -41,5 +41,3 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
     </div>
   );
 };
-
-export default AccountDetailsCard;
