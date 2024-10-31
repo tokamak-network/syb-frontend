@@ -1,15 +1,25 @@
 "use client";
 
+import React, { useState } from "react";
 import Button from "@/components/Button";
 import SearchBarComponent from "@/components/SearchBar";
 import ChainActivityTable from "@/components/tables/ChainActivity";
 import UserActivityChart from "@/components/UserAcrivityChart";
-import React from "react";
 import { PiUserCircleFill } from "react-icons/pi";
 import { useWallet } from "@/context/WalletContext";
+import Modal from "@/components/Modal";
 
 const ExplorerPage: React.FC = () => {
   const { account, balance, connectWallet, isMetaMaskInstalled } = useWallet();
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleConnectWallet = () => {
+    if (isMetaMaskInstalled) {
+      connectWallet();
+    } else {
+      setModalOpen(true);
+    }
+  };
 
   return (
     <div className="p-8 space-y-4">
@@ -20,10 +30,10 @@ const ExplorerPage: React.FC = () => {
         <PiUserCircleFill size={39} />
         {!account ? (
           <Button
-            onClick={connectWallet}
+            onClick={handleConnectWallet}
             className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
           >
-            {isMetaMaskInstalled ? "Connect Wallet" : "Install MetaMask"}
+            Connect Wallet
           </Button>
         ) : (
           <div className="flex flex-col items-start">
@@ -52,6 +62,31 @@ const ExplorerPage: React.FC = () => {
         </div>
       </div>
       <ChainActivityTable />
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        title="MetaMask Not Installed"
+        content="Please install MetaMask to connect your wallet."
+      >
+        <Button
+          onClick={() => {
+            window.open(
+              "https://chromewebstore.google.com/search/MetaMask",
+              "_blank"
+            );
+          }}
+          className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
+        >
+          Add MetaMask
+        </Button>
+        <Button
+          className="bg-[#1379FF] text-white rounded-xl font-kanit font-bold"
+          onClick={() => setModalOpen(false)}
+        >
+          Close
+        </Button>
+      </Modal>
     </div>
   );
 };
