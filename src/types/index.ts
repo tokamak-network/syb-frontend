@@ -39,3 +39,24 @@ export interface TransactionType {
   type: ActionType;
   status: ActionStatus;
 }
+
+export enum ActionMethod {
+  TRANSFER = "Transfer",
+}
+
+export interface ExplorerType {
+  txHash: string;
+  type: {
+    txType: ActionType;
+    txStatus: ActionStatus;
+  };
+  method: ActionMethod;
+  blockNumber: number;
+  txUser: {
+    from: string;
+    to: string;
+  };
+  value: number;
+  fee: number;
+  timestamp: Date;
+}

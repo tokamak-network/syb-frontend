@@ -15,6 +15,11 @@ const config: Config = {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
         roboto: ["Roboto", "sans-serif"],
+        kanit: ["Kanit", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+        narnoor: ["Narnoor", "sans-serif"],
+        abhaya: ["Abhaya Libre", "sans-serif"],
+        acme: ["Acme", "sans-serif"],
       },
       backgroundImage: {
         "gradient-to-r": "linear-gradient(to right, #30CEDF, #1940B5)",

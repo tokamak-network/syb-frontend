@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({
       >
         <Dialog.Title className="text-lg font-bold mb-4">{title}</Dialog.Title>
         <p className="mb-4">{content}</p>
-        {children}
+        <div className="flex space-x-4">{children}</div>
         <Dialog.Close asChild>
           <Button
             className={cn("absolute top-2 right-2")}
