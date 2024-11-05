@@ -9,6 +9,7 @@ import ReactFlow, {
 	Position,
 	useNodesState,
 	useEdgesState,
+	EdgeTypes,
 } from 'reactflow';
 
 import { useWallet } from '@/context/WalletContext';
@@ -20,13 +21,16 @@ import { User } from '@/types';
 
 import { NodeContextMenu } from '../contextmenu';
 
+import { FloatingEdge } from './FloatingEdge';
+import { FloatingConnectionLine } from './FloatingConnectionLine';
+
 interface UserGraphProps {
 	users: User[];
 }
 
 export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 	const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-	const [edges, setEdges] = useEdgesState<Edge[]>([]);
+	const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 	const { account } = useWallet();
 	const [menu, setMenu] = useState<{
 		id: string;
@@ -173,7 +177,7 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 			setMenu(null);
 			calculateNodePositions(node.id);
 		},
-		[users],
+		[calculateNodePositions],
 	);
 
 	const onNodeContextMenu = useCallback(
@@ -205,26 +209,38 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 		// console.log('Explode action');
 	};
 
-	const isConnectedToCurrentUser = (nodeId: string) => {
-		return edges.some(
-			(edge) =>
-				(edge.source === account && edge.target === nodeId) ||
-				(edge.target === account && edge.source === nodeId),
-		);
-	};
+	const isConnectedToCurrentUser = useCallback(
+		(nodeId: string) => {
+			return edges.some(
+				(edge) =>
+					(edge.source === account && edge.target === nodeId) ||
+					(edge.target === account && edge.source === nodeId),
+			);
+		},
+		[edges, account],
+	);
 
 	const onPaneClick = useCallback(() => setMenu(null), []);
 
+	const edgeTypes: EdgeTypes = {
+		floating: FloatingEdge,
+	};
+
 	return (
-		<div className="h-[600px] w-full rounded-lg bg-gray-300 bg-opacity-25 p-4 shadow-lg">
+		<div
+			ref={ref}
+			className="h-[600px] w-full rounded-lg bg-gray-300 bg-opacity-25 p-4 shadow-lg"
+		>
 			<ReactFlow
-				ref={ref}
 				fitView
+				connectionLineComponent={FloatingConnectionLine}
+				edgeTypes={edgeTypes}
 				edges={edges}
 				maxZoom={2}
 				minZoom={0.5}
 				nodes={nodes}
 				panOnDrag={true}
+				onEdgesChange={onEdgesChange}
 				onNodeClick={onNodeClick}
 				onNodeContextMenu={onNodeContextMenu}
 				onNodesChange={onNodesChange}
