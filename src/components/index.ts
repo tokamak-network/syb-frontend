@@ -5,3 +5,4 @@ export * from './tables';
 export * from './account';
 export * from './settings';
 export * from './layout';
+export * from './contextmenu';

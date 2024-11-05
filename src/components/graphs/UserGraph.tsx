@@ -1,29 +1,39 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
 	Background,
 	Controls,
 	Node,
 	Edge,
-	NodeChange,
-	applyNodeChanges,
 	Position,
+	useNodesState,
+	useEdgesState,
 } from 'reactflow';
 
-import 'reactflow/dist/style.css';
-import { User } from '@/types';
 import { useWallet } from '@/context/WalletContext';
-import { randomColor } from '@/utils/color'; // Assuming this utility function is defined
+
+import 'reactflow/dist/style.css';
+
+import { randomColor } from '@/utils/color';
+import { User } from '@/types';
+
+import { NodeContextMenu } from '../contextmenu';
 
 interface UserGraphProps {
 	users: User[];
 }
 
 export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
-	const [nodes, setNodes] = useState<Node[]>([]);
-	const [edges, setEdges] = useState<Edge[]>([]);
+	const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
+	const [edges, setEdges] = useEdgesState<Edge[]>([]);
 	const { account } = useWallet();
+	const [menu, setMenu] = useState<{
+		id: string;
+		top: number | null;
+		left: number | null;
+	} | null>(null);
+	const ref = useRef<HTMLDivElement | null>(null);
 
 	const calculateNodePositions = (centerNodeAddress: string) => {
 		const centerNode: Node = {
@@ -60,16 +70,16 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 			centerX: number,
 			centerY: number,
 		) => {
-			const maxLevels = 4; // Limit the depth of levels
+			const maxLevels = 4;
 
 			if (level > maxLevels) return;
 
-			const radius = 100 + 100 * level; // Adjusted radius for levels
+			const radius = 100 + 100 * level;
 			const alpha = 1 - level * 0.3;
 
 			node.vouchesReceived.forEach((vouch, index) => {
 				if (!nodeMap.has(vouch.address)) {
-					const angle = angleStep * index * 2; // Adjusted angle step
+					const angle = angleStep * index * 2;
 					let x = centerX + radius * Math.cos(angle);
 					let y = centerY + radius * Math.sin(angle);
 
@@ -160,19 +170,55 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 	const onNodeClick = useCallback(
 		(event: React.MouseEvent, node: Node) => {
 			event.stopPropagation();
-			// Recalculate positions with the clicked node as the new center
+			setMenu(null);
 			calculateNodePositions(node.id);
 		},
 		[users],
 	);
 
-	const onNodesChange = useCallback((changes: NodeChange[]) => {
-		setNodes((nds) => applyNodeChanges(changes, nds));
-	}, []);
+	const onNodeContextMenu = useCallback(
+		(event: React.MouseEvent, node: Node) => {
+			event.preventDefault();
+			event.stopPropagation();
+			const container = ref.current?.getBoundingClientRect();
+
+			if (container) {
+				setMenu({
+					id: node.id,
+					top: event.clientY,
+					left: event.clientX,
+				});
+			}
+		},
+		[],
+	);
+
+	const handleVouch = () => {
+		// console.log('Vouch action');
+	};
+
+	const handleUserInfo = () => {
+		// console.log('User info action');
+	};
+
+	const handleExplode = () => {
+		// console.log('Explode action');
+	};
+
+	const isConnectedToCurrentUser = (nodeId: string) => {
+		return edges.some(
+			(edge) =>
+				(edge.source === account && edge.target === nodeId) ||
+				(edge.target === account && edge.source === nodeId),
+		);
+	};
+
+	const onPaneClick = useCallback(() => setMenu(null), []);
 
 	return (
 		<div className="h-[600px] w-full rounded-lg bg-gray-300 bg-opacity-25 p-4 shadow-lg">
 			<ReactFlow
+				ref={ref}
 				fitView
 				edges={edges}
 				maxZoom={2}
@@ -180,11 +226,26 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 				nodes={nodes}
 				panOnDrag={true}
 				onNodeClick={onNodeClick}
+				onNodeContextMenu={onNodeContextMenu}
 				onNodesChange={onNodesChange}
+				onPaneClick={onPaneClick}
 			>
 				<Controls />
 				<Background />
 			</ReactFlow>
+
+			{menu && (
+				<NodeContextMenu
+					id={menu.id}
+					isConnectedToCurrentUser={isConnectedToCurrentUser(menu.id)}
+					left={menu.left}
+					top={menu.top}
+					onClose={() => setMenu(null)}
+					onExplode={handleExplode}
+					onUserInfo={handleUserInfo}
+					onVouch={handleVouch}
+				/>
+			)}
 		</div>
 	);
 };
