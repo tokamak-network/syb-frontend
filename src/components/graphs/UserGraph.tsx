@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ReactFlow, {
+import {
+	ReactFlow,
 	Background,
 	Controls,
 	Node,
@@ -10,11 +11,13 @@ import ReactFlow, {
 	useNodesState,
 	useEdgesState,
 	EdgeTypes,
-} from 'reactflow';
+	MarkerType,
+	addEdge,
+} from '@xyflow/react';
 
 import { useWallet } from '@/context/WalletContext';
 
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 
 import { randomColor } from '@/utils/color';
 import { User } from '@/types';
@@ -29,8 +32,8 @@ interface UserGraphProps {
 }
 
 export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
-	const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-	const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+	const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+	const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 	const { account } = useWallet();
 	const [menu, setMenu] = useState<{
 		id: string;
@@ -140,8 +143,14 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 						id: `${node.address}-${vouch.address}`,
 						source: node.address,
 						target: vouch.address,
-						type: 'straight',
+						type: 'floating',
 						style: { stroke: `#34495e`, strokeWidth: 1 },
+						markerStart: {
+							type: MarkerType.Arrow,
+						},
+						markerEnd: {
+							type: MarkerType.Arrow,
+						},
 					});
 
 					// Recursively process the next level of nodes, up to maxLevels
@@ -197,6 +206,21 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 		[],
 	);
 
+	const onConnect = useCallback(
+		(params: any) =>
+			setEdges((eds) =>
+				addEdge(
+					{
+						...params,
+						type: 'floating',
+						markerEnd: { type: MarkerType.Arrow },
+					},
+					eds,
+				),
+			),
+		[setEdges],
+	);
+
 	const handleVouch = () => {
 		// console.log('Vouch action');
 	};
@@ -222,9 +246,9 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 
 	const onPaneClick = useCallback(() => setMenu(null), []);
 
-	const edgeTypes: EdgeTypes = {
-		floating: FloatingEdge,
-	};
+	// const edgeTypes: EdgeTypes = {
+	// 	floating: FloatingEdge,
+	// };
 
 	return (
 		<div
@@ -233,13 +257,14 @@ export const UserGraph: React.FC<UserGraphProps> = ({ users }) => {
 		>
 			<ReactFlow
 				fitView
-				connectionLineComponent={FloatingConnectionLine}
-				edgeTypes={edgeTypes}
+				// connectionLineComponent={FloatingConnectionLine}
+				// edgeTypes={edgeTypes}
 				edges={edges}
 				maxZoom={2}
 				minZoom={0.5}
 				nodes={nodes}
 				panOnDrag={true}
+				onConnect={onConnect}
 				onEdgesChange={onEdgesChange}
 				onNodeClick={onNodeClick}
 				onNodeContextMenu={onNodeContextMenu}
