@@ -1,5 +1,4 @@
 // utils/format.ts
-import { Position } from 'reactflow';
 
 /**
  * Shortens an Ethereum address for display.

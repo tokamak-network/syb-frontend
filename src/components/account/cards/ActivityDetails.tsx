@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { TransactionListDetailsCard } from './TransactionListDetails';
-
 import transactionData from '@/data/transactionData';
 import { Button, DateSelector } from '@/components';
+
+import { TransactionListDetailsCard } from './TransactionListDetails';
 
 interface ActivityDetailsCardProps {
 	onShowMore: () => void;

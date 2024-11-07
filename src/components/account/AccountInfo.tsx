@@ -2,14 +2,14 @@
 
 import React from 'react';
 
+import { useWallet } from '@/context/WalletContext';
+
 import {
 	AccountDetailsCard,
 	VouchDetailsCard,
 	RankDetailsCard,
 	ActivityDetailsCard,
 } from './cards';
-
-import { useWallet } from '@/context/WalletContext';
 
 interface AccountInfoProps {
 	onShowMore: () => void;
