@@ -19,32 +19,51 @@ export const useUserStore = create<UserState>((set) => ({
 		})),
 	updateUserBalanceAndScore: (fromAddress, toAddress) =>
 		set((state) => {
-			const fromUser = state.users.find((user) => user.address === fromAddress);
-			const toUser = state.users.find((user) => user.address === toAddress);
+			const fromUserIndex = state.users.findIndex(
+				(user) => user.address === fromAddress,
+			);
+			const toUserIndex = state.users.findIndex(
+				(user) => user.address === toAddress,
+			);
 
-			if (fromUser && toUser) {
-				// Example score update
+			if (fromUserIndex !== -1 && toUserIndex !== -1) {
+				const fromUser = { ...state.users[fromUserIndex] };
+				const toUser = { ...state.users[toUserIndex] };
+
+				// Adjust scores and balances
 				fromUser.score += 10;
 				toUser.score += 5;
 
-				// Example balance update
-				const connectedUsers = state.users.filter((user) =>
-					user.vouchesReceived.some((vouch) => vouch.address === fromAddress),
-				);
+				const vouchAmount = 0.5;
 
-				fromUser.balance = connectedUsers.reduce(
-					(acc, user) => acc + user.balance,
-					0,
-				);
+				if (fromUser.balance >= vouchAmount) {
+					fromUser.balance -= vouchAmount;
+					toUser.balance += vouchAmount;
 
-				return {
-					users: state.users.map((user) => {
-						if (user.address === fromAddress) return fromUser;
-						if (user.address === toAddress) return toUser;
+					// Add toUser to fromUser's vouchesReceived
+					const existingVouch = toUser.vouchesReceived.find(
+						(vouch) => vouch.address === fromAddress,
+					);
 
-						return user;
-					}),
-				};
+					if (existingVouch) {
+						existingVouch.amount += vouchAmount;
+					} else {
+						toUser.vouchesReceived = [
+							...toUser.vouchesReceived,
+							{ address: fromAddress, amount: vouchAmount },
+						];
+					}
+
+					// Return a new array with updated users
+					const newUsers = [...state.users];
+
+					newUsers[fromUserIndex] = fromUser;
+					newUsers[toUserIndex] = toUser;
+
+					return {
+						users: newUsers,
+					};
+				}
 			}
 
 			return state;
