@@ -5,13 +5,13 @@ export const users: User[] = [
 		address: '0xBC48B3C191D1296f7749fC0bc931Fb2bD29a8D16',
 		balance: 2.5,
 		vouchesReceived: [
-			{ address: '0xUser2', amount: 1.0 },
+			{ address: '0xF48242C4C352C778e98Cfc365752e9229C9eF737', amount: 1.0 },
 			{ address: '0xUser3', amount: 1.5 },
 		],
 		score: 85,
 	},
 	{
-		address: '0xUser2',
+		address: '0xF48242C4C352C778e98Cfc365752e9229C9eF737',
 		balance: 3.0,
 		vouchesReceived: [
 			{ address: '0xUser1', amount: 1.0 },
@@ -32,7 +32,7 @@ export const users: User[] = [
 		address: '0xUser4',
 		balance: 4.0,
 		vouchesReceived: [
-			{ address: '0xUser2', amount: 1.3 },
+			{ address: '0xF48242C4C352C778e98Cfc365752e9229C9eF737', amount: 1.3 },
 			{ address: '0xUser7', amount: 1.1 },
 		],
 		score: 72,
@@ -150,7 +150,7 @@ export const users: User[] = [
 		balance: 4.5,
 		vouchesReceived: [
 			{ address: '0xUser18', amount: 1.5 },
-			{ address: '0xUser2', amount: 1.0 },
+			{ address: '0xF48242C4C352C778e98Cfc365752e9229C9eF737', amount: 1.0 },
 		],
 		score: 86,
 	},

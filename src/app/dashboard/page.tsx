@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 
 import { AccountInfo, UserGraph } from '@/components';
-import { users } from '@/data/userData';
 import TransactionTable from '@/components/tables/TransactionActivity';
 
 const Dashboard: React.FC = () => {
@@ -22,7 +21,7 @@ const Dashboard: React.FC = () => {
 			</div>
 			<div className="flex-1">
 				<h3 className="mb-4 text-xl font-semibold">User Connections</h3>
-				<UserGraph users={users} />
+				<UserGraph />
 			</div>
 			{showTransactionTable && <TransactionTable selectedDate={selectedDate} />}
 		</div>
