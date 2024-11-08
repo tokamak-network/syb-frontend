@@ -71,6 +71,10 @@ export interface UserNode extends Node {
 		width: number;
 		height: number;
 	};
+	__rf?: {
+		width: number;
+		height: number;
+	}
 }
 
 export interface UserEdge extends Edge {
