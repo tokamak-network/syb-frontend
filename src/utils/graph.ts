@@ -10,13 +10,15 @@ export const calculateNodePositions = (
 	const edges: UserEdge[] = [];
 	const centerX = window.innerWidth / 2;
 	const centerY = window.innerHeight / 2;
-	const innerRadius = 150; // Radius for nodes close to the center
-	const outerRadius = 300; // Radius for other nodes
 
-	// Create a map for quick access to users by address
+	// Constants for node size and layer management
+	const nodeDiameter = 100; // Approximate diameter of a node
+	const baseLayerDistance = 150; // Base distance between layers
+	const maxNodesPerLayer = 8; // Maximum nodes per layer
+	const randomOffsetRange = 30; // Maximum random offset for layer distance
+
 	const addressToUserMap = new Map(users.map((user) => [user.address, user]));
 
-	// Place the center node at the center of the screen
 	const centerUser = users.find((user) => user.address === centerNodeAddress);
 
 	if (centerUser) {
@@ -43,11 +45,21 @@ export const calculateNodePositions = (
 			},
 		});
 
-		// Position nodes from vouchesReceived list closer to the center
+		const totalNodes = centerUser.vouchesReceived.length;
+		const layersNeeded = Math.ceil(totalNodes / maxNodesPerLayer);
+
+		// Position nodes from vouchesReceived list around the center
 		centerUser.vouchesReceived.forEach((vouch, index) => {
-			const angle = (index * (2 * Math.PI)) / centerUser.vouchesReceived.length;
-			const x = centerX + innerRadius * Math.cos(angle);
-			const y = centerY + innerRadius * Math.sin(angle);
+			const layer = Math.floor(index / maxNodesPerLayer);
+			const nodesInLayer = Math.min(
+				maxNodesPerLayer,
+				totalNodes - layer * maxNodesPerLayer,
+			);
+			const angle = ((index % maxNodesPerLayer) * (2 * Math.PI)) / nodesInLayer;
+			const randomOffset = Math.random() * randomOffsetRange;
+			const radius = (layer + 1) * baseLayerDistance + randomOffset;
+			const x = centerX + radius * Math.cos(angle);
+			const y = centerY + radius * Math.sin(angle);
 
 			if (!nodes.some((node) => node.id === vouch.address)) {
 				nodes.push({
@@ -56,8 +68,8 @@ export const calculateNodePositions = (
 					position: { x, y },
 					draggable: true,
 					style: {
-						width: 100,
-						height: 100,
+						width: nodeDiameter,
+						height: nodeDiameter,
 						fontSize: 12,
 						backgroundColor: '#2ecc71',
 						color: '#fff',
@@ -68,16 +80,16 @@ export const calculateNodePositions = (
 						textAlign: 'center' as const,
 					},
 					measured: {
-						width: 100,
-						height: 100,
+						width: nodeDiameter,
+						height: nodeDiameter,
 					},
 				});
 			}
 
 			edges.push({
 				id: `edge-${centerUser.address}-${vouch.address}`,
-				source: vouch.address,
-				target: centerUser.address,
+				source: centerUser.address,
+				target: vouch.address,
 				type: 'floating',
 				markerEnd: {
 					type: MarkerType.Arrow,
@@ -85,20 +97,24 @@ export const calculateNodePositions = (
 				style: { stroke: '#222', strokeWidth: 1.5 },
 			});
 		});
-	}
 
-	// Position other nodes around the center node
-	users.forEach((user, index) => {
-		if (
-			user.address !== centerNodeAddress &&
-			!nodes.some((node) => node.id === user.address)
-		) {
-			// Calculate position in an outer circular layout
-			const angle =
-				(index * (2 * Math.PI)) /
-				(users.length - (centerUser ? centerUser.vouchesReceived.length : 0));
-			const x = centerX + outerRadius * Math.cos(angle);
-			const y = centerY + outerRadius * Math.sin(angle);
+		// Position other nodes around the center node
+		const otherNodes = users.filter(
+			(user) => !nodes.some((node) => node.id === user.address),
+		);
+		const totalOtherNodes = otherNodes.length;
+
+		otherNodes.forEach((user, index) => {
+			const layer = Math.floor(index / maxNodesPerLayer) + layersNeeded;
+			const nodesInLayer = Math.min(
+				maxNodesPerLayer,
+				totalOtherNodes - (layer - layersNeeded) * maxNodesPerLayer,
+			);
+			const angle = ((index % maxNodesPerLayer) * (2 * Math.PI)) / nodesInLayer;
+			const randomOffset = Math.random() * randomOffsetRange;
+			const radius = (layer + 1) * baseLayerDistance + randomOffset;
+			const x = centerX + radius * Math.cos(angle);
+			const y = centerY + radius * Math.sin(angle);
 
 			nodes.push({
 				id: user.address,
@@ -106,8 +122,8 @@ export const calculateNodePositions = (
 				position: { x, y },
 				draggable: true,
 				style: {
-					width: 100,
-					height: 100,
+					width: nodeDiameter,
+					height: nodeDiameter,
 					fontSize: 12,
 					backgroundColor: '#e74c3c',
 					color: '#fff',
@@ -118,8 +134,8 @@ export const calculateNodePositions = (
 					textAlign: 'center' as const,
 				},
 				measured: {
-					width: 100,
-					height: 100,
+					width: nodeDiameter,
+					height: nodeDiameter,
 				},
 			});
 
@@ -138,8 +154,8 @@ export const calculateNodePositions = (
 					});
 				}
 			});
-		}
-	});
+		});
+	}
 
 	return { nodes, edges };
 };
