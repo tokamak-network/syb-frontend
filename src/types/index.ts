@@ -1,3 +1,5 @@
+import { Node, Edge, MarkerType } from '@xyflow/react';
+
 export interface LeaderboardEntry {
 	rank: number;
 	address: string;
@@ -59,4 +61,31 @@ export interface ExplorerType {
 	value: number;
 	fee: number;
 	timestamp: Date;
+}
+
+export interface UserNode extends Node {
+	data: {
+		label: string;
+	};
+	measured: {
+		width: number;
+		height: number;
+	};
+	__rf?: {
+		width: number;
+		height: number;
+	}
+}
+
+export interface UserEdge extends Edge {
+	source: string;
+	target: string;
+	type: string;
+	markerEnd: {
+		type: MarkerType;
+	};
+	style: {
+		stroke: string;
+		strokeWidth: number;
+	};
 }

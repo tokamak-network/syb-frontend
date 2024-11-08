@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 
-import TxStatus from './TxStatus';
-import TxTypes from './TxType';
-
 import { formatFullTime } from '@/utils'; // Ensure this path is correct
 import { transactionData } from '@/data/transactionData';
 import { TableDropdown } from '@/components';
+
+import TxTypes from './TxType';
+import TxStatus from './TxStatus';
 
 interface TransactionTableProps {
 	selectedDate: Date;

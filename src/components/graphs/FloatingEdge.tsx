@@ -1,7 +1,8 @@
 import React from 'react';
-import { getBezierPath, EdgeProps, useReactFlow } from 'reactflow';
+import { getBezierPath, EdgeProps, useReactFlow } from '@xyflow/react';
 
 import { getEdgeParams } from '@/utils';
+import { UserNode } from '@/types';
 
 export const FloatingEdge: React.FC<EdgeProps> = ({
 	id,
@@ -11,8 +12,8 @@ export const FloatingEdge: React.FC<EdgeProps> = ({
 	style,
 }) => {
 	const { getNode } = useReactFlow();
-	const sourceNode = getNode(source);
-	const targetNode = getNode(target);
+	const sourceNode = getNode(source) as UserNode;
+	const targetNode = getNode(target) as UserNode;
 
 	if (!sourceNode || !targetNode) {
 		return null;

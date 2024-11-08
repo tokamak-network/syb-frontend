@@ -2,6 +2,7 @@ import React from 'react';
 import { getBezierPath } from '@xyflow/react';
 
 import { getEdgeParams } from '@/utils';
+import { UserNode } from '@/types';
 
 export const FloatingConnectionLine: React.FC<any> = ({
 	toX,
@@ -14,13 +15,18 @@ export const FloatingConnectionLine: React.FC<any> = ({
 		return null;
 	}
 
-	const targetNode = {
+	const targetNode: UserNode = {
 		id: 'connection-target',
+		data: { label: '' }, // Provide a default label
+		measured: {
+			width: 1, // Default width
+			height: 1, // Default height
+		},
+		position: { x: 0, y: 0 },
 		__rf: {
 			width: 1,
 			height: 1,
 		},
-		positionAbsolute: { x: toX, y: toY },
 	};
 
 	const { sx, sy } = getEdgeParams(fromNode, targetNode);

@@ -7,6 +7,8 @@ export const users: User[] = [
 		vouchesReceived: [
 			{ address: '0xF48242C4C352C778e98Cfc365752e9229C9eF737', amount: 1.0 },
 			{ address: '0xUser3', amount: 1.5 },
+			{ address: '0xUser6', amount: 0.1 },
+			{ address: '0xUser10', amount: 1.2 },
 		],
 		score: 85,
 	},
@@ -16,6 +18,7 @@ export const users: User[] = [
 		vouchesReceived: [
 			{ address: '0xUser1', amount: 1.0 },
 			{ address: '0xUser4', amount: 1.2 },
+			{ address: '0xUser7', amount: 0.3 },
 		],
 		score: 78,
 	},
@@ -25,6 +28,9 @@ export const users: User[] = [
 		vouchesReceived: [
 			{ address: '0xUser5', amount: 0.5 },
 			{ address: '0xUser6', amount: 0.8 },
+			{ address: '0xUser9', amount: 0.2 },
+			{ address: '0xUser11', amount: 0.4 },
+			{ address: '0xUser14', amount: 0.5 },
 		],
 		score: 90,
 	},

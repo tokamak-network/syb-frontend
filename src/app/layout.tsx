@@ -3,9 +3,29 @@ import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
 import dynamic from 'next/dynamic';
+import {
+	Abhaya_Libre,
+	Acme,
+	Poppins,
+	Roboto,
+	Kanit,
+	Montserrat,
+	Narnoor,
+} from 'next/font/google';
 
 import { WalletProvider } from '@/context/WalletContext';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
+
+const abhayaLibre = Abhaya_Libre({
+	subsets: ['latin'],
+	weight: ['400', '700'],
+});
+const acme = Acme({ subsets: ['latin'], weight: ['400', '400'] });
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '700'] });
+const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
+const kanit = Kanit({ subsets: ['latin'], weight: ['400', '700'] });
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['400', '700'] });
+const narnoor = Narnoor({ subsets: ['latin'], weight: ['400', '700'] });
 
 const MainContainer = dynamic(() => import('@/containers/MainContainer'), {
 	ssr: false,
@@ -22,13 +42,10 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<head>
-				<link
-					href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;700&family=Acme:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Kanit:wght@400;700&family=Montserrat:wght@400;700&family=Narnoor:wght@400;700&display=swap"
-					rel="stylesheet"
-				/>
-			</head>
+		<html
+			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className}`}
+			lang="en"
+		>
 			<body
 				style={{
 					backgroundImage: 'url(/images/back0.png)',

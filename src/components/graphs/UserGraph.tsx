@@ -6,11 +6,12 @@ import {
 	Background,
 	Controls,
 	Node,
-	Edge,
 	useNodesState,
 	useEdgesState,
 	MarkerType,
 	addEdge,
+	EdgeTypes,
+	ReactFlowProvider,
 } from '@xyflow/react';
 
 import { useWallet } from '@/context/WalletContext';
@@ -20,12 +21,15 @@ import '@xyflow/react/dist/style.css';
 import { useUserStore } from '@/store/userStore';
 import { Button, Modal } from '@/components/common';
 import { calculateNodePositions } from '@/utils';
+import { UserEdge, UserNode } from '@/types';
 
 import { NodeContextMenu } from '../contextmenu';
 
+import { FloatingEdge } from './FloatingEdge';
+
 export const UserGraph: React.FC = () => {
-	const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-	const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+	const [nodes, setNodes, onNodesChange] = useNodesState<UserNode>([]);
+	const [edges, setEdges, onEdgesChange] = useEdgesState<UserEdge>([]);
 	const { account } = useWallet();
 	const [menu, setMenu] = useState<{
 		id: string;
@@ -75,7 +79,7 @@ export const UserGraph: React.FC = () => {
 			setNodes(nodes);
 			setEdges(edges);
 		},
-		[calculateNodePositions],
+		[users],
 	);
 
 	const onNodeContextMenu = useCallback(
@@ -138,67 +142,71 @@ export const UserGraph: React.FC = () => {
 
 	const onPaneClick = useCallback(() => setMenu(null), []);
 
-	// const edgeTypes: EdgeTypes = {
-	// 	floating: FloatingEdge,
-	// };
+	const edgeTypes: EdgeTypes = {
+		floating: FloatingEdge,
+	};
 
 	return (
-		<div
-			ref={ref}
-			className="h-[600px] w-full rounded-lg bg-gray-300 bg-opacity-25 p-4 shadow-lg"
-		>
-			<ReactFlow
-				fitView
-				// connectionLineComponent={FloatingConnectionLine}
-				// edgeTypes={edgeTypes}
-				edges={edges}
-				maxZoom={2}
-				minZoom={0.5}
-				nodes={nodes}
-				panOnDrag={true}
-				onConnect={onConnect}
-				onEdgesChange={onEdgesChange}
-				onNodeClick={onNodeClick}
-				onNodeContextMenu={onNodeContextMenu}
-				onNodesChange={onNodesChange}
-				onPaneClick={onPaneClick}
+		<ReactFlowProvider>
+			<div
+				ref={ref}
+				className="h-[600px] w-full rounded-lg bg-gray-300 bg-opacity-25 p-4 shadow-lg"
 			>
-				<Controls />
-				<Background />
-			</ReactFlow>
-
-			{account && menu && (
-				<NodeContextMenu
-					id={menu.id}
-					isConnectedToCurrentUser={isConnectedToCurrentUser(menu.id)}
-					left={menu.left}
-					top={menu.top}
-					onClose={() => setMenu(null)}
-					onExplode={handleExplode}
-					onUserInfo={handleUserInfo}
-					onVouch={handleVouch}
-				/>
-			)}
-
-			<Modal
-				content={`Are you sure you want to vouch for ${vouchTarget}?`}
-				isOpen={showModal}
-				title="Vouch Confirmation"
-				onClose={handleModalCancel}
-			>
-				<Button
-					className="rounded bg-gray-300 px-4 py-2"
-					onClick={handleModalCancel}
+				<ReactFlow
+					fitView
+					// connectionLineComponent={FloatingConnectionLine}
+					edgeTypes={edgeTypes}
+					edges={edges}
+					maxZoom={2}
+					minZoom={0.5}
+					nodes={nodes}
+					panOnDrag={true}
+					onConnect={onConnect}
+					onEdgesChange={onEdgesChange}
+					onNodeClick={onNodeClick}
+					onNodeContextMenu={onNodeContextMenu}
+					onNodesChange={onNodesChange}
+					onPaneClick={onPaneClick}
 				>
-					Cancel
-				</Button>
-				<Button
-					className="rounded bg-blue-500 px-4 py-2 text-white"
-					onClick={handleModalConfirm}
+					<Controls />
+					<Background />
+				</ReactFlow>
+
+				{account && menu && (
+					<NodeContextMenu
+						id={menu.id}
+						isConnectedToCurrentUser={isConnectedToCurrentUser(menu.id)}
+						left={menu.left}
+						top={menu.top}
+						onClose={() => setMenu(null)}
+						onExplode={handleExplode}
+						onUserInfo={handleUserInfo}
+						onVouch={handleVouch}
+					/>
+				)}
+
+				<Modal
+					content={`Are you sure you want to vouch for ${vouchTarget}?`}
+					isOpen={showModal}
+					title="Vouch Confirmation"
+					onClose={handleModalCancel}
 				>
-					Yes
-				</Button>
-			</Modal>
-		</div>
+					<Button
+						className="rounded bg-gray-300 px-4 py-2"
+						onClick={handleModalCancel}
+					>
+						Cancel
+					</Button>
+					<Button
+						className="rounded bg-blue-500 px-4 py-2 text-white"
+						onClick={handleModalConfirm}
+					>
+						Yes
+					</Button>
+				</Modal>
+			</div>
+		</ReactFlowProvider>
 	);
 };
+
+export default UserGraph;
