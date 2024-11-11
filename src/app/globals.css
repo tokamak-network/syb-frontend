@@ -41,3 +41,12 @@ body {
 .react-flow__handle {
 	display: none;
 }
+
+.tooltip {
+	transition: opacity 0.3s ease;
+	opacity: 0;
+}
+
+.tooltip-visible {
+	opacity: 1;
+}
