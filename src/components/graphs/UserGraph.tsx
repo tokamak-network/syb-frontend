@@ -22,6 +22,7 @@ import { useUserStore } from '@/store/userStore';
 import { Button, Modal } from '@/components/common';
 import { calculateNodePositions } from '@/utils';
 import { UserEdge, UserNode } from '@/types';
+import { Tooltip } from '@/components/common';
 
 import { NodeContextMenu } from '../contextmenu';
 
@@ -40,6 +41,15 @@ export const UserGraph: React.FC = () => {
 	const [showVouchModal, setShowVouchModal] = useState<boolean>(false);
 	const [showExplodeModal, setShowExplodeModal] = useState<boolean>(false);
 	const [vouchTarget, setVoucheTarget] = useState<string | null>(null);
+	const [tooltip, setTooltip] = useState<{
+		address: string;
+		balance: number;
+		score: number;
+		position: { x: number; y: number };
+		visible: boolean;
+	} | null>(null);
+	let tooltipTimeout: NodeJS.Timeout;
+
 	const updateUserBalanceAndScore = useUserStore(
 		(state) => state.updateUserBalanceAndScore,
 	);
@@ -69,6 +79,28 @@ export const UserGraph: React.FC = () => {
 		setShowVouchModal(false);
 		setShowExplodeModal(false);
 		setVoucheTarget(null);
+	};
+
+	const handleMouseEnter = (event: React.MouseEvent, node: UserNode) => {
+		if (menu) return;
+		const user = users.find((u) => u.address === node.id);
+
+		if (user) {
+			tooltipTimeout = setTimeout(() => {
+				setTooltip({
+					address: user.address,
+					balance: user.balance,
+					score: user.score,
+					position: { x: event.pageX, y: event.pageY },
+					visible: true,
+				});
+			}, 1000);
+		}
+	};
+
+	const handleMouseLeave = () => {
+		clearTimeout(tooltipTimeout);
+		setTooltip((prev) => (prev ? { ...prev, visible: false } : null));
 	};
 
 	useEffect(() => {
@@ -182,6 +214,8 @@ export const UserGraph: React.FC = () => {
 					onEdgesChange={onEdgesChange}
 					onNodeClick={onNodeClick}
 					onNodeContextMenu={onNodeContextMenu}
+					onNodeMouseEnter={handleMouseEnter}
+					onNodeMouseLeave={handleMouseLeave}
 					onNodesChange={onNodesChange}
 					onPaneClick={onPaneClick}
 				>
@@ -243,6 +277,16 @@ export const UserGraph: React.FC = () => {
 						Yes
 					</Button>
 				</Modal>
+
+				{tooltip && (
+					<Tooltip
+						address={tooltip.address}
+						balance={tooltip.balance}
+						position={tooltip.position}
+						score={tooltip.score}
+						visible={tooltip.visible}
+					/>
+				)}
 			</div>
 		</ReactFlowProvider>
 	);
