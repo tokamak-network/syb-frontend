@@ -2,6 +2,8 @@ import { MarkerType, Position } from '@xyflow/react';
 
 import { User, UserEdge, UserNode } from '@/types';
 
+import { shortenAddress } from './format';
+
 export const calculateNodePositions = (
 	centerNodeAddress: string,
 	users: User[],
@@ -24,7 +26,7 @@ export const calculateNodePositions = (
 	if (centerUser) {
 		nodes.push({
 			id: centerUser.address,
-			data: { label: centerUser.address },
+			data: { label: shortenAddress(centerUser.address) },
 			position: { x: centerX, y: centerY },
 			draggable: true,
 			style: {
@@ -64,7 +66,7 @@ export const calculateNodePositions = (
 			if (!nodes.some((node) => node.id === vouch.address)) {
 				nodes.push({
 					id: vouch.address,
-					data: { label: vouch.address },
+					data: { label: shortenAddress(vouch.address) },
 					position: { x, y },
 					draggable: true,
 					style: {
@@ -118,7 +120,7 @@ export const calculateNodePositions = (
 
 			nodes.push({
 				id: user.address,
-				data: { label: user.address },
+				data: { label: shortenAddress(user.address) },
 				position: { x, y },
 				draggable: true,
 				style: {

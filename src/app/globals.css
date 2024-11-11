@@ -37,3 +37,7 @@ body {
 .bg-even-row {
 	background-color: #f7f6fe;
 }
+
+.react-flow__handle {
+	display: none;
+}
