@@ -37,23 +37,37 @@ export const UserGraph: React.FC = () => {
 		left: number | null;
 	} | null>(null);
 	const ref = useRef<HTMLDivElement | null>(null);
-	const [showModal, setShowModal] = useState<boolean>(false);
+	const [showVouchModal, setShowVouchModal] = useState<boolean>(false);
+	const [showExplodeModal, setShowExplodeModal] = useState<boolean>(false);
 	const [vouchTarget, setVoucheTarget] = useState<string | null>(null);
 	const updateUserBalanceAndScore = useUserStore(
 		(state) => state.updateUserBalanceAndScore,
 	);
+	const explodeAllConnections = useUserStore(
+		(state) => state.explodeAllConnections,
+	);
 	const users = useUserStore((state) => state.users);
 
-	const handleModalConfirm = () => {
+	const handleVouchConfirm = () => {
 		if (account && vouchTarget) {
 			updateUserBalanceAndScore(account, vouchTarget);
-			setShowModal(false);
+			setShowVouchModal(false);
 			setVoucheTarget(null);
+			setMenu(null);
+		}
+	};
+
+	const handleExplodeConfirm = () => {
+		if (menu?.id && account) {
+			explodeAllConnections(menu.id);
+			setShowExplodeModal(false);
+			setMenu(null);
 		}
 	};
 
 	const handleModalCancel = () => {
-		setShowModal(false);
+		setShowVouchModal(false);
+		setShowExplodeModal(false);
 		setVoucheTarget(null);
 	};
 
@@ -117,16 +131,18 @@ export const UserGraph: React.FC = () => {
 	const handleVouch = () => {
 		if (menu) {
 			setVoucheTarget(menu.id);
-			setShowModal(true);
+			setShowVouchModal(true);
+		}
+	};
+
+	const handleExplode = () => {
+		if (menu) {
+			setShowExplodeModal(true);
 		}
 	};
 
 	const handleUserInfo = () => {
 		// console.log('User info action');
-	};
-
-	const handleExplode = () => {
-		// console.log('Explode action');
 	};
 
 	const isConnectedToCurrentUser = useCallback(
@@ -140,7 +156,9 @@ export const UserGraph: React.FC = () => {
 		[edges, account],
 	);
 
-	const onPaneClick = useCallback(() => setMenu(null), []);
+	const onPaneClick = useCallback(() => {
+		setMenu(null);
+	}, []);
 
 	const edgeTypes: EdgeTypes = {
 		floating: FloatingEdge,
@@ -154,7 +172,6 @@ export const UserGraph: React.FC = () => {
 			>
 				<ReactFlow
 					fitView
-					// connectionLineComponent={FloatingConnectionLine}
 					edgeTypes={edgeTypes}
 					edges={edges}
 					maxZoom={2}
@@ -172,22 +189,24 @@ export const UserGraph: React.FC = () => {
 					<Background />
 				</ReactFlow>
 
-				{account && menu && (
-					<NodeContextMenu
-						id={menu.id}
-						isConnectedToCurrentUser={isConnectedToCurrentUser(menu.id)}
-						left={menu.left}
-						top={menu.top}
-						onClose={() => setMenu(null)}
-						onExplode={handleExplode}
-						onUserInfo={handleUserInfo}
-						onVouch={handleVouch}
-					/>
-				)}
+				{account &&
+					menu &&
+					showExplodeModal === false &&
+					showVouchModal === false && (
+						<NodeContextMenu
+							id={menu.id}
+							isConnectedToCurrentUser={isConnectedToCurrentUser(menu.id)}
+							left={menu.left}
+							top={menu.top}
+							onExplode={handleExplode}
+							onUserInfo={handleUserInfo}
+							onVouch={handleVouch}
+						/>
+					)}
 
 				<Modal
 					content={`Are you sure you want to vouch for ${vouchTarget}?`}
-					isOpen={showModal}
+					isOpen={showVouchModal}
 					title="Vouch Confirmation"
 					onClose={handleModalCancel}
 				>
@@ -199,7 +218,27 @@ export const UserGraph: React.FC = () => {
 					</Button>
 					<Button
 						className="rounded bg-blue-500 px-4 py-2 text-white"
-						onClick={handleModalConfirm}
+						onClick={handleVouchConfirm}
+					>
+						Yes
+					</Button>
+				</Modal>
+
+				<Modal
+					content={`Are you sure you want to explode connections for ${menu ? menu.id : ''}?`}
+					isOpen={showExplodeModal}
+					title="Explode Confirmation"
+					onClose={handleModalCancel}
+				>
+					<Button
+						className="rounded bg-gray-300 px-4 py-2"
+						onClick={handleModalCancel}
+					>
+						Cancel
+					</Button>
+					<Button
+						className="rounded bg-red-500 px-4 py-2 text-white"
+						onClick={handleExplodeConfirm}
 					>
 						Yes
 					</Button>

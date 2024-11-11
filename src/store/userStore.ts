@@ -7,6 +7,7 @@ interface UserState {
 	users: User[];
 	updateUser: (updatedUser: User) => void;
 	updateUserBalanceAndScore: (fromAddress: string, toAddress: string) => void;
+	explodeAllConnections: (nodeAddress: string) => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -64,6 +65,52 @@ export const useUserStore = create<UserState>((set) => ({
 						users: newUsers,
 					};
 				}
+			}
+
+			return state;
+		}),
+	explodeAllConnections: (nodeAddress) =>
+		set((state) => {
+			const node = state.users.find((user) => user.address === nodeAddress);
+
+			if (node) {
+				// Nodes that vouched for this node
+				node.vouchesReceived.forEach((vouch) => {
+					const fromUser = state.users.find((u) => u.address === vouch.address);
+
+					if (fromUser) {
+						fromUser.score -= 10;
+						node.score -= 5;
+
+						if (vouch.amount > 0) {
+							fromUser.balance += vouch.amount;
+							node.balance -= vouch.amount;
+							vouch.amount = 0; // Reset the vouch amount
+						}
+					}
+				});
+
+				// Remove all vouches received
+				node.vouchesReceived = [];
+
+				// Nodes that this node vouched for
+				state.users.forEach((otherUser) => {
+					const vouchIndex = otherUser.vouchesReceived.findIndex(
+						(vouch) => vouch.address === nodeAddress,
+					);
+
+					if (vouchIndex !== -1) {
+						const vouch = otherUser.vouchesReceived[vouchIndex];
+
+						node.balance += vouch.amount;
+						otherUser.balance -= vouch.amount;
+						otherUser.score -= 5;
+						node.score -= 10;
+						otherUser.vouchesReceived.splice(vouchIndex, 1);
+					}
+				});
+
+				return { users: [...state.users] };
 			}
 
 			return state;

@@ -10,7 +10,7 @@ interface NodeContextMenuProps {
 	id: string;
 	top: number | null;
 	left: number | null;
-	onClose: () => void;
+	onClose?: () => void;
 }
 
 export const NodeContextMenu: React.FC<NodeContextMenuProps> = ({
@@ -21,7 +21,7 @@ export const NodeContextMenu: React.FC<NodeContextMenuProps> = ({
 	id,
 	top,
 	left,
-	onClose,
+	onClose = () => {},
 }) => {
 	return (
 		<div
