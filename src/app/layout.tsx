@@ -16,6 +16,11 @@ import {
 import { WalletProvider } from '@/context/WalletContext';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
 
+const Layout = dynamic(
+	() => import('@/components/layout').then((mod) => mod.Layout),
+	{ ssr: false },
+);
+
 const abhayaLibre = Abhaya_Libre({
 	subsets: ['latin'],
 	weight: ['400', '700'],
@@ -26,10 +31,6 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
 const kanit = Kanit({ subsets: ['latin'], weight: ['400', '700'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400', '700'] });
 const narnoor = Narnoor({ subsets: ['latin'], weight: ['400', '700'] });
-
-const MainContainer = dynamic(() => import('@/containers/MainContainer'), {
-	ssr: false,
-});
 
 export const metadata: Metadata = {
 	title: 'SYB',
@@ -46,29 +47,13 @@ export default function RootLayout({
 			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className}`}
 			lang="en"
 		>
-			<body
-				style={{
-					backgroundImage: 'url(/images/back0.png)',
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-					minHeight: '100vh',
-				}}
-			>
-				<WalletProvider>
-					<ReactQueryProvider>
-						<div
-							style={{
-								backgroundImage: 'url(/images/back1.png)',
-								backgroundSize: 'cover',
-								backgroundPosition: 'center',
-								height: '1000px',
-							}}
-						>
-							<MainContainer>{children}</MainContainer>
-						</div>
-					</ReactQueryProvider>
-				</WalletProvider>
-			</body>
+			<WalletProvider>
+				<ReactQueryProvider>
+					<body>
+						<Layout>{children}</Layout>
+					</body>
+				</ReactQueryProvider>
+			</WalletProvider>
 		</html>
 	);
 }
