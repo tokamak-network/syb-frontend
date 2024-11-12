@@ -50,3 +50,13 @@ body {
 .tooltip-visible {
 	opacity: 1;
 }
+
+.react-flow__edge-path.highlited {
+	animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+	to {
+		stroke-dashoffset: -20;
+	}
+}

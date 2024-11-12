@@ -4,12 +4,17 @@ import { getBezierPath, EdgeProps, useReactFlow } from '@xyflow/react';
 import { getEdgeParams } from '@/utils';
 import { UserNode } from '@/types';
 
-export const FloatingEdge: React.FC<EdgeProps> = ({
+interface FloatingEdgeProps extends EdgeProps {
+	hoveredNodeId: string | null;
+}
+
+export const FloatingEdge: React.FC<FloatingEdgeProps> = ({
 	id,
 	source,
 	target,
 	markerEnd,
 	style,
+	hoveredNodeId,
 }) => {
 	const { getNode } = useReactFlow();
 	const sourceNode = getNode(source) as UserNode;
@@ -36,11 +41,22 @@ export const FloatingEdge: React.FC<EdgeProps> = ({
 	return (
 		<g className="react-flow__edge">
 			<path
-				className="react-flow__edge-path"
+				className={`react-flow__edge-path ${
+					hoveredNodeId === source || hoveredNodeId === target
+						? 'highlighted'
+						: ''
+				}`}
 				d={edgePath}
 				id={id}
 				markerEnd={markerEnd}
-				style={style}
+				style={{
+					...style,
+					strokeDasharray:
+						hoveredNodeId === source || hoveredNodeId === target
+							? '5,5'
+							: 'none',
+					stroke: hoveredNodeId === source ? '#ff6347' : '#4682b4', // Different colors for vouch and received
+				}}
 			/>
 		</g>
 	);

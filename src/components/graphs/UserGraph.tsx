@@ -10,7 +10,6 @@ import {
 	useEdgesState,
 	MarkerType,
 	addEdge,
-	EdgeTypes,
 	ReactFlowProvider,
 } from '@xyflow/react';
 
@@ -48,6 +47,7 @@ export const UserGraph: React.FC = () => {
 		position: { x: number; y: number };
 		visible: boolean;
 	} | null>(null);
+	const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 	let tooltipTimeout: NodeJS.Timeout;
 
 	const updateUserBalanceAndScore = useUserStore(
@@ -83,6 +83,7 @@ export const UserGraph: React.FC = () => {
 
 	const handleMouseEnter = (event: React.MouseEvent, node: UserNode) => {
 		if (menu) return;
+		setHoveredNodeId(node.id);
 		const user = users.find((u) => u.address === node.id);
 
 		if (user) {
@@ -101,6 +102,7 @@ export const UserGraph: React.FC = () => {
 	const handleMouseLeave = () => {
 		clearTimeout(tooltipTimeout);
 		setTooltip((prev) => (prev ? { ...prev, visible: false } : null));
+		setHoveredNodeId(null);
 	};
 
 	useEffect(() => {
@@ -192,10 +194,6 @@ export const UserGraph: React.FC = () => {
 		setMenu(null);
 	}, []);
 
-	const edgeTypes: EdgeTypes = {
-		floating: FloatingEdge,
-	};
-
 	return (
 		<ReactFlowProvider>
 			<div
@@ -204,7 +202,11 @@ export const UserGraph: React.FC = () => {
 			>
 				<ReactFlow
 					fitView
-					edgeTypes={edgeTypes}
+					edgeTypes={{
+						floating: (props) => (
+							<FloatingEdge {...props} hoveredNodeId={hoveredNodeId} />
+						),
+					}}
 					edges={edges}
 					maxZoom={2}
 					minZoom={0.5}
