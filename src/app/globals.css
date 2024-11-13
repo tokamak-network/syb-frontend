@@ -65,12 +65,18 @@ body {
 .custom-next {
 	position: absolute;
 	top: 50%;
-	transform: translateY(-50%);
-	background-color: rgba(0, 0, 0, 0.5);
-	color: white;
+	transform: translateY(-50%) scale(1.1);
+	transition: transform 0.3s ease;
+	background-color: white;
+	color: black;
 	padding: 10px;
 	cursor: pointer;
 	z-index: 10;
+}
+
+.custom-prev:hover svg,
+.custom-next:hover svg {
+	font-weight: bold;
 }
 
 .custom-prev {
@@ -115,5 +121,157 @@ body {
 .swiper-pagination-bullets.swiper-pagination-horizontal {
 	/* background-color: red; */
 	position: relative;
-	width: min-content !important;
+	width: 100% !important;
+	left: 50% !important;
+}
+
+@keyframes slide1FadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slide2ZoomIn {
+	from {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes slide3SlideIn {
+	from {
+		opacity: 0;
+		transform: translateX(-100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes slide4RotateIn {
+	from {
+		opacity: 0;
+		transform: rotate(-10deg);
+	}
+	to {
+		opacity: 1;
+		transform: rotate(0);
+	}
+}
+
+@keyframes maskFlow {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+.slide1-text {
+	animation: slide1FadeIn 1s ease-in-out forwards;
+	font-family: 'Poppins', sans-serif;
+	font-size: 3rem;
+	font-weight: bold;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 20%;
+	left: 10%;
+	white-space: pre-line;
+}
+
+.slide2-text {
+	animation: slide2ZoomIn 1s ease-in-out forwards;
+	font-family: 'Roboto', sans-serif;
+	font-size: 5rem;
+	font-weight: 700;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	white-space: pre-line;
+}
+
+.slide3-text {
+	animation: slide3SlideIn 1s ease-in-out forwards;
+	font-family: 'Kanit', sans-serif;
+	font-size: 6rem;
+	font-weight: 700;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	white-space: pre-line;
+}
+
+.slide4-text {
+	animation: slide4RotateIn 1s ease-in-out forwards;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 6rem;
+	font-weight: 700;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	white-space: pre-line;
+}
+
+.masked-text {
+	background: linear-gradient(
+		90deg,
+		rgba(0, 0, 255, 0) 0%,
+		rgba(0, 0, 255, 0.5) 50%,
+		rgba(0, 0, 255, 1) 100%
+	);
+	background-size: 200% 100%;
+	animation: maskFlow 2s linear infinite;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.slide3-text.active,
+.slide4-text.active {
+	animation:
+		slide3SlideIn 1s ease-in-out forwards,
+		maskFlow 2s linear infinite;
+	font-family: 'Kanit', sans-serif;
+	font-size: 3rem;
+	font-weight: 700;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	white-space: pre-line;
+	background: linear-gradient(
+		90deg,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(255, 255, 255, 0.5) 50%,
+		rgba(255, 255, 255, 0) 100%
+	);
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
