@@ -11,6 +11,8 @@ import {
 	Kanit,
 	Montserrat,
 	Narnoor,
+	Open_Sans,
+	Anek_Devanagari,
 } from 'next/font/google';
 
 import { WalletProvider } from '@/context/WalletContext';
@@ -31,6 +33,11 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['400', '700'] });
 const kanit = Kanit({ subsets: ['latin'], weight: ['400', '700'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['400', '700'] });
 const narnoor = Narnoor({ subsets: ['latin'], weight: ['400', '700'] });
+const openSans = Open_Sans({ subsets: ['latin'], weight: ['400', '700'] });
+const anekDevanagari = Anek_Devanagari({
+	subsets: ['latin'],
+	weight: ['400', '700'],
+});
 
 export const metadata: Metadata = {
 	title: 'SYB',
@@ -44,7 +51,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html
-			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className}`}
+			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className} ${openSans.className} ${anekDevanagari.className}`}
 			lang="en"
 		>
 			<WalletProvider>
