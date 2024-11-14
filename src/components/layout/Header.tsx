@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
+import { LinkButton } from '../common/LinkButton';
+
 export const Header: React.FC = () => {
 	const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
 	const [activeButton, setActiveButton] = useState<string | null>(null);
@@ -67,6 +69,12 @@ export const Header: React.FC = () => {
 				</Link>
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
+					href="/explore"
+				>
+					Explore
+				</Link>
+				<Link
+					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
 					href="/settings"
 				>
 					Settings
@@ -87,12 +95,12 @@ export const Header: React.FC = () => {
 				ref={menuRef}
 				className={`absolute left-0 top-full ml-0 flex w-full bg-opacity-70 p-8 text-white shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
 					isMegaMenuOpen
-						? 'translate-y-0 opacity-100'
-						: '-translate-y-4 opacity-0'
+						? 'visible translate-y-0 opacity-100'
+						: 'invisible -translate-y-4 opacity-0'
 				}`}
 				onMouseLeave={() => setMegaMenuOpen(false)}
 			>
-				<div className="w-1/2 py-4">
+				<div className="w-3/4 py-4">
 					{activeButton === 'Team' && (
 						<div>
 							<h3 className="text-lg font-bold">Our Team</h3>
@@ -106,19 +114,19 @@ export const Header: React.FC = () => {
 						</div>
 					)}
 				</div>
-				<div className="w-1/2 p-4">
-					<button
-						className="w-full text-balance rounded bg-blue-500 py-2 hover:bg-blue-600"
+				<div className="w-1/4 p-4">
+					<LinkButton
+						className="text-balance rounded py-2 text-white"
+						href="#"
+						label="Team"
 						onMouseEnter={() => handleButtonHover('Team')}
-					>
-						Team
-					</button>
-					<button
-						className="mt-4 w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
+					/>
+					<LinkButton
+						className="mt-4 rounded py-2 text-white"
+						href="#"
+						label="Strategy"
 						onMouseEnter={() => handleButtonHover('Strategy')}
-					>
-						Strategy
-					</button>
+					/>
 				</div>
 			</div>
 		</header>

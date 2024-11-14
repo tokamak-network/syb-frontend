@@ -10,7 +10,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<div className={`flex min-h-screen flex-col`}>
 			<Header />
-			<main className="w-full flex-grow">{children}</main>
+			<main className="mt-24 w-full flex-grow">{children}</main>
 			<Footer />
 		</div>
 	);
