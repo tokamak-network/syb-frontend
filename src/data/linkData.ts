@@ -1,4 +1,13 @@
-import { FaMedium, FaTwitter, FaFacebook, FaTelegram, FaDiscord, FaLinkedin, FaTiktok, FaInstagram } from 'react-icons/fa';
+import {
+	FaMedium,
+	FaTwitter,
+	FaFacebook,
+	FaTelegram,
+	FaDiscord,
+	FaLinkedin,
+	FaTiktok,
+	FaInstagram,
+} from 'react-icons/fa';
 
 export const FooterSiteMap = [
 	{

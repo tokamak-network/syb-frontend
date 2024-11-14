@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
+import Image from 'next/image';
 
 export const Header: React.FC = () => {
 	const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
@@ -38,8 +39,14 @@ export const Header: React.FC = () => {
 	}, []);
 
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex flex-col items-center justify-center border-b-2 bg-opacity-70 p-8 text-white backdrop-blur-md md:flex-row">
-			<nav className="mb-4 flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
+		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 p-8 text-white backdrop-blur-md md:flex-row">
+			<Image
+				alt="logo"
+				height={50}
+				src={'/images/logo-light.png'}
+				width={200}
+			/>
+			<nav className="flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
 					href="/"
@@ -75,45 +82,45 @@ export const Header: React.FC = () => {
 						strokeWidth={2.5}
 					/>
 				</button>
-				<div
-					ref={menuRef}
-					className={`absolute left-0 top-full mt-2 flex w-full bg-white shadow-lg transition-all duration-300 ease-in-out ${
-						isMegaMenuOpen
-							? 'translate-y-0 opacity-100'
-							: '-translate-y-4 opacity-0'
-					}`}
-					onMouseLeave={() => setMegaMenuOpen(false)}
-				>
-					<div className="w-1/2 p-4">
-						{activeButton === 'Team' && (
-							<div>
-								<h3 className="text-lg font-bold">Our Team</h3>
-								<p>Details about the team...</p>
-							</div>
-						)}
-						{activeButton === 'Strategy' && (
-							<div>
-								<h3 className="text-lg font-bold">Our Strategy</h3>
-								<p>Details about the strategy...</p>
-							</div>
-						)}
-					</div>
-					<div className="w-1/2 p-4">
-						<button
-							className="w-full text-balance rounded bg-blue-500 py-2 hover:bg-blue-600"
-							onMouseEnter={() => handleButtonHover('Team')}
-						>
-							Team
-						</button>
-						<button
-							className="mt-4 w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
-							onMouseEnter={() => handleButtonHover('Strategy')}
-						>
-							Strategy
-						</button>
-					</div>
-				</div>
 			</nav>
+			<div
+				ref={menuRef}
+				className={`absolute left-0 top-full ml-0 flex w-full bg-opacity-70 p-8 text-white shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+					isMegaMenuOpen
+						? 'translate-y-0 opacity-100'
+						: '-translate-y-4 opacity-0'
+				}`}
+				onMouseLeave={() => setMegaMenuOpen(false)}
+			>
+				<div className="w-1/2 py-4">
+					{activeButton === 'Team' && (
+						<div>
+							<h3 className="text-lg font-bold">Our Team</h3>
+							<p>Details about the team...</p>
+						</div>
+					)}
+					{activeButton === 'Strategy' && (
+						<div>
+							<h3 className="text-lg font-bold">Our Strategy</h3>
+							<p>Details about the strategy...</p>
+						</div>
+					)}
+				</div>
+				<div className="w-1/2 p-4">
+					<button
+						className="w-full text-balance rounded bg-blue-500 py-2 hover:bg-blue-600"
+						onMouseEnter={() => handleButtonHover('Team')}
+					>
+						Team
+					</button>
+					<button
+						className="mt-4 w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600"
+						onMouseEnter={() => handleButtonHover('Strategy')}
+					>
+						Strategy
+					</button>
+				</div>
+			</div>
 		</header>
 	);
 };
