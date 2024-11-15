@@ -15,38 +15,17 @@ import 'swiper/css/navigation';
 import 'swiper/css/effect-cards';
 import { GrNext, GrPrevious } from 'react-icons/gr';
 
+import { imageSlidesData } from '@/data';
 export const ImageSlider: React.FC = () => {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
-	const slides = [
-		{
-			image: '/images/slide/1.jpg',
-			text: 'Welcome To Sybil Guard Project',
-			textClass: 'slide1-text',
-		},
-		{
-			image: '/images/slide/2.jpg',
-			text: 'White Paper Will LAUNCH On 2025',
-			textClass: 'slide2-text',
-		},
-		{
-			image: '/images/slide/3.jpg',
-			text: 'NEXT Generation BLOCKCHAIN\n SECURITY',
-			textClass: 'slide3-text',
-		},
-		{
-			image: '/images/slide/4.jpg',
-			text: 'Solve The Significant Security ',
-			textClass: 'slide4-text',
-		},
-	];
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
+			setActiveIndex((prevIndex) => (prevIndex + 1) % imageSlidesData.length);
 		}, 5000);
 
 		return () => clearInterval(interval);
-	}, [slides.length]);
+	}, [imageSlidesData.length]);
 
 	return (
 		<div className="relative w-full">
@@ -82,7 +61,7 @@ export const ImageSlider: React.FC = () => {
 				}}
 				slidesPerView={'auto'}
 			>
-				{slides.map((slide, index) => (
+				{imageSlidesData.map((slide, index) => (
 					<SwiperSlide key={index} className="w-full">
 						<div
 							className={`relative h-[900px] bg-cover bg-center ${activeIndex === index ? 'slide-content' : 'slide-context-exit'}`}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 import { formatFullTime } from '@/utils'; // Ensure this path is correct
-import { transactionData } from '@/data/transactionData';
+import { transactionData } from '@/data/transactions';
 import { TableDropdown } from '@/components';
 
 import TxTypes from './TxType';

@@ -19,7 +19,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import { format } from 'date-fns';
 
-import { explorerData } from '@/data/explorerData';
+import { explorerData } from '@/data';
 
 ChartJS.register(
 	CategoryScale,

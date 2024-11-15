@@ -1,16 +1,27 @@
 // app/page.tsx
+'use client';
 
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
-import { ImageSlider } from '@/components/common/ImageSlider';
 import { Button } from '@/components';
+import { CoreAttributesData } from '@/data';
+import { ImageSlider } from '@/components/slider';
+import { TeamMemberSlider } from '@/components/slider/TeamMemberSlider';
 
 const LandingPage: React.FC = () => {
+	const itemVariants = {
+		offscreen: { opacity: 0, y: 20 },
+		onscreen: { opacity: 1, y: 0 },
+	};
+
 	return (
 		<div className="flex flex-col items-center">
-			<ImageSlider />
-			<div className="h-full w-full bg-[#011340]">
+			<section className="w-full">
+				<ImageSlider />
+			</section>
+			<section className="h-full w-full bg-[#011340]">
 				<div className="flex flex-col items-center space-y-6 py-10">
 					<h4 className="font-openSans text-3xl font-bold">
 						Ground-Breaking Growth
@@ -39,22 +50,22 @@ const LandingPage: React.FC = () => {
 						src="/videos/bg-user-activity.webm"
 					/>
 				</div>
-			</div>
-			<div className="flex justify-between bg-white p-28">
+			</section>
+			<section className="flex justify-between bg-white p-28">
 				<div className="flex w-1/3 flex-col space-y-4 text-[#011340]">
-					<h5 className="font-openSans text-sm">ABOUT</h5>
-					<h2 className="w-full text-nowrap font-anekDevanagari text-7xl font-bold">
+					<p className="font-openSans text-sm">ABOUT</p>
+					<p className="w-full text-nowrap font-anekDevanagari text-7xl font-bold">
 						What is SYB?
-					</h2>
-					<span className="font-openSans text-lg">
+					</p>
+					<p className="font-openSans text-lg">
 						Sybil Resistance describes itself as an asset-backed real estate
 						marketplace. The team&apos;s approach in the real estate marketplace
 						is to partner with a team of experienced developers and construction
 						companies to help bring our project and vision from concept to
 						completion.
-					</span>
+					</p>
 				</div>
-				<div className="flex h-80 w-80 items-center justify-center rounded-full border-4 border-[#24A2C7] bg-[#011340] p-10">
+				<div className="flex h-96 w-96 items-center justify-center rounded-full border-4 border-[#24A2C7] bg-[#011340] p-10">
 					<Image
 						alt="about"
 						height={180}
@@ -62,7 +73,40 @@ const LandingPage: React.FC = () => {
 						width={180}
 					/>
 				</div>
-			</div>
+			</section>
+			<section className="flex w-full flex-col space-y-10 bg-[#24A2C7] py-20">
+				<div className="flex flex-col space-y-3 text-center">
+					<p className="font-openSans text-lg font-normal tracking-widest">
+						FEATURES
+					</p>
+					<p className="font-anekDevanagari text-7xl font-extrabold">
+						Core Attributes
+					</p>
+				</div>
+				<div className="grid w-full grid-cols-1 gap-8 px-60 md:grid-cols-3">
+					{CoreAttributesData.map((item, index) => (
+						<motion.div
+							key={index}
+							className={`flex flex-col justify-center space-y-3 rounded-3xl border-2 border-white border-opacity-30 p-6 ${
+								index === 3 ? 'col-span-1 md:col-start-2' : ''
+							}`}
+							initial="offscreen"
+							transition={{ duration: 0.5, delay: index * 0.2 }}
+							variants={itemVariants}
+							viewport={{ once: true, amount: 0.8 }}
+							whileInView="onscreen"
+						>
+							<h3 className="text-left font-openSans text-2xl font-bold tracking-wider">
+								{item.title}
+							</h3>
+							<p className="text-left font-openSans text-sm">{item.content}</p>
+						</motion.div>
+					))}
+				</div>
+			</section>
+			<section className="flex w-full space-x-10 bg-[#011340] p-20">
+				<TeamMemberSlider />
+			</section>
 		</div>
 	);
 };

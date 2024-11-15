@@ -1,12 +1,12 @@
 import React from 'react';
 import { HiOutlineArrowDown } from 'react-icons/hi';
 
+import { Button } from '@/components';
+import { explorerData } from '@/data';
+
 import TxTypes from './TxType';
 import TxStatus from './TxStatus';
 import UserAddress from './UserAddress';
-
-import { Button } from '@/components';
-import explorerData from '@/data/explorerData';
 
 // interface ChainActivityTableProps {
 // }
