@@ -43,7 +43,7 @@
 		"react-hooks/exhaustive-deps": "off",
 		"jsx-a11y/click-events-have-key-events": "warn",
 		"jsx-a11y/interactive-supports-focus": "warn",
-		"prettier/prettier": "warn",
+		"prettier/prettier": ["warn", { "tailwindConfig": "./tailwind.config.ts" }],
 		"linebreak-style": ["warn", "unix"],
 		"no-unused-vars": "warn",
 		"unused-imports/no-unused-vars": "warn",

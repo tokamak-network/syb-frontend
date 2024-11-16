@@ -21,7 +21,7 @@ const LandingPage: React.FC = () => {
 			<section className="w-full">
 				<ImageSlider />
 			</section>
-			<section className="h-full w-full bg-[#011340]">
+			<section className="h-full w-full bg-primary">
 				<div className="flex flex-col items-center space-y-6 py-10">
 					<h4 className="font-openSans text-3xl font-bold">
 						Ground-Breaking Growth
@@ -35,10 +35,10 @@ const LandingPage: React.FC = () => {
 						{'38,943,302 Active Users'}
 					</h1>
 					<div className="flex space-x-5 font-openSans">
-						<Button className="rounded-lg bg-[#24A2C7] text-white">
+						<Button className="rounded-lg bg-secondary text-white">
 							Get Started
 						</Button>
-						<Button className="rounded-lg bg-white text-[#001A33]">
+						<Button className="rounded-lg bg-white text-primary">
 							Learn More
 						</Button>
 					</div>
@@ -52,7 +52,7 @@ const LandingPage: React.FC = () => {
 				</div>
 			</section>
 			<section className="flex justify-between bg-white p-28">
-				<div className="flex w-1/3 flex-col space-y-4 text-[#011340]">
+				<div className="flex w-1/3 flex-col space-y-4 text-primary">
 					<p className="font-openSans text-sm">ABOUT</p>
 					<p className="w-full text-nowrap font-anekDevanagari text-7xl font-bold">
 						What is SYB?
@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
 						completion.
 					</p>
 				</div>
-				<div className="flex h-96 w-96 items-center justify-center rounded-full border-4 border-[#24A2C7] bg-[#011340] p-10">
+				<div className="flex h-96 w-96 items-center justify-center rounded-full border-4 border-secondary bg-primary p-10">
 					<Image
 						alt="about"
 						height={180}
@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
 					/>
 				</div>
 			</section>
-			<section className="flex w-full flex-col space-y-10 bg-[#24A2C7] py-20">
+			<section className="flex w-full flex-col space-y-10 bg-secondary py-20">
 				<div className="flex flex-col space-y-3 text-center">
 					<p className="font-openSans text-lg font-normal tracking-widest">
 						FEATURES
@@ -104,7 +104,7 @@ const LandingPage: React.FC = () => {
 					))}
 				</div>
 			</section>
-			<section className="flex w-full space-x-10 bg-[#011340] p-20">
+			<section className="flex w-full space-x-10 bg-primary p-20">
 				<TeamMemberSlider />
 			</section>
 		</div>
