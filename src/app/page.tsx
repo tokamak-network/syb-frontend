@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 import { Button } from '@/components';
-import { CoreAttributesData } from '@/data';
+import { CoreAttributesData, projectStructure } from '@/data';
 import { ImageSlider } from '@/components/slider';
 import { TeamMemberSlider } from '@/components/slider/TeamMemberSlider';
 
@@ -14,6 +14,11 @@ const LandingPage: React.FC = () => {
 	const itemVariants = {
 		offscreen: { opacity: 0, y: 20 },
 		onscreen: { opacity: 1, y: 0 },
+	};
+
+	const structureVariants = {
+		offscreen: { opacity: 0, x: 0 },
+		onscreen: { opacity: 1, x: -50 },
 	};
 
 	return (
@@ -106,6 +111,34 @@ const LandingPage: React.FC = () => {
 			</section>
 			<section className="flex w-full space-x-10 bg-primary p-20">
 				<TeamMemberSlider />
+			</section>
+			<section className="flex w-full items-center justify-between space-x-20 bg-white p-20 text-primary">
+				<div className="flex w-1/2 flex-col space-y-10 pl-20">
+					<p className="text-md font-openSans">STRUCTURE</p>
+					<p className="font-anekDevanagari text-7xl font-extrabold">
+						The Part of the System
+					</p>
+					<p className="text-lg">
+						Sybil Resistance is the comprehensive solution to problems faced in
+						modern blockchain development
+					</p>
+				</div>
+				<div className="flex w-1/2 flex-col space-y-10">
+					{projectStructure.map((item, index) => (
+						<motion.div
+							key={item.title}
+							className="space-y-5 rounded-3xl border-2 border-primary border-opacity-30 p-10 font-openSans"
+							initial="offscreen"
+							transition={{ duration: 0.5, delay: index * 0.1 }}
+							variants={structureVariants}
+							viewport={{ once: false, amount: 0.8 }}
+							whileInView="onscreen"
+						>
+							<h3 className="text-3xl font-bold">{item.title}</h3>
+							<p className="text-sm">{item.description}</p>
+						</motion.div>
+					))}
+				</div>
 			</section>
 		</div>
 	);
