@@ -13,6 +13,7 @@ interface WalletContextType {
 	account: string | null;
 	balance: string | null;
 	connectWallet: () => Promise<void>;
+	disconnectWallet: () => void;
 	isMetaMaskInstalled: boolean;
 }
 
@@ -51,9 +52,20 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 		}
 	};
 
+	const disconnectWallet = () => {
+		setAccount(null);
+		setBalance(null);
+	};
+
 	return (
 		<WalletContext.Provider
-			value={{ account, balance, connectWallet, isMetaMaskInstalled }}
+			value={{
+				account,
+				balance,
+				connectWallet,
+				isMetaMaskInstalled,
+				disconnectWallet,
+			}}
 		>
 			{children}
 		</WalletContext.Provider>
