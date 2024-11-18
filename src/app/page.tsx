@@ -9,6 +9,7 @@ import { Button } from '@/components';
 import { CoreAttributesData, projectStructure } from '@/data';
 import { ImageSlider } from '@/components/slider';
 import { TeamMemberSlider } from '@/components/slider/TeamMemberSlider';
+import { OrbitingIcons } from '@/components/common/OrbitingIcons';
 
 const LandingPage: React.FC = () => {
 	const itemVariants = {
@@ -109,7 +110,7 @@ const LandingPage: React.FC = () => {
 					))}
 				</div>
 			</section>
-			<section className="flex w-full space-x-10 bg-primary p-20">
+			<section className="flex w-full space-x-10 bg-primary p-24">
 				<TeamMemberSlider />
 			</section>
 			<section className="flex w-full items-center justify-between space-x-20 bg-white p-20 text-primary">
@@ -139,6 +140,9 @@ const LandingPage: React.FC = () => {
 						</motion.div>
 					))}
 				</div>
+			</section>
+			<section className="flex h-auto w-full items-center justify-center bg-secondary p-60">
+				<OrbitingIcons />
 			</section>
 		</div>
 	);

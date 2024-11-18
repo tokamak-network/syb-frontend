@@ -79,7 +79,7 @@ export const TeamMemberSlider: React.FC = () => {
 					</motion.div>
 				</SwiperSlide>
 				{teamMemberSlidesData.map((slide, index) => (
-					<SwiperSlide key={index} className="w-1/3">
+					<SwiperSlide key={index} className="w-1/4">
 						<motion.div
 							className="flex w-full items-center justify-center space-x-10"
 							exit="offscreen"

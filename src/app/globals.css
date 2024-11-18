@@ -298,3 +298,12 @@ body {
 .link-button:hover::after {
 	transform: translateX(212%);
 }
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
