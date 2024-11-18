@@ -96,10 +96,11 @@ const LandingPage: React.FC = () => {
 							className={`flex flex-col justify-center space-y-3 rounded-3xl border-2 border-white border-opacity-30 p-6 ${
 								index === 3 ? 'col-span-1 md:col-start-2' : ''
 							}`}
+							exit="offscreen"
 							initial="offscreen"
 							transition={{ duration: 0.5, delay: index * 0.2 }}
 							variants={itemVariants}
-							viewport={{ once: true, amount: 0.8 }}
+							viewport={{ once: false, amount: 0.8 }}
 							whileInView="onscreen"
 						>
 							<h3 className="text-left font-openSans text-2xl font-bold tracking-wider">
