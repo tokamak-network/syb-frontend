@@ -22,6 +22,16 @@ const LandingPage: React.FC = () => {
 		onscreen: { opacity: 1, x: -50 },
 	};
 
+	const sectionTitleVariants = {
+		offscreen: { opacity: 1, y: 0 },
+		onscreen: { opacity: 1, y: 30 },
+	};
+
+	const sectionSubtitleVariants = {
+		offscreen: { opacity: 1, x: -100 },
+		onscreen: { opacity: 1, x: 0 },
+	};
+
 	return (
 		<div className="flex flex-col items-center">
 			<section className="w-full">
@@ -58,11 +68,27 @@ const LandingPage: React.FC = () => {
 				</div>
 			</section>
 			<section className="flex justify-between bg-white p-28">
-				<div className="flex w-1/3 flex-col space-y-4 text-primary">
-					<p className="font-openSans text-sm">ABOUT</p>
-					<p className="w-full text-nowrap font-anekDevanagari text-7xl font-bold">
+				<div className="flex w-1/3 flex-col space-y-6 text-primary">
+					<motion.p
+						className="font-openSans text-sm"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionTitleVariants}
+						whileInView="onscreen"
+					>
+						ABOUT
+					</motion.p>
+					<motion.p
+						className="font-anekDevanagari text-7xl font-extrabold"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionSubtitleVariants}
+						whileInView="onscreen"
+					>
 						What is SYB?
-					</p>
+					</motion.p>
 					<p className="font-openSans text-lg">
 						Sybil Resistance describes itself as an asset-backed real estate
 						marketplace. The team&apos;s approach in the real estate marketplace
@@ -81,13 +107,27 @@ const LandingPage: React.FC = () => {
 				</div>
 			</section>
 			<section className="flex w-full flex-col space-y-10 bg-secondary py-20">
-				<div className="flex flex-col space-y-3 text-center">
-					<p className="font-openSans text-lg font-normal tracking-widest">
+				<div className="flex flex-col space-y-8 text-center">
+					<motion.p
+						className="font-openSans text-lg font-normal tracking-widest"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionTitleVariants}
+						whileInView="onscreen"
+					>
 						FEATURES
-					</p>
-					<p className="font-anekDevanagari text-7xl font-extrabold">
+					</motion.p>
+					<motion.p
+						className="font-anekDevanagari text-7xl font-extrabold"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionSubtitleVariants}
+						whileInView="onscreen"
+					>
 						Core Attributes
-					</p>
+					</motion.p>
 				</div>
 				<div className="grid w-full grid-cols-1 gap-8 px-60 md:grid-cols-3">
 					{CoreAttributesData.map((item, index) => (
@@ -115,11 +155,27 @@ const LandingPage: React.FC = () => {
 				<TeamMemberSlider />
 			</section>
 			<section className="flex w-full items-center justify-between space-x-20 bg-white p-20 text-primary">
-				<div className="flex w-1/2 flex-col space-y-10 pl-20">
-					<p className="text-md font-openSans">STRUCTURE</p>
-					<p className="font-anekDevanagari text-7xl font-extrabold">
+				<div className="flex w-1/2 flex-col space-y-20 pl-20">
+					<motion.p
+						className="text-md font-openSans"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionTitleVariants}
+						whileInView="onscreen"
+					>
+						STRUCTURE
+					</motion.p>
+					<motion.p
+						className="font-anekDevanagari text-7xl font-extrabold"
+						exit="offscreen"
+						initial="offscreen"
+						transition={{ duration: 0.2, delay: 0.2 }}
+						variants={sectionSubtitleVariants}
+						whileInView="onscreen"
+					>
 						The Part of the System
-					</p>
+					</motion.p>
 					<p className="text-lg">
 						Sybil Resistance is the comprehensive solution to problems faced in
 						modern blockchain development
