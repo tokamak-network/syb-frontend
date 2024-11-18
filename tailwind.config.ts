@@ -1,4 +1,4 @@
-import type {Config} from "tailwindcss";
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
@@ -9,6 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        primary: '#011340',
+        secondary: '#24A2c7',
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
@@ -20,6 +22,8 @@ const config: Config = {
         narnoor: ["Narnoor", "sans-serif"],
         abhaya: ["Abhaya Libre", "sans-serif"],
         acme: ["Acme", "sans-serif"],
+        openSans: ["Open Sans", "sans-serif"],
+        anekDevanagari: ["Anek Devanagari", "sans-serif"],
       },
       backgroundImage: {
         "gradient-to-r": "linear-gradient(to right, #30CEDF, #1940B5)",
