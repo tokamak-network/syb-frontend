@@ -13,7 +13,7 @@ import { LinkButton } from '../common/LinkButton';
 
 export const Footer: React.FC = () => {
 	return (
-		<footer className="bg-[#011340]">
+		<footer className="bg-primary">
 			<div className="flex items-center justify-between border-b border-gray-600 px-40 py-40 text-white">
 				<div className="items-left p container mx-auto flex flex-col space-y-10">
 					<h2 className="text-4xl font-bold">Sybil Guard</h2>
