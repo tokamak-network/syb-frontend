@@ -7,14 +7,22 @@ import Image from 'next/image';
 
 import { LinkButton } from '../common/LinkButton';
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{
+	onMegaMenuToggle: (isOpen: boolean) => void;
+}> = ({ onMegaMenuToggle }) => {
 	const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
 	const [activeButton, setActiveButton] = useState<string | null>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	const toggleMegaMenu = () => {
-		setMegaMenuOpen((prev) => !prev);
+		setMegaMenuOpen((prev) => {
+			const newState = !prev;
+
+			onMegaMenuToggle(newState);
+
+			return newState;
+		});
 	};
 
 	const handleButtonHover = (button: string) => {
@@ -29,6 +37,7 @@ export const Header: React.FC = () => {
 			!buttonRef.current.contains(event.target as Node)
 		) {
 			setMegaMenuOpen(false);
+			onMegaMenuToggle(false);
 		}
 	};
 
@@ -93,12 +102,20 @@ export const Header: React.FC = () => {
 			</nav>
 			<div
 				ref={menuRef}
-				className={`absolute left-0 top-full ml-0 flex w-full bg-opacity-70 p-8 text-white shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+				className={`absolute left-0 top-full ml-0 flex w-full bg-secondary p-8 text-white shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
 					isMegaMenuOpen
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
 				}`}
-				onMouseLeave={() => setMegaMenuOpen(false)}
+				onMouseLeave={() =>
+					setMegaMenuOpen((prev) => {
+						const newState = !prev;
+
+						onMegaMenuToggle(newState);
+
+						return newState;
+					})
+				}
 			>
 				<div className="w-3/4 py-4">
 					{activeButton === 'Team' && (

@@ -56,7 +56,7 @@ export const ImageSlider: React.FC = () => {
 					clickable: true,
 					el: '.custom-pagination',
 					renderBullet: (index, className) => {
-						return `<div class="${className}"></div>`;
+						return `<div key=${index} class="${className}"></div>`;
 					},
 				}}
 				slidesPerView={'auto'}
@@ -67,8 +67,10 @@ export const ImageSlider: React.FC = () => {
 							className={`relative h-[900px] bg-cover bg-center ${activeIndex === index ? 'slide-content' : 'slide-context-exit'}`}
 							style={{ backgroundImage: `url(${slide.image})` }}
 						>
-							<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-								<h2 className={slide.textClass}>{slide.text.toUpperCase()}</h2>
+							<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-secondary">
+								<h2 className={`${slide.textClass}`}>
+									{slide.text.toUpperCase()}
+								</h2>
 							</div>
 						</div>
 					</SwiperSlide>
