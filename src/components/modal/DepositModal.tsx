@@ -41,27 +41,27 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 		<Dialog.Root open={isOpen} onOpenChange={onClose}>
 			<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md" />
 			<Dialog.Content className="fixed inset-0 z-50 flex items-center justify-center">
-				<div className="relative w-1/3 rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 p-6 shadow-2xl">
+				<div className="bg-modal-primary relative w-1/3 rounded-lg p-6 shadow-2xl">
 					<Dialog.Close className="absolute right-2 top-2 text-white hover:text-gray-300 focus:outline-none">
 						&times;
 					</Dialog.Close>
 					<Tabs.Root defaultValue="deposit">
-						<Tabs.List className="mb-4 flex justify-between rounded-lg border border-white bg-opacity-20 p-1">
+						<Tabs.List className="border-dialog-tab-border bg-dialog-background mb-4 flex justify-between rounded-3xl border bg-opacity-20 p-1">
 							<Tabs.Trigger
-								className="flex-1 py-3 font-openSans text-xl text-white data-[state=active]:rounded-lg data-[state=active]:bg-white/20 data-[state=active]:font-bold"
+								className="text-dialog-tab-text data-[state=active]:bg-dialog-tab-active hover:bg-dialog-tab-hover flex-1 rounded-3xl py-3 font-openSans text-xl hover:text-white"
 								value="deposit"
 							>
 								Deposit
 							</Tabs.Trigger>
 							<Tabs.Trigger
-								className="flex-1 py-3 font-openSans text-xl text-white data-[state=active]:rounded-lg data-[state=active]:bg-white/20 data-[state=active]:font-bold"
+								className="text-dialog-tab-text data-[state=active]:bg-dialog-tab-active hover:bg-dialog-tab-hover flex-1 rounded-3xl py-3 font-openSans text-xl hover:text-white"
 								value="withdraw"
 							>
 								Withdraw
 							</Tabs.Trigger>
 						</Tabs.List>
 						<Tabs.Content
-							className="rounded-lg bg-opacity-20 p-2 text-white"
+							className="border-dialog-content-border bg-dialog-content rounded-lg border-2 p-4 text-white"
 							value="deposit"
 						>
 							<form onSubmit={handleSubmit(onSubmit)}>
@@ -73,7 +73,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 										From Network
 									</Label.Root>
 									<Select.Root>
-										<Select.Trigger className="mt-1 w-full rounded border bg-white/20 p-2 font-openSans font-semibold text-white">
+										<Select.Trigger className="mt-1 w-full rounded border bg-gray-500 p-2 font-openSans font-semibold text-white">
 											<Select.Value placeholder="Ethereum Mainnet" />
 										</Select.Trigger>
 										<Select.Content className="w-full rounded bg-white/20 shadow-lg">
@@ -82,7 +82,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 												{NETWORKS.map((network) => (
 													<Select.Item
 														key={network.value}
-														className="w-full bg-secondary/95 p-2 font-anekDevanagari font-bold text-white data-[highlighted]:bg-blue-200"
+														className="w-full bg-gray-500 p-2 font-anekDevanagari font-bold text-white data-[highlighted]:bg-gray-600"
 														value={network.value}
 													>
 														{network.label}
@@ -136,7 +136,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 								</div>
 								<div className="flex justify-center">
 									<Button
-										className="w-full bg-gradient-to-r from-blue-500 to-green-500 font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
+										className="bg-dialog-button w-full font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
 										disabled={!!errors.amount}
 										type="submit"
 									>
@@ -146,7 +146,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 							</form>
 						</Tabs.Content>
 						<Tabs.Content
-							className="rounded-lg bg-opacity-20 p-2 text-white"
+							className="border-dialog-content-border bg-dialog-content rounded-lg border-2 p-4 text-white"
 							value="withdraw"
 						>
 							<form onSubmit={handleSubmit(onSubmit)}>
@@ -158,14 +158,14 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 										To Network
 									</Label.Root>
 									<Select.Root>
-										<Select.Trigger className="mt-1 w-full rounded border bg-white/20 p-2 font-openSans font-semibold text-white">
+										<Select.Trigger className="mt-1 w-full rounded border bg-gray-500 p-2 font-openSans font-semibold text-white">
 											<Select.Value placeholder="Ethereum Mainnet" />
 										</Select.Trigger>
 										<Select.Content className="w-full rounded bg-white shadow-lg">
 											{NETWORKS.map((network) => (
 												<Select.Item
 													key={network.value}
-													className="w-full bg-secondary/95 p-2 font-anekDevanagari font-bold text-white data-[highlighted]:bg-blue-200"
+													className="w-full bg-gray-500 p-2 font-anekDevanagari font-bold text-white data-[highlighted]:bg-gray-600"
 													value={network.value}
 												>
 													{network.label}
@@ -217,7 +217,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 								</div>
 								<div className="flex justify-center">
 									<Button
-										className="w-full bg-gradient-to-r from-blue-500 to-green-500 font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
+										className="bg-dialog-button w-full font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
 										disabled={!!errors.amount}
 										type="submit"
 									>

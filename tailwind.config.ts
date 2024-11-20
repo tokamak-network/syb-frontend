@@ -13,6 +13,13 @@ const config: Config = {
         secondary: '#2196FB',
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "dialog-tab-border": "#474374",
+        "dialog-tab-active": "#0E0B30",
+        "dialog-tab-hover": "#9E66ED",
+        "dialog-tab-text": "#A982E0",
+        "dialog-background": "#1B153F",
+        "dialog-content": "#0E0B30",
+        "dialog-content-border": "#9E66ED"
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
@@ -30,6 +37,8 @@ const config: Config = {
         "rank-card-gradient-to-r":
           "linear-gradient(to right, #BF3A3A, #591B1B)",
         "item-per-page-label": "linear-gradient(to right, #1E77B8, #A029BE)",
+        "modal-primary": "linear-gradient(45deg, #19163B, #4C09A1)",
+        "dialog-button": "linear-gradient(90deg, #4C9AED, #6C66E1, #9D62EF)"
       },
     },
   },

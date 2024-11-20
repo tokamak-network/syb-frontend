@@ -1,7 +1,23 @@
 export const NETWORKS = [
-	{ label: 'Ethereum Mainnet', value: 'eth-main' },
-	{ label: 'Ethereum Testnet', value: 'eth-test' },
-	{ label: 'Fuse Network', value: 'fuse' },
-	{ label: 'Fuse Testnet', value: 'fuse-test' },
+	{
+		label: 'Ethereum',
+		value: 'ethereum',
+		icon: '/images/networks/ethereum.png',
+	},
+	{
+		label: 'Arbitrum',
+		value: 'arbitrum',
+		icon: '/images/networks/arbitrum.png',
+	},
+	{
+		label: 'Binance BNB',
+		value: 'binance-bnb',
+		icon: '/images/networks/binance-bnb.png',
+	},
+	{
+		label: 'Optimism',
+		value: 'optimism',
+		icon: '/images/networks/optimism.png',
+	},
 	{ label: 'Other Networks', value: 'other' },
 ];
