@@ -41,27 +41,27 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 		<Dialog.Root open={isOpen} onOpenChange={onClose}>
 			<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md" />
 			<Dialog.Content className="fixed inset-0 z-50 flex items-center justify-center">
-				<div className="bg-modal-primary relative w-1/3 rounded-lg p-6 shadow-2xl">
+				<div className="relative w-1/3 rounded-lg bg-modal-primary p-6 shadow-2xl">
 					<Dialog.Close className="absolute right-2 top-2 text-white hover:text-gray-300 focus:outline-none">
 						&times;
 					</Dialog.Close>
 					<Tabs.Root defaultValue="deposit">
-						<Tabs.List className="border-dialog-tab-border bg-dialog-background mb-4 flex justify-between rounded-3xl border bg-opacity-20 p-1">
+						<Tabs.List className="mb-4 flex justify-between rounded-3xl border border-dialog-tab-border bg-dialog-background bg-opacity-20 p-1">
 							<Tabs.Trigger
-								className="text-dialog-tab-text data-[state=active]:bg-dialog-tab-active hover:bg-dialog-tab-hover flex-1 rounded-3xl py-3 font-openSans text-xl hover:text-white"
+								className="flex-1 rounded-3xl py-3 font-openSans text-xl text-dialog-tab-text hover:bg-dialog-tab-hover hover:text-white data-[state=active]:bg-dialog-tab-active"
 								value="deposit"
 							>
 								Deposit
 							</Tabs.Trigger>
 							<Tabs.Trigger
-								className="text-dialog-tab-text data-[state=active]:bg-dialog-tab-active hover:bg-dialog-tab-hover flex-1 rounded-3xl py-3 font-openSans text-xl hover:text-white"
+								className="flex-1 rounded-3xl py-3 font-openSans text-xl text-dialog-tab-text hover:bg-dialog-tab-hover hover:text-white data-[state=active]:bg-dialog-tab-active"
 								value="withdraw"
 							>
 								Withdraw
 							</Tabs.Trigger>
 						</Tabs.List>
 						<Tabs.Content
-							className="border-dialog-content-border bg-dialog-content rounded-lg border-2 p-4 text-white"
+							className="rounded-lg border-2 border-dialog-content-border bg-dialog-content p-4 text-white"
 							value="deposit"
 						>
 							<form onSubmit={handleSubmit(onSubmit)}>
@@ -136,7 +136,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 								</div>
 								<div className="flex justify-center">
 									<Button
-										className="bg-dialog-button w-full font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
+										className="w-full bg-dialog-button font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
 										disabled={!!errors.amount}
 										type="submit"
 									>
@@ -146,7 +146,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 							</form>
 						</Tabs.Content>
 						<Tabs.Content
-							className="border-dialog-content-border bg-dialog-content rounded-lg border-2 p-4 text-white"
+							className="rounded-lg border-2 border-dialog-content-border bg-dialog-content p-4 text-white"
 							value="withdraw"
 						>
 							<form onSubmit={handleSubmit(onSubmit)}>
@@ -217,7 +217,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 								</div>
 								<div className="flex justify-center">
 									<Button
-										className="bg-dialog-button w-full font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
+										className="w-full bg-dialog-button font-anekDevanagari text-2xl font-bold text-white hover:bg-gradient-to-r hover:from-blue-600 hover:to-green-600"
 										disabled={!!errors.amount}
 										type="submit"
 									>
