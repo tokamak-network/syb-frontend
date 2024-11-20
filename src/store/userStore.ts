@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { User } from '@/types';
-import { users as initialUsers } from '@/data';
+import { users as initialUsers } from '@/const';
 
 interface UserState {
 	users: User[];

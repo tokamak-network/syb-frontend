@@ -18,10 +18,10 @@ import { useWallet } from '@/context/WalletContext';
 import '@xyflow/react/dist/style.css';
 
 import { useUserStore } from '@/store/userStore';
-import { Button, Modal } from '@/components/common';
+import { Button, Tooltip } from '@/components/common';
 import { calculateNodePositions } from '@/utils';
 import { UserEdge, UserNode } from '@/types';
-import { Tooltip } from '@/components/common';
+import { Modal } from '@/components/modal';
 
 import { NodeContextMenu } from '../contextmenu';
 

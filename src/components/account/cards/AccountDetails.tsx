@@ -1,8 +1,11 @@
 //components/cards/AccountDetails.tsx
+'use client';
 
+import { useState } from 'react';
 import { FiArrowDownCircle, FiArrowUpCircle } from 'react-icons/fi';
 
 import { Button } from '@/components';
+import { DepositModal } from '@/components/modal';
 
 interface AccountDetailsCardProps {
 	balance: number;
@@ -13,6 +16,12 @@ export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 	balance,
 	address,
 }) => {
+	const [isDepositModalOpen, setDepositModalOpen] = useState<boolean>(false);
+
+	const handleDeposit = (amount: number) => {
+		console.log(`Deposited ${amount} ETH`);
+	};
+
 	return (
 		<div className="flex w-[400px] flex-col space-y-8">
 			<div
@@ -35,10 +44,16 @@ export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 				<Button
 					className="rounded-lg border-2 border-[#60BC63] bg-[#60BC63] text-xl font-semibold text-white"
 					leftIcon={FiArrowUpCircle}
+					onClick={() => setDepositModalOpen(true)}
 				>
 					Deposit
 				</Button>
 			</div>
+			<DepositModal
+				isOpen={isDepositModalOpen}
+				onClose={() => setDepositModalOpen(false)}
+				onDeposit={handleDeposit}
+			/>
 		</div>
 	);
 };

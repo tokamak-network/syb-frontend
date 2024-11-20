@@ -10,7 +10,7 @@ import 'swiper/css/scrollbar';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-import { teamMemberSlidesData } from '@/data';
+import { teamMemberSlidesData } from '@/const';
 
 export const TeamMemberSlider: React.FC = () => {
 	const teamMemberVariants = {

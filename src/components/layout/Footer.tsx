@@ -8,7 +8,7 @@ import {
 	FooterServices,
 	FooterSiteMap,
 	FooterSocialMedia,
-} from '@/data';
+} from '@/const';
 
 import { LinkButton } from '../common/LinkButton';
 

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 import { Button } from '@/components';
-import { CoreAttributesData, projectStructure } from '@/data';
+import { CoreAttributesData, projectStructure } from '@/const';
 import { ImageSlider } from '@/components/slider';
 import { TeamMemberSlider } from '@/components/slider/TeamMemberSlider';
 import { OrbitingIcons } from '@/components/common/OrbitingIcons';

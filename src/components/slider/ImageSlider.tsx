@@ -15,7 +15,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/effect-cards';
 import { GrNext, GrPrevious } from 'react-icons/gr';
 
-import { imageSlidesData } from '@/data';
+import { imageSlidesData } from '@/const';
 export const ImageSlider: React.FC = () => {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
 
