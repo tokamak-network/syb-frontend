@@ -1,6 +1,6 @@
 import React from 'react';
 
-import transactionData from '@/data/transactions';
+import transactionData from '@/const/transactions';
 import { Button, DateSelector } from '@/components';
 
 import { TransactionListDetailsCard } from './TransactionListDetails';

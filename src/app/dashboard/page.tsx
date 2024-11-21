@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
 	const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
 
 	return (
-		<div className="3xl:flex-row flex flex-col gap-8 p-8">
+		<div className="3xl:flex-row flex flex-col gap-8 bg-primary bg-opacity-60 p-8">
 			<div className="flex-1">
 				<AccountInfo
 					selectedDate={selectedDate}

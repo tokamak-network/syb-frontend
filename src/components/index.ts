@@ -6,3 +6,4 @@ export * from './account';
 export * from './settings';
 export * from './layout';
 export * from './contextmenu';
+export * from './modal';

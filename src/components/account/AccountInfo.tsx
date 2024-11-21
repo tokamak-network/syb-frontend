@@ -22,15 +22,19 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 	selectedDate,
 	onDateSelect,
 }) => {
-	const { account, balance } = useWallet();
+	const { account, balance, network } = useWallet();
 
 	return (
 		<div className="flex flex-col space-y-5">
 			<p className="text-4xl">Account Information</p>
 			<div className="flex flex-col items-center justify-between gap-5 lg:flex-row">
-				{balance && account && (
+				{balance && account && network && (
 					<>
-						<AccountDetailsCard address={account} balance={Number(balance)} />
+						<AccountDetailsCard
+							address={account}
+							balance={Number(balance)}
+							network={network}
+						/>
 						<VouchDetailsCard vouches={500} />
 						<RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
 						<ActivityDetailsCard
