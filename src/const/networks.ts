@@ -19,5 +19,10 @@ export const NETWORKS = [
 		value: 'optimism',
 		icon: '/images/networks/optimism.png',
 	},
+	{
+		label: 'Sepolia',
+		value: 'sepolia',
+		icon: '/images/networks/sepolia.png',
+	},
 	{ label: 'Other Networks', value: 'other' },
 ];

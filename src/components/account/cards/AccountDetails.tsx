@@ -10,11 +10,13 @@ import { DepositModal } from '@/components/modal';
 interface AccountDetailsCardProps {
 	balance: number;
 	address: string;
+	network: string;
 }
 
 export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 	balance,
 	address,
+	network,
 }) => {
 	const [isDepositModalOpen, setDepositModalOpen] = useState<boolean>(false);
 
@@ -51,6 +53,7 @@ export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 			</div>
 			<DepositModal
 				isOpen={isDepositModalOpen}
+				network={network}
 				onClose={() => setDepositModalOpen(false)}
 				onDeposit={handleDeposit}
 			/>

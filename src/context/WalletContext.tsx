@@ -12,8 +12,10 @@ import { ethers } from 'ethers';
 interface WalletContextType {
 	account: string | null;
 	balance: string | null;
+	network: string | null;
 	connectWallet: () => Promise<void>;
 	disconnectWallet: () => void;
+	updateBalance: () => Promise<void>;
 	isMetaMaskInstalled: boolean;
 }
 
@@ -24,13 +26,9 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
 	const [account, setAccount] = useState<string | null>(null);
 	const [balance, setBalance] = useState<string | null>(null);
-	const [isMetaMaskInstalled, setMetaMaskInstalled] = useState<boolean>(false);
+	const [network, setNetwork] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			setMetaMaskInstalled(typeof window.ethereum !== 'undefined');
-		}
-	}, []);
+	const [isMetaMaskInstalled, setMetaMaskInstalled] = useState<boolean>(false);
 
 	const connectWallet = async () => {
 		if (isMetaMaskInstalled) {
@@ -46,8 +44,25 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 
 				setAccount(userAddress);
 				setBalance(userBalance);
+
+				const network = await provider.getNetwork();
+
+				setNetwork(network.name);
 			} catch (error) {
 				console.error('Error connecting to wallet', error);
+			}
+		}
+	};
+
+	const updateBalance = async () => {
+		if (account) {
+			try {
+				const provider = new ethers.providers.Web3Provider(window.ethereum);
+				const balance = await provider.getBalance(account);
+
+				setBalance(ethers.utils.formatEther(balance));
+			} catch (error) {
+				console.error('Failed to fetch balance:', error);
 			}
 		}
 	};
@@ -57,11 +72,33 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 		setBalance(null);
 	};
 
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			setMetaMaskInstalled(typeof window.ethereum !== 'undefined');
+		}
+	}, []);
+
+	useEffect(() => {
+		if (isMetaMaskInstalled) {
+			window.ethereum?.on('accountsChanged', connectWallet);
+			window.ethereum?.on('chainChanged', connectWallet);
+		}
+
+		return () => {
+			if (isMetaMaskInstalled) {
+				window.ethereum?.removeListener('accountsChanged', connectWallet);
+				window.ethereum?.removeListener('chainChanged', connectWallet);
+			}
+		};
+	}, [isMetaMaskInstalled]);
+
 	return (
 		<WalletContext.Provider
 			value={{
 				account,
 				balance,
+				network,
+				updateBalance,
 				connectWallet,
 				isMetaMaskInstalled,
 				disconnectWallet,
