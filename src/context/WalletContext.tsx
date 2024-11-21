@@ -57,7 +57,9 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 	const updateBalance = async () => {
 		if (account) {
 			try {
-				const provider = new ethers.providers.Web3Provider(window.ethereum);
+				const provider = new ethers.providers.Web3Provider(
+					window.ethereum as any,
+				);
 				const balance = await provider.getBalance(account);
 
 				setBalance(ethers.utils.formatEther(balance));
@@ -80,14 +82,14 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 
 	useEffect(() => {
 		if (isMetaMaskInstalled) {
-			window.ethereum?.on('accountsChanged', connectWallet);
-			window.ethereum?.on('chainChanged', connectWallet);
+			window.ethereum?.on?.('accountsChanged', connectWallet);
+			window.ethereum?.on?.('chainChanged', connectWallet);
 		}
 
 		return () => {
 			if (isMetaMaskInstalled) {
-				window.ethereum?.removeListener('accountsChanged', connectWallet);
-				window.ethereum?.removeListener('chainChanged', connectWallet);
+				window.ethereum?.removeListener?.('accountsChanged', connectWallet);
+				window.ethereum?.removeListener?.('chainChanged', connectWallet);
 			}
 		};
 	}, [isMetaMaskInstalled]);
