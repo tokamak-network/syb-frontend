@@ -42,7 +42,7 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 							network={network}
 						/>
 					</div>
-					<div className="flex flex-col">
+					<div className="flex flex-col space-y-8">
 						<VouchDetailsCard vouches={500} />
 						<RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
 					</div>
