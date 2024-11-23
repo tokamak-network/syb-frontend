@@ -10,26 +10,19 @@ export const VouchDetailsCard: React.FC<VouchDetailsCardProps> = ({
 	vouches,
 }) => {
 	return (
-		<div className="flex w-[400px] flex-col space-y-8">
-			<div
-				className="relative h-[250px] space-y-20 rounded-lg bg-cover bg-center px-2 py-3 shadow-lg"
-				style={{ backgroundImage: "url('/images/accountinfo-vouches.png')" }}
-			>
-				<div className="space-y-10 px-8">
-					<p className="font-poppins text-2xl">Vouches</p>
-					<p className="font-roboto text-2xl">
-						<span className="font-roboto text-3xl font-semibold text-[#873304]">
-							{vouches}
-						</span>{' '}
-						vouches received
-					</p>
-				</div>
+		<div className="flex flex-col space-y-8 rounded-3xl border-2 border-white border-opacity-50 p-4">
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
+				<h3 className="text-xl font-semibold text-white">Vouches</h3>
+				<p className="font-roboto text-2xl">
+					<span className="font-roboto text-3xl font-semibold text-[#873304]">
+						{vouches}
+					</span>{' '}
+					vouches received
+				</p>
 			</div>
-			<div className="flex justify-between">
-				<Button className="w-full rounded-lg bg-gradient-to-r text-xl font-semibold">
-					See Vouches
-				</Button>
-			</div>
+			<Button className="rounded-lg border-2 border-white border-opacity-50 text-xl font-semibold">
+				See Vouches
+			</Button>
 		</div>
 	);
 };
