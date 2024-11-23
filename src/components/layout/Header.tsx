@@ -79,12 +79,6 @@ export const Header: React.FC<{
 				</Link>
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/register"
-				>
-					Register
-				</Link>
-				<Link
-					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
 					href="/dashboard"
 				>
 					Dashboard
@@ -97,9 +91,9 @@ export const Header: React.FC<{
 				</Link>
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/settings"
+					href="/account"
 				>
-					Settings
+					Account
 				</Link>
 				<button
 					ref={buttonRef}
