@@ -25,7 +25,7 @@ export const TransactionListDetailsCard: React.FC<TransactionType> = ({
 	};
 
 	return (
-		<div className="flex justify-between border-b border-gray-200">
+		<div className="flex justify-between rounded-lg border-2 border-gray-200 border-opacity-40 p-2">
 			{/* Transaction Information */}
 			<div className="flex flex-col">
 				<p className={`font-poppins font-medium ${typeStyles[type]}`}>{type}</p>

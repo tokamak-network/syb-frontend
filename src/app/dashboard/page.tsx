@@ -8,7 +8,9 @@ import TransactionTable from '@/components/tables/TransactionActivity';
 const Dashboard: React.FC = () => {
 	const [showTransactionTable, setShowTransactionTable] =
 		useState<boolean>(false);
-	const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+	const [selectedDate, setSelectedDate] = useState<Date | null>(
+		() => new Date(),
+	);
 
 	return (
 		<div className="3xl:flex-row flex flex-col gap-8 bg-primary bg-opacity-60 p-8">

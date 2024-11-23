@@ -10,7 +10,7 @@ import TxTypes from './TxType';
 import TxStatus from './TxStatus';
 
 interface TransactionTableProps {
-	selectedDate: Date;
+	selectedDate: Date | null;
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({

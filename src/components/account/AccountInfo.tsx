@@ -14,8 +14,8 @@ import {
 
 interface AccountInfoProps {
 	onShowMore: () => void;
-	selectedDate: Date;
-	onDateSelect: (date: Date) => void;
+	selectedDate: Date | null;
+	onDateSelect: (date: Date | null) => void;
 }
 
 export const AccountInfo: React.FC<AccountInfoProps> = ({
@@ -46,11 +46,13 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 						<VouchDetailsCard vouches={500} />
 						<RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
 					</div>
-					<ActivityDetailsCard
-						selectedDate={selectedDate}
-						onDateSelect={onDateSelect}
-						onShowMore={onShowMore}
-					/>
+					{selectedDate && (
+						<ActivityDetailsCard
+							selectedDate={selectedDate}
+							onDateSelect={onDateSelect}
+							onShowMore={onShowMore}
+						/>
+					)}
 				</div>
 			)}
 		</>
