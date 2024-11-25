@@ -11,7 +11,7 @@ export const VouchDetailsCard: React.FC<VouchDetailsCardProps> = ({
 }) => {
 	return (
 		<div className="flex flex-col space-y-8 rounded-3xl border-2 border-white border-opacity-50 p-4">
-			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
 				<h3 className="text-xl font-semibold text-white">Vouches</h3>
 				<p className="font-roboto text-2xl">
 					<span className="font-roboto text-3xl font-semibold text-[#873304]">

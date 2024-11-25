@@ -16,11 +16,11 @@ export const RankDetailsCard: React.FC<RankDetailsCardProps> = ({
 	return (
 		<div className="flex flex-col space-y-8 rounded-3xl border-2 border-white border-opacity-50 p-4">
 			<div className="border-3 relative h-[250px] space-y-8 rounded-lg border-white/40 py-3 shadow-lg">
-				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
+				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
 					<h3 className="text-xl font-semibold text-white">Uniqueness Score</h3>
 					<p className="text-lg text-white">{score}</p>
 				</div>
-				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
+				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
 					<h3 className="text-xl font-semibold text-white">Rank</h3>
 					<p className="text-lg text-white">
 						<span className="text-4xl font-bold text-[#FF0F3A]">{rank}</span>/
