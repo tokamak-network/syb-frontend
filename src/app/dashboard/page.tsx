@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
 
 	return (
 		<div className="3xl:flex-row flex flex-col gap-8 bg-primary bg-opacity-60 p-8">
-			<div className="flex-1">
+			<div className="flex-1 px-4">
 				<AccountInfo
 					selectedDate={selectedDate}
 					onDateSelect={setSelectedDate}

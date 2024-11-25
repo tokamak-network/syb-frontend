@@ -33,7 +33,7 @@ const config: Config = {
         anekDevanagari: ["Anek Devanagari", "sans-serif"],
       },
       backgroundImage: {
-        "gradient-to-r": "linear-gradient(to right, #30CEDF, #1940B5)",
+        "gradient-to-r": "linear-gradient(to right, #011340, #2196FB)",
         "rank-card-gradient-to-r":
           "linear-gradient(to right, #BF3A3A, #591B1B)",
         "item-per-page-label": "linear-gradient(to right, #1E77B8, #A029BE)",

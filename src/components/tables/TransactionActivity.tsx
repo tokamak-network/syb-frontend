@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import { formatFullTime } from '@/utils'; // Ensure this path is correct
 import { transactionData } from '@/const/transactions';
-import { TableDropdown } from '@/components';
+import { SearchBarComponent, TableDropdown } from '@/components';
 
 import TxTypes from './TxType';
 import TxStatus from './TxStatus';
@@ -62,18 +62,20 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 	return (
 		<div className="overflow-x-auto rounded-lg shadow-lg">
 			<div className="mb-4 flex items-center justify-between">
-				<div>
+				<div className="flex w-full justify-between space-x-5">
 					<label
-						className="mr-2 bg-item-per-page-label p-3 text-center text-gray-100"
+						className="mr-2 text-nowrap border-2 border-white border-opacity-40 bg-secondary p-3 text-center text-gray-100"
 						htmlFor="itemsPerPage"
 					>
 						Items per page:
 					</label>
 					<TableDropdown
+						className="bg-secondary text-white"
 						defaultValue={10}
 						items={[5, 10, 20, 50, 100]}
 						onChange={handleItemsPerPageChange}
 					/>
+					<SearchBarComponent placeholder={'Search from User History'} />
 				</div>
 				{filteredTransactions.length > itemsPerPage && (
 					<div className="flex">
@@ -98,7 +100,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 				)}
 			</div>
 			<table className="min-w-full table-auto divide-y divide-gray-300 rounded-lg">
-				<thead className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+				<thead className="bg-gradient-to-r from-primary to-secondary text-white">
 					<tr>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 							Transaction Hash
@@ -126,14 +128,14 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 						</th>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-gray-200 bg-white">
+				<tbody className="divide-y divide-gray-200 bg-secondary">
 					{currentTransactions.length > 0 ? (
 						currentTransactions.map((transaction, index) => (
 							<tr
 								key={index}
-								className={`${
-									index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-								} text-gray-700 transition-colors duration-300 hover:bg-gray-100`}
+								className={`text-gray-100 transition-colors duration-300 hover:bg-blue-500 ${
+									index % 2 === 0 ? 'bg-opacity-60' : 'bg-opacity-100'
+								}`}
 							>
 								<td className="whitespace-nowrap px-6 py-4 text-left font-normal">
 									{`0xHash${index}`}

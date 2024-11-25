@@ -28,31 +28,31 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 	return (
 		<>
 			{balance && account && network && (
-				<div className="flex items-center justify-between space-x-5 px-52">
-					<div className="flex flex-col items-center space-y-4">
+				<div className="flex flex-col items-center space-y-10">
+					<div className="flex w-full items-center justify-between px-40">
 						<Image
 							alt="User Avatar"
 							height={300}
 							src={'/images/avatar/3.png'}
 							width={300}
 						/>
+						{selectedDate && (
+							<ActivityDetailsCard
+								selectedDate={selectedDate}
+								onDateSelect={onDateSelect}
+								onShowMore={onShowMore}
+							/>
+						)}
+					</div>
+					<div className="flex justify-between space-x-10">
 						<AccountDetailsCard
 							address={account}
 							balance={Number(balance)}
 							network={network}
 						/>
-					</div>
-					<div className="flex flex-col space-y-8">
 						<VouchDetailsCard vouches={500} />
 						<RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
 					</div>
-					{selectedDate && (
-						<ActivityDetailsCard
-							selectedDate={selectedDate}
-							onDateSelect={onDateSelect}
-							onShowMore={onShowMore}
-						/>
-					)}
 				</div>
 			)}
 		</>

@@ -25,16 +25,19 @@ export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 	};
 
 	return (
-		<div className="flex flex-col space-y-8 rounded-3xl border-2 border-white border-opacity-50 p-4">
-			<div className="border-3 relative space-y-10 rounded-lg border-white/40 px-2 py-3 shadow-lg">
-				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
-					<h3 className="text-xl font-semibold text-white">Address</h3>
-					<p className="text-lg text-white">{address}</p>
-				</div>
-				<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
-					<h3 className="text-xl font-semibold text-white">Balance</h3>
-					<p className="text-lg text-white">{balance}</p>
-				</div>
+		<div
+			className="flex h-96 min-w-[500px] flex-col justify-between space-y-8 rounded-3xl border-2 border-white border-opacity-50 bg-cover p-4"
+			style={{
+				backgroundImage: 'url(/images/accountinfo.png)',
+			}}
+		>
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
+				<h3 className="text-xl font-semibold text-white">Address</h3>
+				<p className="font-anekDevanagari text-xl text-white">{address}</p>
+			</div>
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
+				<h3 className="text-xl font-semibold text-white">Balance</h3>
+				<p className="font-anekDevanagari text-2xl text-white">{balance}</p>
 			</div>
 			<div className="flex justify-between">
 				<Button
