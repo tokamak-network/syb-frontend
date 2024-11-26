@@ -1,50 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PiUserCircleFill } from 'react-icons/pi';
 
-import {
-	Button,
-	SearchBarComponent,
-	Modal,
-	UserActivityLineChart,
-} from '@/components';
+import { Button, Modal, UserActivityLineChart, UserGraph } from '@/components';
 import ChainActivityTable from '@/components/tables/ChainActivity';
-import { useWallet } from '@/context/WalletContext';
-import { shortenAddress } from '@/utils';
 
 const ExplorerPage: React.FC = () => {
-	const { account, connectWallet, isMetaMaskInstalled } = useWallet();
 	const [isModalOpen, setModalOpen] = useState(false);
-
-	const handleConnectWallet = () => {
-		if (isMetaMaskInstalled) {
-			connectWallet();
-		} else {
-			setModalOpen(true);
-		}
-	};
 
 	return (
 		<div className="space-y-4 bg-primary p-8">
-			<div className="flex items-center space-x-3">
-				<SearchBarComponent
-					placeholder={'Search by address / txn hash / block / token...'}
-				/>
-				<PiUserCircleFill size={50} />
-				{!account ? (
-					<Button
-						className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
-						onClick={handleConnectWallet}
-					>
-						Connect Wallet
-					</Button>
-				) : (
-					<div className="flex flex-col items-start">
-						<span className="font-kanit text-white">{`${shortenAddress(account)}`}</span>
-					</div>
-				)}
-			</div>
+			<UserGraph />
 			<div className="flex justify-between space-x-10">
 				<div className="flex w-full flex-col space-y-14 font-narnoor text-[#9E9EA3]">
 					<div className="flex flex-col space-y-14 rounded-lg bg-[#1E1F2090] px-2.5 pt-5">
