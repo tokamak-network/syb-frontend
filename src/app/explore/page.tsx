@@ -25,7 +25,7 @@ const ExplorerPage: React.FC = () => {
 	};
 
 	return (
-		<div className="space-y-4 p-8">
+		<div className="space-y-4 bg-primary p-8">
 			<div className="flex items-center space-x-3">
 				<SearchBarComponent
 					placeholder={'Search by address / txn hash / block / token...'}
