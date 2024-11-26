@@ -11,9 +11,10 @@ import {
 } from '@/components';
 import ChainActivityTable from '@/components/tables/ChainActivity';
 import { useWallet } from '@/context/WalletContext';
+import { shortenAddress } from '@/utils';
 
 const ExplorerPage: React.FC = () => {
-	const { account, balance, connectWallet, isMetaMaskInstalled } = useWallet();
+	const { account, connectWallet, isMetaMaskInstalled } = useWallet();
 	const [isModalOpen, setModalOpen] = useState(false);
 
 	const handleConnectWallet = () => {
@@ -30,7 +31,7 @@ const ExplorerPage: React.FC = () => {
 				<SearchBarComponent
 					placeholder={'Search by address / txn hash / block / token...'}
 				/>
-				<PiUserCircleFill size={39} />
+				<PiUserCircleFill size={50} />
 				{!account ? (
 					<Button
 						className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
@@ -40,8 +41,7 @@ const ExplorerPage: React.FC = () => {
 					</Button>
 				) : (
 					<div className="flex flex-col items-start">
-						<span className="font-kanit text-white">{`Account: ${account}`}</span>
-						<span className="font-kanit text-white">{`Balance: ${balance} ETH`}</span>
+						<span className="font-kanit text-white">{`${shortenAddress(account)}`}</span>
 					</div>
 				)}
 			</div>
