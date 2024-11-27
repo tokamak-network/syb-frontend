@@ -37,15 +37,15 @@ const ChainActivityTable: React.FC = () => {
 					<Button className="bg-tableBackground">Pending</Button>
 				</div>
 				<div className="flex space-x-2 font-narnoor">
-					<Button className="border-tableBorder bg-tableBackground border-2 text-center text-[#6290B6]">
+					<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton text-center">
 						First
 					</Button>
 					<div className="flex space-x-3">
-						<Button className="border-tableBorder bg-tableBackground border-2 text-[#6290B6]">
+						<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton">
 							{'<'}
 						</Button>
-						<Button className="bg-[#4B5569]">{'1'}</Button>
-						<Button className="border-tableBorder bg-tableBackground border-2 text-[#6290B6]">
+						<Button className="bg-paginationText">{'1'}</Button>
+						<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton">
 							{'>'}
 						</Button>
 					</div>
@@ -53,7 +53,7 @@ const ChainActivityTable: React.FC = () => {
 			</div>
 			<div className="overflow-x-auto rounded-lg shadow-lg">
 				<table className="min-w-full table-auto rounded-lg">
-					<thead className="bg-tableHeader text-tableTextPrimary font-abhaya">
+					<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
 						<tr>
 							<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 								Transaction Hash
@@ -90,7 +90,7 @@ const ChainActivityTable: React.FC = () => {
 						{filteredData.map((transaction, index) => (
 							<tr
 								key={index}
-								className={`bg-tableBackground border-tableBorder hover:bg-tableHover border-b-2 font-abhaya text-gray-700 transition-colors duration-300`}
+								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
 							>
 								<td className="flex flex-col space-y-4 whitespace-nowrap px-6 py-2 text-left font-normal">
 									<span className="text-tableTextSecondary">{`0xHash${index}`}</span>
@@ -101,11 +101,11 @@ const ChainActivityTable: React.FC = () => {
 									<TxStatus status={transaction.type.txStatus} />
 								</td>
 								<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
-									<span className="bg-tableButtonBackground text-tableButtonText rounded-lg px-2 py-1 font-abhaya">
+									<span className="rounded-lg bg-tableButtonBackground px-2 py-1 font-abhaya text-tableButtonText">
 										{transaction.method.toLocaleLowerCase()}
 									</span>
 								</td>
-								<td className="text-tableTextSecondary whitespace-nowrap px-6 py-2 text-left font-normal">
+								<td className="whitespace-nowrap px-6 py-2 text-left font-normal text-tableTextSecondary">
 									{transaction.blockNumber}
 								</td>
 								<td className="flex whitespace-nowrap px-6 py-2 text-left font-normal">
