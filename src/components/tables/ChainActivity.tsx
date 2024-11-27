@@ -37,15 +37,15 @@ const ChainActivityTable: React.FC = () => {
 					<Button className="bg-tableBackground">Pending</Button>
 				</div>
 				<div className="flex space-x-2 font-narnoor">
-					<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton text-center">
+					<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-center text-paginationButtonText">
 						First
 					</Button>
 					<div className="flex space-x-3">
-						<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton">
+						<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-paginationButtonText">
 							{'<'}
 						</Button>
 						<Button className="bg-paginationText">{'1'}</Button>
-						<Button className="text-paginationButtonText border-2 border-paginationButtonBorder bg-paginationButton">
+						<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-paginationButtonText">
 							{'>'}
 						</Button>
 					</div>
