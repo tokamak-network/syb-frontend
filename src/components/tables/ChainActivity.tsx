@@ -6,7 +6,7 @@ import { explorerData } from '@/const';
 
 import TxTypes from './TxType';
 import TxStatus from './TxStatus';
-import UserAddress from './UserAddress';
+import { UserAddress } from './UserAddress';
 
 // interface ChainActivityTableProps {
 // }
