@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HiOutlineArrowDown } from 'react-icons/hi';
 
 import { Button, SearchBarComponent } from '@/components';
@@ -12,10 +12,23 @@ import UserAddress from './UserAddress';
 // }
 
 const ChainActivityTable: React.FC = () => {
+	const [searchQuery, setSearchQuery] = useState<string>('');
+
+	const filteredData = explorerData.filter((transaction) => {
+		const query = searchQuery.toLowerCase();
+		return (
+			transaction.txHash.toLocaleLowerCase().includes(query) ||
+			transaction.txUser.from.toLowerCase().includes(query) ||
+			transaction.txUser.to.toLowerCase().includes(query) ||
+			transaction.blockNumber.toString().includes(query)
+		);
+	});
+
 	return (
 		<div className="flex flex-col space-y-5">
 			<SearchBarComponent
 				placeholder={'Search User ID/Address/Block Nuber/Transaction Hash'}
+				onChange={(e) => setSearchQuery(e.target.value)}
 			/>
 			<div className="flex justify-between">
 				<div className="flex justify-between space-x-3 font-narnoor">
@@ -71,7 +84,7 @@ const ChainActivityTable: React.FC = () => {
 								<span className="text-[#D7BC90]">have come in</span>
 							</td>
 						</tr>
-						{explorerData.map((transaction, index) => (
+						{filteredData.map((transaction, index) => (
 							<tr
 								key={index}
 								className={`border-b-2 border-[#232425] bg-[#101112] font-abhaya text-gray-700 transition-colors duration-300 hover:bg-[#26292c]`}
