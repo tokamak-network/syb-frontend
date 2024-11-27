@@ -18,6 +18,18 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 }) => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+	const [searchQuery, setSearchQuery] = useState<string>('');
+
+	const filteredData = transactionData.filter((transaction) => {
+		const query = searchQuery.toLowerCase();
+
+		return (
+			transaction.txHash.includes(query) ||
+			transaction.txUser.from.toLowerCase().includes(query) ||
+			transaction.txUser.to.toLowerCase().includes(query) ||
+			transaction.blockNumber.toString().includes(query)
+		);
+	});
 
 	const isSameDay = (date1: Date, date2: Date) => {
 		return (
@@ -27,8 +39,8 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 		);
 	};
 
-	const filteredTransactions = transactionData.filter((transaction) =>
-		selectedDate ? isSameDay(transaction.time, selectedDate) : true,
+	const filteredTransactions = filteredData.filter((transaction) =>
+		selectedDate ? isSameDay(transaction.timestamp, selectedDate) : true,
 	);
 
 	// Calculate the transactions to display on the current page
@@ -75,7 +87,10 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 						items={[5, 10, 20, 50, 100]}
 						onChange={handleItemsPerPageChange}
 					/>
-					<SearchBarComponent placeholder={'Search from User History'} />
+					<SearchBarComponent
+						placeholder={'Search from User History'}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
 				</div>
 				{filteredTransactions.length > itemsPerPage && (
 					<div className="flex">
@@ -99,9 +114,9 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 					</div>
 				)}
 			</div>
-			<table className="min-w-full table-auto divide-y divide-gray-300 rounded-lg">
-				<thead className="bg-gradient-to-r from-primary to-secondary text-white">
-					<tr>
+			<table className="min-w-full table-auto divide-y divide-gray-300 border border-tableBorder">
+				<thead className="bg-tableHeader text-tableTextPrimary">
+					<tr className="rounded-lg">
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 							Transaction Hash
 						</th>
@@ -128,12 +143,12 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 						</th>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-gray-200 bg-secondary">
+				<tbody className="divide-y divide-gray-200 bg-tableBackground font-abhaya">
 					{currentTransactions.length > 0 ? (
 						currentTransactions.map((transaction, index) => (
 							<tr
 								key={index}
-								className={`text-gray-100 transition-colors duration-300 hover:bg-blue-500 ${
+								className={`border-tableBorder bg-tableBackground text-gray-100 transition-colors duration-300 hover:bg-tableHeader ${
 									index % 2 === 0 ? 'bg-opacity-60' : 'bg-opacity-100'
 								}`}
 							>
@@ -141,32 +156,32 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 									{`0xHash${index}`}
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-left font-normal">
-									{formatFullTime(transaction.time)}
+									{formatFullTime(transaction.timestamp)}
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-left">
-									<TxTypes txType={transaction.type} />
+									<TxTypes txType={transaction.type.txType} />
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-left font-normal">
-									{transaction.from}
+									{transaction.txUser.from}
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-left font-normal">
-									{transaction.to}
+									{transaction.txUser.to}
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-right font-normal">
-									{transaction.amount} ETH
+									{transaction.value} ETH
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-right font-normal">
-									{transaction.amount * 0.01} ETH
+									{(transaction.fee * 0.01).toFixed(6)} ETH
 								</td>
 								<td className="whitespace-nowrap px-6 py-4 text-left">
-									<TxStatus status={transaction.status} />
+									<TxStatus status={transaction.type.txStatus} />
 								</td>
 							</tr>
 						))
 					) : (
 						<tr>
 							<td className="px-6 py-4 text-center text-gray-500" colSpan={8}>
-								No transactions found for the selected date.
+								No transactions found.
 							</td>
 						</tr>
 					)}

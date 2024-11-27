@@ -25,7 +25,7 @@ export const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
 	};
 
 	const filteredTransactions = transactionData.filter((transaction) =>
-		selectedDate ? isSameDay(transaction.time, selectedDate) : true,
+		selectedDate ? isSameDay(transaction.timestamp, selectedDate) : true,
 	);
 
 	const transactionsToShow = filteredTransactions.slice(0, 3);
@@ -43,7 +43,15 @@ export const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
 				<div className="items-center space-y-3">
 					{transactionsToShow.length ? (
 						transactionsToShow.map((transaction, index) => (
-							<TransactionListDetailsCard key={index} {...transaction} />
+							<TransactionListDetailsCard
+								key={index}
+								amount={transaction.value}
+								from={transaction.txUser.from}
+								status={transaction.type.txStatus}
+								time={transaction.timestamp}
+								to={transaction.txUser.to}
+								type={transaction.type.txType}
+							/>
 						))
 					) : (
 						<p className="text-gray-300">
