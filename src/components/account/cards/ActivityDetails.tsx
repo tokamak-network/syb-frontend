@@ -8,7 +8,7 @@ import { TransactionListDetailsCard } from './TransactionListDetails';
 interface ActivityDetailsCardProps {
 	onShowMore: () => void;
 	selectedDate: Date;
-	onDateSelect: (date: Date) => void;
+	onDateSelect: (date: Date | null) => void;
 }
 
 export const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
@@ -31,29 +31,34 @@ export const ActivityDetailsCard: React.FC<ActivityDetailsCardProps> = ({
 	const transactionsToShow = filteredTransactions.slice(0, 3);
 
 	return (
-		<div className="flex h-[330px] w-[400px] flex-col space-y-1 rounded-lg bg-white p-4">
-			<p className="font-poppins text-2xl text-[#3F4765]">Activities</p>
-			<div className="flex flex-col gap-2">
+		<div
+			className="flex min-w-[400px] flex-col space-y-1 rounded-lg border-2 border-white border-opacity-50 bg-cover bg-center p-4"
+			style={{
+				backgroundImage: 'url(/images/accountinfo.png)',
+			}}
+		>
+			<p className="font-poppins text-2xl text-white">Activities</p>
+			<div className="flex space-x-8">
 				<DateSelector selectedDate={selectedDate} onDateSelect={onDateSelect} />
-				<div className="space-y-3">
+				<div className="items-center space-y-3">
 					{transactionsToShow.length ? (
 						transactionsToShow.map((transaction, index) => (
 							<TransactionListDetailsCard key={index} {...transaction} />
 						))
 					) : (
-						<p className="text-gray-500">
+						<p className="text-gray-300">
 							No transactions found for this date.
 						</p>
 					)}
+					{filteredTransactions.length > 3 && (
+						<Button
+							className="w-full min-w-[33%] rounded-lg border-2 border-white border-opacity-50 text-xl font-semibold"
+							onClick={onShowMore}
+						>
+							Show More
+						</Button>
+					)}
 				</div>
-				{filteredTransactions.length > 3 && (
-					<Button
-						className="mt-2 text-blue-500 hover:underline"
-						onClick={onShowMore}
-					>
-						Show More
-					</Button>
-				)}
 			</div>
 		</div>
 	);

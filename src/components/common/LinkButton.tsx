@@ -34,7 +34,7 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
 			{...props}
 		>
 			{Icon && <Icon className="flex-shrink-0" size={20} />}
-			{label && <span>{label}</span>}
+			{label && <span className="text-md font-medium">{label}</span>}
 		</Button>
 	);
 };

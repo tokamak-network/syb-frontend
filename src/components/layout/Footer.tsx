@@ -15,8 +15,8 @@ import { LinkButton } from '../common/LinkButton';
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 	return (
 		<footer className={cn('bg-primary', className)}>
-			<div className="flex items-center justify-between border-b border-gray-600 px-40 py-40 text-white">
-				<div className="items-left p container mx-auto flex flex-col space-y-10">
+			<div className="flex items-center justify-between border-b border-gray-600 p-20 text-white">
+				<div className="items-left container mx-auto flex flex-col space-y-10">
 					<h2 className="text-4xl font-bold">Sybil Guard</h2>
 					<p className="max-w-lg text-left">
 						SYB Real Estate describes itself as an asset-backed real estate
@@ -40,10 +40,10 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 				</div>
 				<div className="container mx-auto flex items-center justify-between">
 					<div className="flex flex-col space-y-4">
-						<div className="flex space-x-10">
+						<div className="flex space-x-20">
 							<div className="space-y-10">
 								<h4 className="text-2xl font-bold">Sitemap</h4>
-								<ul className="space-y-8">
+								<ul className="space-y-6">
 									{FooterSiteMap.map((item) => (
 										<li key={item.label}>
 											<LinkButton href={item.link} label={item.label} />
@@ -53,7 +53,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							</div>
 							<div className="space-y-10">
 								<h4 className="text-2xl font-bold">Developer</h4>
-								<ul className="space-y-8">
+								<ul className="space-y-6">
 									{FooterServices.map((item) => (
 										<li key={item.label}>
 											<LinkButton href={item.link} label={item.label} />
@@ -63,7 +63,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							</div>
 							<div className="space-y-10">
 								<h4 className="text-2xl font-bold">Resources</h4>
-								<ul className="space-y-8">
+								<ul className="space-y-6">
 									{FooterResources.map((item) => (
 										<li key={item.label}>
 											<LinkButton href={item.link} label={item.label} />
@@ -73,7 +73,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							</div>
 							<div className="space-y-10">
 								<h4 className="text-2xl font-bold">Legals</h4>
-								<ul className="space-y-8">
+								<ul className="space-y-6">
 									{FooterLegals.map((item) => (
 										<li key={item.label}>
 											<LinkButton href={item.link} label={item.label} />

@@ -25,26 +25,29 @@ export const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
 	};
 
 	return (
-		<div className="flex w-[400px] flex-col space-y-8">
-			<div
-				className="relative h-[250px] space-y-20 rounded-lg bg-cover bg-center px-2 py-3 shadow-lg"
-				style={{ backgroundImage: "url('/images/accountinfo-Eth.png')" }}
-			>
-				<div className="space-y-10 px-8">
-					<p className="font-poppins text-2xl">Balance</p>
-					<p className="font-roboto text-3xl">{balance}</p>
-				</div>
-				<p className="text-center text-xs">{address}</p>
+		<div
+			className="flex h-96 min-w-[500px] flex-col justify-between space-y-8 rounded-3xl border-2 border-white border-opacity-50 bg-cover p-4"
+			style={{
+				backgroundImage: 'url(/images/accountinfo.png)',
+			}}
+		>
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
+				<h3 className="text-xl font-semibold text-white">Address</h3>
+				<p className="font-anekDevanagari text-xl text-white">{address}</p>
+			</div>
+			<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md duration-200 hover:cursor-default hover:bg-secondary">
+				<h3 className="text-xl font-semibold text-white">Balance</h3>
+				<p className="font-anekDevanagari text-2xl text-white">{balance}</p>
 			</div>
 			<div className="flex justify-between">
 				<Button
-					className="min-w-[33%] rounded-lg border-2 border-[#60BC63] text-xl font-semibold text-[#60BC63]"
+					className="min-w-[33%] rounded-lg border-2 border-white border-opacity-50 text-xl font-semibold"
 					leftIcon={FiArrowDownCircle}
 				>
 					Withdraw
 				</Button>
 				<Button
-					className="rounded-lg border-2 border-[#60BC63] bg-[#60BC63] text-xl font-semibold text-white"
+					className="min-w-[33%] rounded-lg border-2 border-white border-opacity-50 text-xl font-semibold"
 					leftIcon={FiArrowUpCircle}
 					onClick={() => setDepositModalOpen(true)}
 				>

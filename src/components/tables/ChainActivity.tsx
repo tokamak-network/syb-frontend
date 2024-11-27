@@ -1,7 +1,7 @@
 import React from 'react';
 import { HiOutlineArrowDown } from 'react-icons/hi';
 
-import { Button } from '@/components';
+import { Button, SearchBarComponent } from '@/components';
 import { explorerData } from '@/const';
 
 import TxTypes from './TxType';
@@ -14,6 +14,9 @@ import UserAddress from './UserAddress';
 const ChainActivityTable: React.FC = () => {
 	return (
 		<div className="flex flex-col space-y-5">
+			<SearchBarComponent
+				placeholder={'Search User ID/Address/Block Nuber/Transaction Hash'}
+			/>
 			<div className="flex justify-between">
 				<div className="flex justify-between space-x-3 font-narnoor">
 					<Button className="bg-[#1B202C] text-center">Validated</Button>

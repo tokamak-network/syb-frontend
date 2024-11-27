@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 import { useWallet } from '@/context/WalletContext';
 
@@ -13,8 +14,8 @@ import {
 
 interface AccountInfoProps {
 	onShowMore: () => void;
-	selectedDate: Date;
-	onDateSelect: (date: Date) => void;
+	selectedDate: Date | null;
+	onDateSelect: (date: Date | null) => void;
 }
 
 export const AccountInfo: React.FC<AccountInfoProps> = ({
@@ -25,11 +26,25 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 	const { account, balance, network } = useWallet();
 
 	return (
-		<div className="flex flex-col space-y-5">
-			<p className="text-4xl">Account Information</p>
-			<div className="flex flex-col items-center justify-between gap-5 lg:flex-row">
-				{balance && account && network && (
-					<>
+		<>
+			{balance && account && network && (
+				<div className="flex flex-col items-center space-y-10">
+					<div className="flex w-full items-center justify-between px-40">
+						<Image
+							alt="User Avatar"
+							height={300}
+							src={'/images/avatar/3.png'}
+							width={300}
+						/>
+						{selectedDate && (
+							<ActivityDetailsCard
+								selectedDate={selectedDate}
+								onDateSelect={onDateSelect}
+								onShowMore={onShowMore}
+							/>
+						)}
+					</div>
+					<div className="flex justify-between space-x-10">
 						<AccountDetailsCard
 							address={account}
 							balance={Number(balance)}
@@ -37,14 +52,9 @@ export const AccountInfo: React.FC<AccountInfoProps> = ({
 						/>
 						<VouchDetailsCard vouches={500} />
 						<RankDetailsCard rank={1} score={2.39} totalUsers={8888} />
-						<ActivityDetailsCard
-							selectedDate={selectedDate}
-							onDateSelect={onDateSelect}
-							onShowMore={onShowMore}
-						/>
-					</>
-				)}
-			</div>
-		</div>
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
