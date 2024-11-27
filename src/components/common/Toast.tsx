@@ -8,19 +8,19 @@ import {
 } from 'react-icons/ai';
 
 interface ToastProps {
+	id: string;
 	type: 'success' | 'warning' | 'error' | 'info';
 	title: string;
 	description: string;
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
+	onRemove: (id: string) => void;
 }
 
 export const Toast: React.FC<ToastProps> = ({
+	id,
 	type,
 	title,
 	description,
-	open,
-	onOpenChange,
+	onRemove,
 }) => {
 	const [progress, setProgress] = useState<number>(100);
 
@@ -39,32 +39,24 @@ export const Toast: React.FC<ToastProps> = ({
 	};
 
 	useEffect(() => {
-		if (open) {
-			const interval = setInterval(() => {
-				setProgress((prev) => (prev > 0 ? prev - 1 : 0));
-			}, 50);
+		const interval = setInterval(() => {
+			setProgress((prev) => (prev > 0 ? prev - 1 : 0));
+		}, 50);
 
-			return () => clearInterval(interval);
-		}
-	}, [open]);
-
-	const handleMouseEnter = () => {
-		setProgress(100);
-	};
+		return () => clearInterval(interval);
+	}, []);
 
 	useEffect(() => {
 		if (progress === 0) {
-			onOpenChange(false);
+			onRemove(id);
 		}
-	}, [progress, onOpenChange]);
+	}, [progress, id, onRemove]);
 
 	return (
 		<ToastPrimitive.Provider>
 			<ToastPrimitive.Root
 				className={`fixed bottom-0 right-0 m-4 flex items-center space-x-3 rounded-md p-3 shadow-lg ${typeStyles[type]}`}
-				open={open}
-				onMouseEnter={handleMouseEnter}
-				onOpenChange={onOpenChange}
+				onMouseEnter={() => setProgress(100)}
 			>
 				{icons[type]}
 				<div>
@@ -74,7 +66,12 @@ export const Toast: React.FC<ToastProps> = ({
 					<ToastPrimitive.Description>{description}</ToastPrimitive.Description>
 				</div>
 				<ToastPrimitive.Action asChild altText="Close">
-					<button className="ml-2 text-sm font-medium">Close</button>
+					<button
+						className="ml-2 text-sm font-medium"
+						onClick={() => onRemove(id)}
+					>
+						Close
+					</button>
 				</ToastPrimitive.Action>
 				<div
 					className="absolute bottom-0 left-0 h-1 bg-white"
