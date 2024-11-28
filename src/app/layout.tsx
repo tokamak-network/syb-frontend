@@ -54,15 +54,15 @@ export default function RootLayout({
 			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className} ${openSans.className} ${anekDevanagari.className}`}
 			lang="en"
 		>
-			<WalletProvider>
-				<ToastProvider>
-					<ReactQueryProvider>
-						<body>
+			<body>
+				<WalletProvider>
+					<ToastProvider>
+						<ReactQueryProvider>
 							<Layout>{children}</Layout>
-						</body>
-					</ReactQueryProvider>
-				</ToastProvider>
-			</WalletProvider>
+						</ReactQueryProvider>
+					</ToastProvider>
+				</WalletProvider>
+			</body>
 		</html>
 	);
 }
