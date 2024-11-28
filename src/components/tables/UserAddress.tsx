@@ -14,7 +14,7 @@ export const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(address);
-		addToast('success', 'Success!', 'User Address is copied Successfully.');
+		addToast('warning', 'Success!', 'User Address is copied Successfully.');
 	};
 
 	return (

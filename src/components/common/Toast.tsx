@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import * as ToastPrimitive from '@radix-ui/react-toast';
 import {
 	AiOutlineCheckCircle,
@@ -32,10 +33,10 @@ export const Toast: React.FC<ToastProps> = ({
 	};
 
 	const icons = {
-		success: <AiOutlineCheckCircle className="text-white" />,
-		warning: <AiOutlineWarning className="text-black" />,
-		error: <AiOutlineCloseCircle className="text-white" />,
-		info: <AiOutlineInfoCircle className="text-white" />,
+		success: <AiOutlineCheckCircle className="text-white" size={35} />,
+		warning: <AiOutlineWarning className="text-black" size={35} />,
+		error: <AiOutlineCloseCircle className="text-white" size={35} />,
+		info: <AiOutlineInfoCircle className="text-white" size={35} />,
 	};
 
 	useEffect(() => {
@@ -54,8 +55,12 @@ export const Toast: React.FC<ToastProps> = ({
 
 	return (
 		<ToastPrimitive.Provider>
-			<ToastPrimitive.Root
-				className={`fixed bottom-0 right-0 m-4 flex items-center space-x-3 rounded-md p-3 shadow-lg ${typeStyles[type]}`}
+			<motion.div
+				animate={{ x: 0, opacity: progress / 100 }}
+				className={`relative flex items-center space-x-3 rounded-md p-3 shadow-lg ${typeStyles[type]}`}
+				exit={{ x: '100%', opacity: 0 }}
+				initial={{ x: '100%', opacity: 1 }}
+				transition={{ duration: 0.1 }}
 				onMouseEnter={() => setProgress(100)}
 			>
 				{icons[type]}
@@ -70,14 +75,14 @@ export const Toast: React.FC<ToastProps> = ({
 						className="ml-2 text-sm font-medium"
 						onClick={() => onRemove(id)}
 					>
-						Close
+						<AiOutlineCloseCircle size={40} />
 					</button>
 				</ToastPrimitive.Action>
 				<div
 					className="absolute bottom-0 left-0 h-1 bg-white"
 					style={{ width: `${progress}%` }}
 				/>
-			</ToastPrimitive.Root>
+			</motion.div>
 			<ToastPrimitive.Viewport />
 		</ToastPrimitive.Provider>
 	);
