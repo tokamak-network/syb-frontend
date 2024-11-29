@@ -15,7 +15,7 @@ import {
 	Anek_Devanagari,
 } from 'next/font/google';
 
-import { WalletProvider } from '@/context/WalletContext';
+import { WalletProvider, ToastProvider } from '@/context';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
 
 const Layout = dynamic(
@@ -54,13 +54,15 @@ export default function RootLayout({
 			className={`${abhayaLibre.className} ${acme.className} ${poppins.className} ${roboto.className} ${kanit.className} ${montserrat.className} ${narnoor.className} ${openSans.className} ${anekDevanagari.className}`}
 			lang="en"
 		>
-			<WalletProvider>
-				<ReactQueryProvider>
-					<body>
-						<Layout>{children}</Layout>
-					</body>
-				</ReactQueryProvider>
-			</WalletProvider>
+			<body>
+				<WalletProvider>
+					<ToastProvider>
+						<ReactQueryProvider>
+							<Layout>{children}</Layout>
+						</ReactQueryProvider>
+					</ToastProvider>
+				</WalletProvider>
+			</body>
 		</html>
 	);
 }

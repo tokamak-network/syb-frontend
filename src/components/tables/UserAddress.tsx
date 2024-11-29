@@ -3,14 +3,18 @@
 import React from 'react';
 import { FiUser, FiCopy } from 'react-icons/fi';
 
+import { useToast } from '@/context';
+
 interface UserAddressProps {
 	address: string;
 }
 
-const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
+export const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
+	const { addToast } = useToast();
+
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(address);
-		alert('Address copied to clipboard!');
+		addToast('warning', 'Success!', 'User Address is copied Successfully.');
 	};
 
 	return (
@@ -26,5 +30,3 @@ const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
 		</div>
 	);
 };
-
-export default UserAddress;
