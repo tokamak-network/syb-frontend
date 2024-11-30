@@ -2838,6 +2838,15 @@
     mipd "0.0.7"
     zustand "4.4.1"
 
+"@wagmi/core@^2.15.0":
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.15.0.tgz#a35c790b52096effa65e02ba89932f8aff23c1b9"
+  integrity sha512-nkvNbIYn52F0ZCUsF9wNu6mQ083XZGw2dUtT7aDTex+C+gvhDTUD7ef2nhEd5RdPuQmWMFpJGp4zvoykwSB1RQ==
+  dependencies:
+    eventemitter3 "5.0.1"
+    mipd "0.0.7"
+    zustand "5.0.0"
+
 "@walletconnect/core@2.16.1":
   version "2.16.1"
   resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.16.1.tgz#019b181387792e0d284e75074b961b48193d9b6a"
@@ -9323,6 +9332,11 @@ zustand@4.4.1:
   integrity sha512-QCPfstAS4EBiTQzlaGP1gmorkh/UL1Leaj2tdj+zZCZ/9bm0WS7sI2wnfD5lpOszFqWJ1DcPnGoY8RDL61uokw==
   dependencies:
     use-sync-external-store "1.2.0"
+
+zustand@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-5.0.0.tgz#71f8aaecf185592a3ba2743d7516607361899da9"
+  integrity sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==
 
 zustand@^4.4.0, zustand@^4.4.1:
   version "4.5.5"
