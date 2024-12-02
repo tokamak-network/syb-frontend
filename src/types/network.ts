@@ -1,4 +1,30 @@
-import { Chain } from 'wagmi/chains';
+import { Chain, mainnet, sepolia } from 'wagmi/chains';
+
+import { NetworkType } from '.';
+
+export const mainNetwork: NetworkType = {
+	id: mainnet.id,
+	name: mainnet.name,
+	nativeCurrency: mainnet.nativeCurrency,
+	rpcUrls: {
+		default: {
+			http: mainnet.rpcUrls.default.http,
+		},
+	},
+	blockExplorers: mainnet.blockExplorers,
+};
+
+export const l1TestNetwork: NetworkType = {
+	id: sepolia.id,
+	name: sepolia.name,
+	nativeCurrency: sepolia.nativeCurrency,
+	rpcUrls: {
+		default: {
+			http: sepolia.rpcUrls.default.http,
+		},
+	},
+	blockExplorers: sepolia.blockExplorers,
+};
 
 export const l2TestNetwork: Chain = {
 	id: Number(process.env.NEXT_PUBLIC_TESTNET_ID || 111551119090),

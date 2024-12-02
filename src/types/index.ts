@@ -89,3 +89,26 @@ export interface UserEdge extends Edge {
 		strokeWidth: number;
 	};
 }
+
+export interface NetworkType {
+	id: number;
+	name: string;
+	nativeCurrency: {
+		name: string;
+		symbol: string;
+		decimals: number;
+	};
+	rpcUrls: {
+		readonly default: {
+			http: readonly [string];
+			webSocket?: readonly [string];
+		};
+	};
+	blockExplorers: {
+		default: {
+			name: string;
+			url: string;
+			apiUrl: string;
+		};
+	};
+}
