@@ -1,5 +1,5 @@
 import { Node, Edge, MarkerType } from '@xyflow/react';
-
+export * from './network';
 export interface LeaderboardEntry {
 	rank: number;
 	address: string;
