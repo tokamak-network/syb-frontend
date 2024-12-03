@@ -1,15 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useWallet } from '@/hooks/useWallet';
 import { Button } from '@/components';
 import { UserAvatar } from '@/components/account';
 
 const AccountPage: React.FC = () => {
-	const [score, setScore] = useState<number>(0);
-	const { connect, connectors, isConnected, address, ensName, balance } =
-		useWallet();
+	const {
+		connect,
+		connectors,
+		isConnected,
+		address,
+		ensName,
+		balance,
+		isBalanceLoading,
+		currencySymbol,
+	} = useWallet();
+
 	const handleConnectWallet = async () => {
 		connectors.map((connector) => {
 			if (connector.name === 'MetaMask') {
@@ -39,17 +47,18 @@ const AccountPage: React.FC = () => {
 						<div className="flex flex-col space-y-3">
 							<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
 								<h3 className="text-xl font-semibold text-white">Address</h3>
-								<p className="text-lg text-white">
-									{ensName}
-									{address}
-								</p>
+								<p className="text-lg text-white">{ensName || address}</p>
 							</div>
-							{balance && (
-								<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
-									<h3 className="text-xl font-semibold text-white">Balance</h3>
-									<p className="text-lg text-white">{balance} ETH</p>
-								</div>
-							)}
+							<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
+								<h3 className="text-xl font-semibold text-white">Balance</h3>
+								{isBalanceLoading ? (
+									<p className="text-lg text-white">Loading...</p>
+								) : (
+									<p className="text-lg text-white">
+										{balance} {currencySymbol}
+									</p>
+								)}
+							</div>
 						</div>
 					</div>
 
@@ -58,12 +67,6 @@ const AccountPage: React.FC = () => {
 							<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
 								<h3 className="text-xl font-semibold text-white">Account ID</h3>
 								<p className="text-lg text-white">{'0x123123'}</p>
-							</div>
-							<div className="w-full rounded-lg border-2 border-white border-opacity-60 bg-primary bg-opacity-30 p-3 shadow-md">
-								<h3 className="text-xl font-semibold text-white">
-									Account Balance
-								</h3>
-								<p className="text-lg text-white">{score}</p>
 							</div>
 						</div>
 						<div className="flex flex-col space-y-3">
