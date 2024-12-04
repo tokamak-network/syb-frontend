@@ -39,6 +39,13 @@ export const ThemeDropdown: React.FC = () => {
 						? 'bg-black text-white'
 						: 'bg-gray-700 text-gray-200'
 			}`}
+			itemClassName={`${
+				theme === 'light'
+					? 'bg-white text-black'
+					: theme === 'dark'
+						? 'bg-black text-white'
+						: 'bg-gray-700 text-gray-200'
+			}`}
 			items={themeOptions}
 			renderItem={(item) => (
 				<div className="flex items-center space-x-2">
