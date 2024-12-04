@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
+import { ThemeToggle } from '../common/ThemeToggle';
 
 import { LinkButton } from '../common/LinkButton';
 
@@ -139,6 +140,7 @@ export const Header: React.FC<{
 					/>
 				</div>
 			</div>
+			<ThemeToggle />
 		</header>
 	);
 };
