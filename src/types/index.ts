@@ -1,5 +1,5 @@
 import { Node, Edge, MarkerType } from '@xyflow/react';
-
+export * from './network';
 export interface LeaderboardEntry {
 	rank: number;
 	address: string;
@@ -87,5 +87,28 @@ export interface UserEdge extends Edge {
 	style: {
 		stroke: string;
 		strokeWidth: number;
+	};
+}
+
+export interface NetworkType {
+	id: number;
+	name: string;
+	nativeCurrency: {
+		name: string;
+		symbol: string;
+		decimals: number;
+	};
+	rpcUrls: {
+		readonly default: {
+			http: readonly [string];
+			webSocket?: readonly [string];
+		};
+	};
+	blockExplorers: {
+		default: {
+			name: string;
+			url: string;
+			apiUrl: string;
+		};
 	};
 }

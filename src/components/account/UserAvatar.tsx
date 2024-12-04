@@ -1,6 +1,10 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
+// interface UserAvatarProps {
+// 	ensAvatar: string;
+// }
+
 export const UserAvatar: React.FC = () => {
 	const [avatar, setAvatar] = useState<string | null>(null);
 

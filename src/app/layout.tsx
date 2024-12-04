@@ -15,8 +15,7 @@ import {
 	Anek_Devanagari,
 } from 'next/font/google';
 
-import { WalletProvider, ToastProvider } from '@/context';
-import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
+import { AppProviders } from '@/providers/AppProviders';
 
 const Layout = dynamic(
 	() => import('@/components/layout').then((mod) => mod.Layout),
@@ -55,13 +54,9 @@ export default function RootLayout({
 			lang="en"
 		>
 			<body>
-				<WalletProvider>
-					<ToastProvider>
-						<ReactQueryProvider>
-							<Layout>{children}</Layout>
-						</ReactQueryProvider>
-					</ToastProvider>
-				</WalletProvider>
+				<AppProviders>
+					<Layout>{children}</Layout>
+				</AppProviders>
 			</body>
 		</html>
 	);
