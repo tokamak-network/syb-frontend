@@ -34,10 +34,10 @@ const LandingPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-col items-center">
-			<section className="w-full">
+			{/* <section className="w-full">
 				<ImageSlider />
-			</section>
-			<section className="h-full w-full bg-primary">
+			</section> */}
+			{/* <section className="h-full w-full bg-primary">
 				<div className="flex flex-col items-center space-y-6 py-10">
 					<h4 className="font-openSans text-3xl font-bold">
 						Ground-Breaking Growth
@@ -66,7 +66,7 @@ const LandingPage: React.FC = () => {
 						src="/videos/bg-user-activity.webm"
 					/>
 				</div>
-			</section>
+			</section> */}
 			<section className="flex justify-between bg-white p-28">
 				<div className="flex w-1/3 flex-col space-y-6 text-primary">
 					<motion.p
@@ -151,10 +151,10 @@ const LandingPage: React.FC = () => {
 					))}
 				</div>
 			</section>
-			<section className="flex w-full space-x-10 bg-primary p-24">
+			{/* <section className="flex w-full space-x-10 bg-primary p-24">
 				<TeamMemberSlider />
-			</section>
-			<section className="flex w-full items-center justify-between space-x-20 bg-white p-20 text-primary">
+			</section> */}
+			{/* <section className="flex w-full items-center justify-between space-x-20 bg-white p-20 text-primary">
 				<div className="flex w-1/2 flex-col space-y-20 pl-20">
 					<motion.p
 						className="text-md font-openSans"
@@ -197,10 +197,10 @@ const LandingPage: React.FC = () => {
 						</motion.div>
 					))}
 				</div>
-			</section>
-			<section className="flex h-auto w-full items-center justify-center bg-secondary p-60">
+			</section> */}
+			{/* <section className="flex h-auto w-full items-center justify-center bg-secondary p-60">
 				<OrbitingIcons />
-			</section>
+			</section> */}
 		</div>
 	);
 };
