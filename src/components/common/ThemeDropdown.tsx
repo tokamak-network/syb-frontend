@@ -36,7 +36,7 @@ export const ThemeDropdown: React.FC = () => {
 				theme === 'light'
 					? 'bg-white text-black'
 					: theme === 'dark'
-						? 'bg-gray-800 text-white'
+						? 'bg-black text-white'
 						: 'bg-gray-700 text-gray-200'
 			}`}
 			items={themeOptions}
@@ -53,7 +53,7 @@ export const ThemeDropdown: React.FC = () => {
 						theme === 'light'
 							? 'bg-gray-200 text-black'
 							: theme === 'dark'
-								? 'bg-gray-800 text-white'
+								? 'bg-black text-white'
 								: 'bg-gray-600 text-gray-200'
 					}`}
 				>

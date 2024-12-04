@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
 			{...props}
 		>
 			{isLoading ? (
-				<ImSpinner2 className="animate-spin text-white" />
+				<ImSpinner2 className="animate-spin" />
 			) : (
 				<div className="flex w-full items-center justify-center whitespace-nowrap">
 					{LeftIcon && <LeftIcon className="mr-2 flex-shrink-0" size={20} />}

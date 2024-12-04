@@ -1,6 +1,5 @@
 import React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { createPortal } from 'react-dom';
 
 interface DropdownProps<T> {
 	items: T[]; // Array of items to display in the dropdown
@@ -11,15 +10,6 @@ interface DropdownProps<T> {
 	itemClassName?: string; // Optional className for dropdown items
 	sideOffset?: number; // Optional offset for dropdown positioning
 }
-
-// Custom portal to bypass Radix-UI's default scroll-locking behavior
-const CustomPortal: React.FC<{ children: React.ReactNode }> = ({
-	children,
-}) => {
-	const portalRoot = document.body;
-
-	return createPortal(children, portalRoot);
-};
 
 export const Dropdown = <T,>({
 	items,
@@ -38,22 +28,22 @@ export const Dropdown = <T,>({
 				</button>
 			</DropdownMenu.Trigger>
 
-			<CustomPortal>
+			<DropdownMenu.Portal>
 				<DropdownMenu.Content
-					className={`rounded-md bg-white p-2 shadow-lg ${dropdownClassName}`}
+					className={`z-200 rounded-md bg-white p-2 shadow-lg ${dropdownClassName}`}
 					sideOffset={sideOffset}
 				>
 					{items.map((item, index) => (
 						<DropdownMenu.Item
 							key={index}
-							className={`cursor-pointer rounded-md px-3 py-2 hover:bg-gray-100 ${itemClassName}`}
+							className={`z-30 cursor-pointer rounded-md px-3 py-2 hover:bg-gray-100 ${itemClassName}`}
 							onSelect={() => onItemSelect(item)}
 						>
 							{renderItem(item, index)}
 						</DropdownMenu.Item>
 					))}
 				</DropdownMenu.Content>
-			</CustomPortal>
+			</DropdownMenu.Portal>
 		</DropdownMenu.Root>
 	);
 };
