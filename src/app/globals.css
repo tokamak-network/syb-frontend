@@ -341,3 +341,7 @@ body {
 	background-color: var(--bg-color);
 	color: var(--text-color);
 }
+
+html {
+	overflow-y: scroll;
+}

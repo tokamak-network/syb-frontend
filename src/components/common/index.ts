@@ -4,3 +4,5 @@ export * from './Button';
 export * from './DateSelector';
 export * from './Tooltip';
 export * from './Toast';
+export * from './LinkButton';
+export * from './ThemeDropdown';

@@ -4,9 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
-import { ThemeToggle } from '../common/ThemeToggle';
 
-import { LinkButton } from '../common/LinkButton';
+import { ThemeDropdown, LinkButton } from '@/components/common';
 
 export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
@@ -50,7 +49,7 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 p-8 text-white backdrop-blur-md md:flex-row">
+		<header className="border-gray fixed left-0 right-0 top-0 z-20 flex items-center justify-between border-b-2 bg-opacity-70 px-40 py-8 text-white backdrop-blur-md md:flex-row">
 			<Image
 				alt="logo"
 				height={50}
@@ -140,7 +139,7 @@ export const Header: React.FC<{
 					/>
 				</div>
 			</div>
-			<ThemeToggle />
+			<ThemeDropdown />
 		</header>
 	);
 };
