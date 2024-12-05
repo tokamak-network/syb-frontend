@@ -65,15 +65,9 @@ export const Header: React.FC<{
 				</Link>
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/dashboard"
+					href="/myaccount"
 				>
-					Dashboard
-				</Link>
-				<Link
-					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/explore"
-				>
-					Explore
+					My Account
 				</Link>
 				<Link
 					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"

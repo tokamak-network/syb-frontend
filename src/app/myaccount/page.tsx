@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AccountInfo, UserGraph } from '@/components';
 import TransactionTable from '@/components/tables/TransactionActivity';
 
-const Dashboard: React.FC = () => {
+const MyAccount: React.FC = () => {
 	const [showTransactionTable, setShowTransactionTable] =
 		useState<boolean>(false);
 	const [selectedDate, setSelectedDate] = useState<Date | null>(
@@ -48,4 +48,4 @@ const Dashboard: React.FC = () => {
 	);
 };
 
-export default Dashboard;
+export default MyAccount;

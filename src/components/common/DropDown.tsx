@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { useTheme } from '@/context/ThemeContext';
+import { Button } from './Button';
 
 interface DropdownProps<T> {
 	items: T[]; // Array of items to display in the dropdown
@@ -50,7 +51,7 @@ export const Dropdown = <T,>({
 		<DropdownMenu.Root modal={false}>
 			<DropdownMenu.Trigger asChild>
 				<button
-					className={`flex items-center justify-center rounded-md border px-4 py-2 transition-all duration-200 ${currentThemeStyles.border} ${currentThemeStyles.hover} outline-none`}
+					className={`flex items-center justify-center rounded-md px-4 py-2 transition-all duration-200 ${currentThemeStyles.border} ${currentThemeStyles.hover} outline-none`}
 				>
 					{triggerContent}
 				</button>
