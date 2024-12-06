@@ -3,6 +3,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { useTheme } from '@/context/ThemeContext';
 import { themeStyles } from '@/const';
+
 import { Button } from '../button';
 
 interface DropdownProps<T> {
@@ -41,7 +42,7 @@ export const Dropdown = <T,>({
 
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content
-					className={`z-200 rounded-md p-2 shadow-lg transition-all duration-200 ${dropdownClassName}`}
+					className={`z-200 rounded-md p-2 shadow-lg transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.background}`}
 					sideOffset={sideOffset}
 				>
 					{items.map((item, index) => (

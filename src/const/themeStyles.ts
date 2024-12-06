@@ -7,6 +7,7 @@ export const themeStyles = {
 		afterBg: 'after:bg-black',
 		borderColor: 'border-gray-300',
 		selectedColor: 'bg-blue-100',
+		background: 'bg-white',
 	},
 	dark: {
 		text: 'text-white',
@@ -16,6 +17,7 @@ export const themeStyles = {
 		afterBg: 'after:bg-white',
 		borderColor: 'border-gray-600',
 		selectedColor: 'bg-gray-700',
+		background: 'bg-black',
 	},
 	dim: {
 		text: 'text-gray-200',
@@ -25,5 +27,6 @@ export const themeStyles = {
 		afterBg: 'after:bg-gray-100',
 		borderColor: 'border-gray-500',
 		selectedColor: 'bg-gray-800',
+		background: 'bg-gray-700',
 	},
 };
