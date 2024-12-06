@@ -5,3 +5,4 @@ export * from './links';
 export * from './landingPage';
 export * from './slider';
 export * from './projectStructure';
+export * from './themeStyles';

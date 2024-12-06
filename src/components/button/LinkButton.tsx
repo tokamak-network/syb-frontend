@@ -4,7 +4,7 @@ import { IconType } from 'react-icons';
 import { cn } from '@/utils/cn';
 import { useTheme } from '@/context/ThemeContext';
 
-import { Button } from '../button/Button';
+import { Button } from './Button';
 
 interface LinkButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {

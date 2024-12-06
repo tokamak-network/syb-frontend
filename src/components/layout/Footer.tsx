@@ -10,7 +10,7 @@ import {
 	FooterSocialMedia,
 } from '@/const';
 
-import { LinkButton } from '../common/LinkButton';
+import { LinkButton } from '../button/LinkButton';
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 	return (

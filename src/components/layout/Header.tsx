@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
 import { ThemeDropdown, LinkButton } from '@/components/common';
+import { useTheme } from '@/context/ThemeContext';
+import { themeStyles } from '@/const';
+import { cn } from '@/utils/cn';
+
+import { Button, NavLinkButton } from '../button';
 
 export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
@@ -14,6 +18,10 @@ export const Header: React.FC<{
 	const [activeButton, setActiveButton] = useState<string | null>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
+
+	const { theme } = useTheme();
+	const currentThemeStyles = themeStyles[theme];
+
 	const toggleMegaMenu = () => {
 		setMegaMenuOpen((prev) => {
 			const newState = !prev;
@@ -57,27 +65,12 @@ export const Header: React.FC<{
 				width={200}
 			/>
 			<nav className="flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
-				<Link
-					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/"
-				>
-					Home
-				</Link>
-				<Link
-					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/myaccount"
-				>
-					My Account
-				</Link>
-				<Link
-					className="rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
-					href="/account"
-				>
-					Account
-				</Link>
-				<button
+				<NavLinkButton href="/" label="Home" />
+				<NavLinkButton href="/myaccount" label="My Account" />
+				<NavLinkButton href="/account" label="Account" />
+				<Button
 					ref={buttonRef}
-					className="flex items-center justify-between rounded px-8 py-1 transition-colors duration-200 hover:bg-blue-500"
+					className="flex items-center justify-between font-bold"
 					onClick={toggleMegaMenu}
 				>
 					About
@@ -85,7 +78,7 @@ export const Header: React.FC<{
 						className={`ml-2 h-4 w-4 transition-transform ${isMegaMenuOpen ? 'rotate-180' : ''}`}
 						strokeWidth={2.5}
 					/>
-				</button>
+				</Button>
 			</nav>
 			<div
 				ref={menuRef}
@@ -120,13 +113,21 @@ export const Header: React.FC<{
 				</div>
 				<div className="w-1/4 p-4">
 					<LinkButton
-						className="text-balance rounded py-2 text-white"
+						className={cn(
+							`text-balance rounded py-2`,
+							currentThemeStyles.text,
+							currentThemeStyles.hoverText,
+						)}
 						href="#"
 						label="Team"
 						onMouseEnter={() => handleButtonHover('Team')}
 					/>
 					<LinkButton
-						className="mt-4 rounded py-2 text-white"
+						className={cn(
+							`mt-4 rounded py-2`,
+							currentThemeStyles.text,
+							currentThemeStyles.hoverText,
+						)}
 						href="#"
 						label="Strategy"
 						onMouseEnter={() => handleButtonHover('Strategy')}
