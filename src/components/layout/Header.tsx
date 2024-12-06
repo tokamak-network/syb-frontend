@@ -49,7 +49,7 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray z-100 fixed left-0 right-0 top-0 flex items-center justify-between border-b-2 bg-opacity-70 px-40 py-8 text-white backdrop-blur-md md:flex-row">
+		<header className="border-gray z-100 fixed left-0 right-0 top-0 flex items-center justify-between border-b-2 bg-opacity-70 px-40 py-8 backdrop-blur-md md:flex-row">
 			<Image
 				alt="logo"
 				height={50}
@@ -89,7 +89,7 @@ export const Header: React.FC<{
 			</nav>
 			<div
 				ref={menuRef}
-				className={`absolute left-0 top-full ml-0 flex w-full bg-secondary p-8 text-white shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+				className={`absolute left-0 top-full ml-0 flex w-full bg-secondary p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
 					isMegaMenuOpen
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
