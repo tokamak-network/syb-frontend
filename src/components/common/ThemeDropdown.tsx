@@ -12,17 +12,17 @@ export const ThemeDropdown: React.FC = () => {
 		{
 			value: 'light',
 			label: 'Light',
-			icon: <FaSun className="text-yellow-500" />,
+			icon: <FaSun className="text-yellow-500" size={16} />,
 		},
 		{
 			value: 'dark',
 			label: 'Dark',
-			icon: <FaMoon className="text-gray-800" />,
+			icon: <FaMoon className="text-gray-800" size={16} />,
 		},
 		{
 			value: 'dim',
 			label: 'Dim',
-			icon: <FaAdjust className="text-purple-500" />,
+			icon: <FaAdjust className="text-purple-500" size={16} />,
 		},
 	];
 
@@ -32,13 +32,6 @@ export const ThemeDropdown: React.FC = () => {
 
 	return (
 		<Dropdown
-			dropdownClassName={`${
-				theme === 'light'
-					? 'bg-white text-black'
-					: theme === 'dark'
-						? 'bg-black text-white'
-						: 'bg-gray-700 text-gray-200'
-			}`}
 			items={themeOptions}
 			renderItem={(item) => (
 				<div className="flex items-center space-x-2">

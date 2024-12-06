@@ -4,17 +4,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
-import { ThemeDropdown, LinkButton } from '@/components/common';
+import { ThemeDropdown } from '@/components/common';
 import { useTheme } from '@/context/ThemeContext';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 
-import { Button, NavLinkButton } from '../button';
+import { Button, NavLinkButton, LinkButton } from '../button';
 
 export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
-}> = ({ onMegaMenuToggle }) => {
-	const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
+	isMegaMenuOpen: boolean;
+}> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
 	const [activeButton, setActiveButton] = useState<string | null>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
@@ -22,18 +22,18 @@ export const Header: React.FC<{
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
 
-	const toggleMegaMenu = () => {
-		setMegaMenuOpen((prev) => {
-			const newState = !prev;
-
-			onMegaMenuToggle(newState);
-
-			return newState;
-		});
-	};
-
 	const handleButtonHover = (button: string) => {
 		setActiveButton(button);
+	};
+
+	const handleMouseLeave = (event: React.MouseEvent) => {
+		const relatedTarget = event.relatedTarget as Node;
+
+		if (menuRef.current && menuRef.current.contains(relatedTarget)) {
+			return;
+		}
+
+		onMegaMenuToggle(false); // Updates state in Layout
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
@@ -43,7 +43,6 @@ export const Header: React.FC<{
 			buttonRef.current &&
 			!buttonRef.current.contains(event.target as Node)
 		) {
-			setMegaMenuOpen(false);
 			onMegaMenuToggle(false);
 		}
 	};
@@ -71,7 +70,7 @@ export const Header: React.FC<{
 				<Button
 					ref={buttonRef}
 					className="flex items-center justify-between font-bold"
-					onClick={toggleMegaMenu}
+					onClick={() => onMegaMenuToggle(!isMegaMenuOpen)}
 				>
 					About
 					<FiChevronDown
@@ -87,15 +86,7 @@ export const Header: React.FC<{
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
 				}`}
-				onMouseLeave={() =>
-					setMegaMenuOpen((prev) => {
-						const newState = !prev;
-
-						onMegaMenuToggle(newState);
-
-						return newState;
-					})
-				}
+				onMouseLeave={handleMouseLeave}
 			>
 				<div className="w-3/4 py-4">
 					{activeButton === 'Team' && (
@@ -113,21 +104,13 @@ export const Header: React.FC<{
 				</div>
 				<div className="w-1/4 p-4">
 					<LinkButton
-						className={cn(
-							`text-balance rounded py-2`,
-							currentThemeStyles.text,
-							currentThemeStyles.hoverText,
-						)}
+						className={cn(`text-balance rounded py-2`, currentThemeStyles.text)}
 						href="#"
 						label="Team"
 						onMouseEnter={() => handleButtonHover('Team')}
 					/>
 					<LinkButton
-						className={cn(
-							`mt-4 rounded py-2`,
-							currentThemeStyles.text,
-							currentThemeStyles.hoverText,
-						)}
+						className={cn(`mt-4 rounded py-2`, currentThemeStyles.text)}
 						href="#"
 						label="Strategy"
 						onMouseEnter={() => handleButtonHover('Strategy')}
