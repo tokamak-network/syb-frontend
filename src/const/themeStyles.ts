@@ -21,12 +21,12 @@ export const themeStyles = {
 	},
 	dim: {
 		text: 'text-gray-200',
-		hoverText: 'hover:text-gray-400',
-		hoverBg: 'hover:bg-gray-600',
+		hoverText: 'hover:text-gray-500',
+		hoverBg: 'hover:bg-gray-500',
 		beforeBg: 'before:bg-gray-100',
 		afterBg: 'after:bg-gray-100',
 		borderColor: 'border-gray-500',
 		selectedColor: 'bg-gray-800',
-		background: 'bg-gray-700',
+		background: 'bg-gray-600',
 	},
 };

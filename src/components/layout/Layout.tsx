@@ -19,6 +19,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 				isMegaMenuOpen={isMegaMenuOpen}
 				onMegaMenuToggle={handleMegaMenuToggle}
 			/>
+			{isMegaMenuOpen && (
+				<div className="fixed inset-0 z-40 bg-black bg-opacity-50" />
+			)}
 			<main
 				className={`mt-24 w-full flex-grow ${isMegaMenuOpen ? 'blur-background' : ''}`}
 			>

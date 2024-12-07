@@ -37,7 +37,7 @@ export const Dropdown = <T,>({
 
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content
-					className={`z-20 rounded-md p-2 shadow-lg transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.background}`}
+					className={`z-50 rounded-md p-2 shadow-lg transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.background}`}
 					sideOffset={sideOffset}
 				>
 					{items.map((item, index) => (

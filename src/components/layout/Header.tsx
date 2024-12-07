@@ -56,7 +56,7 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray z-100 fixed left-0 right-0 top-0 flex items-center justify-between border-b-2 bg-opacity-70 px-40 py-8 backdrop-blur-md md:flex-row">
+		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 px-40 py-8 backdrop-blur-md md:flex-row">
 			<Image
 				alt="logo"
 				height={50}
