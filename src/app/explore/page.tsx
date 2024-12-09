@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react';
 
-import { Button, Modal, UserActivityLineChart, UserGraph } from '@/components';
-import ChainActivityTable from '@/components/tables/ChainActivity';
+import {
+	Button,
+	Modal,
+	UserActivityLineChart,
+	UserGraph,
+	ChainActivityTable,
+} from '@/components';
 
 const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);

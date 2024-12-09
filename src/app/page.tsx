@@ -11,14 +11,14 @@ const HomePage: React.FC = () => {
 			<div className="flex w-full justify-between">
 				<div className="flex w-full flex-col space-y-14 font-narnoor">
 					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-primaryText text-3xl">Transactions</p>
-						<p className="text-secondaryText text-xl">
+						<p className="text-3xl text-primaryText">Transactions</p>
+						<p className="text-xl text-secondaryText">
 							<span className="text-3xl">1,129,100</span> (24h)
 						</p>
 					</div>
 					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-primaryText text-3xl">Pending transactions</p>
-						<p className="text-secondaryText text-xl">
+						<p className="text-3xl text-primaryText">Pending Transactions</p>
+						<p className="text-xl text-secondaryText">
 							<span className="text-3xl">151</span> (24h)
 						</p>
 					</div>
