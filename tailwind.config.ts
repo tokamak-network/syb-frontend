@@ -13,6 +13,8 @@ const config: Config = {
         secondary: '#2196FB',
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primaryText: "var(--primary-text)",
+        secondaryText: "var(--secondary-text)",
         tableBackground: "var(--table-background)",
         tableHeader: "var(--table-header)",
         tableBorder: "var(--table-border)",

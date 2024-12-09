@@ -287,6 +287,7 @@ body {
 	bottom: 0;
 	height: 2px;
 	transition: transform 0.5s ease-in-out;
+	background-color: var(--before-bg, black);
 }
 
 .link-button::before {
@@ -353,6 +354,10 @@ body {
 
 	--tx-default: #4caf50;
 	--tx-default-text: #e6d7be;
+	--primary-text: #000000;
+	--secondary-text: #6c757d;
+	--background: #ffffff;
+	--foreground: #f8f9fa;
 }
 
 /* Dark Theme */
@@ -393,6 +398,10 @@ body {
 
 	--tx-default: #388e3c;
 	--tx-default-text: #ffffff;
+	--primary-text: #ffffff;
+	--secondary-text: #adb5bd;
+	--background: #101112;
+	--foreground: #232425;
 }
 
 /* Dim Theme */
@@ -433,6 +442,10 @@ body {
 
 	--tx-default: #66bb6a;
 	--tx-default-text: #ffffff;
+	--primary-text: #e0e0e0;
+	--secondary-text: #b0b0b0;
+	--background: #121212;
+	--foreground: #1e1e1e;
 }
 html {
 	overflow-y: scroll;

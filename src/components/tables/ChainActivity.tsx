@@ -11,7 +11,7 @@ import { UserAddress } from './UserAddress';
 // interface ChainActivityTableProps {
 // }
 
-const ChainActivityTable: React.FC = () => {
+export const ChainActivityTable: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 
 	const filteredData = explorerData.filter((transaction) => {
@@ -26,7 +26,7 @@ const ChainActivityTable: React.FC = () => {
 	});
 
 	return (
-		<div className="flex flex-col space-y-5">
+		<div className="flex w-full flex-col space-y-5">
 			<SearchBarComponent
 				placeholder={'Search User ID/Address/Block Nuber/Transaction Hash'}
 				onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,5 +138,3 @@ const ChainActivityTable: React.FC = () => {
 		</div>
 	);
 };
-
-export default ChainActivityTable;

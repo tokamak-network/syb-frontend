@@ -27,11 +27,15 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
 		<a
 			className={cn(
 				'link-button relative flex w-max overflow-hidden px-0 pb-1',
-				currentThemeStyles.beforeBg,
-				currentThemeStyles.afterBg,
 				className,
 			)}
 			href={href}
+			style={
+				{
+					'--before-bg': currentThemeStyles.beforeBg,
+					'--after-bg': currentThemeStyles.afterBg,
+				} as React.CSSProperties
+			}
 			{...props}
 		>
 			{Icon && <Icon className="flex-shrink-0" size={20} />}
