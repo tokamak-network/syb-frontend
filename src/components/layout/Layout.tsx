@@ -23,7 +23,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 				<div className="fixed inset-0 z-40 bg-black bg-opacity-50" />
 			)}
 			<main
-				className={`mt-24 w-full flex-grow ${isMegaMenuOpen ? 'blur-background' : ''}`}
+				className={`mt-32 w-full flex-grow ${isMegaMenuOpen ? 'blur-background' : ''}`}
 			>
 				{children}
 			</main>

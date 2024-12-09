@@ -3,12 +3,13 @@
 
 import React from 'react';
 
-import { UserGraph } from '@/components';
+import { SearchBarComponent, UserGraph } from '@/components';
+import ChainActivityTable from '@/components/tables/ChainActivity';
 
 const HomePage: React.FC = () => {
 	return (
 		<div className="flex flex-col items-center">
-			<UserGraph />
+			<ChainActivityTable />
 		</div>
 	);
 };

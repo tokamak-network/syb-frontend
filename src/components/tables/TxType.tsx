@@ -7,12 +7,12 @@ interface TxTypesProps {
 const TxTypes: React.FC<TxTypesProps> = ({ txType }) => {
 	const txTypesStyles =
 		txType === ActionType.DEPOSIT
-			? 'bg-[#FFA000] text-white'
+			? 'bg-txDeposit text-txDepositText'
 			: txType === ActionType.WITHDRAW
-				? 'bg-[#353025] text-[#E6D7BE]'
+				? 'bg-txWithdraw text-txWithdrawText'
 				: txType === ActionType.EXPLODE
-					? 'bg-[#EF443B] text-[#E6D7BE]'
-					: 'bg-[#4CAF50] text-[#E6D7BE]';
+					? 'bg-txExplode text-txExplodeText'
+					: 'bg-txDefault text-txDefaultText';
 
 	return (
 		<div

@@ -33,8 +33,12 @@ const ChainActivityTable: React.FC = () => {
 			/>
 			<div className="flex justify-between">
 				<div className="flex justify-between space-x-3 font-narnoor">
-					<Button className="bg-tableBackground text-center">Validated</Button>
-					<Button className="bg-tableBackground">Pending</Button>
+					<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-tableTextPrimary">
+						Validated
+					</Button>
+					<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-tableTextPrimary">
+						Pending
+					</Button>
 				</div>
 				<div className="flex space-x-2 font-narnoor">
 					<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-center text-paginationButtonText">
@@ -44,7 +48,9 @@ const ChainActivityTable: React.FC = () => {
 						<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-paginationButtonText">
 							{'<'}
 						</Button>
-						<Button className="bg-paginationText">{'1'}</Button>
+						<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-tableTextSecondary">
+							{'1'}
+						</Button>
 						<Button className="border-2 border-paginationButtonBorder bg-paginationButton text-paginationButtonText">
 							{'>'}
 						</Button>
@@ -94,14 +100,14 @@ const ChainActivityTable: React.FC = () => {
 							>
 								<td className="flex flex-col space-y-4 whitespace-nowrap px-6 py-2 text-left font-normal">
 									<span className="text-tableTextSecondary">{`0xHash${index}`}</span>
-									<span className="text-white">{'1m ago'}</span>
+									<span className="text-tableTextSecondary">{'1m ago'}</span>
 								</td>
 								<td className="space-y-2 whitespace-nowrap px-6 py-2 text-left font-normal">
 									<TxTypes txType={transaction.type.txType} />
 									<TxStatus status={transaction.type.txStatus} />
 								</td>
 								<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
-									<span className="rounded-lg bg-tableButtonBackground px-2 py-1 font-abhaya text-tableButtonText">
+									<span className="rounded-lg bg-tableButtonBackground px-2 py-1 font-abhaya text-tableTextPrimary">
 										{transaction.method.toLocaleLowerCase()}
 									</span>
 								</td>
@@ -118,10 +124,10 @@ const ChainActivityTable: React.FC = () => {
 										<UserAddress address={transaction.txUser.to} />
 									</div>
 								</td>
-								<td className="whitespace-nowrap px-6 py-2 text-right font-acme font-normal text-white">
+								<td className="font-norma whitespace-nowrap px-6 py-2 text-right font-acme text-tableTextSecondary">
 									{transaction.value}
 								</td>
-								<td className="whitespace-nowrap px-6 py-2 text-right font-acme font-normal text-white">
+								<td className="whitespace-nowrap px-6 py-2 text-right font-acme font-normal text-tableTextSecondary">
 									{transaction.fee}
 								</td>
 							</tr>
