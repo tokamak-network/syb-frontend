@@ -4,10 +4,20 @@
  * Shortens an Ethereum address for display.
  * @param address - The Ethereum address to shorten.
  * @param chars - Number of characters to show at the start and end.
+ * @param shorten - Position of characters to shorten.
  * @returns {string} - The shortened address.
  */
-export const shortenAddress = (address: string, chars: number = 4): string => {
-	return `${address.slice(0, chars)}...${address.slice(-chars)}`;
+export const shortenAddress = (
+	address: string,
+	shorten: string = 'middle',
+): string => {
+	if (shorten === 'middle') {
+		return `${address.slice(0, 6)}...${address.slice(-4)}`;
+	} else if (shorten === 'end') {
+		return `${address.slice(0, 10)}...`;
+	}
+
+	return address;
 };
 
 /**

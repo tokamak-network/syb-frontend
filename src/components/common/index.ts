@@ -5,3 +5,4 @@ export * from './Toast';
 export * from './ThemeDropdown';
 export * from './DropDown';
 export * from './OrbitingIcons';
+export * from './Label';

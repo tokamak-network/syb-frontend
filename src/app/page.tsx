@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import { UserActivityLineChart, ChainActivityTable } from '@/components';
+import { UserActivityLineChart, ChainActivityTable, Label } from '@/components';
 
 const HomePage: React.FC = () => {
 	return (
@@ -32,9 +32,15 @@ const HomePage: React.FC = () => {
 					</div>
 					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
 						<p className="text-primaryText text-3xl">Last Transaction</p>
-						<p className="text-secondaryText text-xl">
-							<span className="text-3xl">0x123...abcd</span> (5 ETH)
-						</p>
+						<Label
+							className="text-secondaryText text-3xl"
+							explore={true}
+							isTransaction={true}
+							shorten="end"
+							value={
+								'0xe8b37530878af405094880bae8852e4628d494937ce873c7a9f1c9af82e911cb'
+							}
+						/>
 					</div>
 				</div>
 				<div className="w-full">
