@@ -36,6 +36,7 @@ const HomePage: React.FC = () => {
 							className="text-secondaryText text-3xl"
 							explore={true}
 							isTransaction={true}
+							navigateToAccount={true}
 							shorten="end"
 							value={
 								'0xe8b37530878af405094880bae8852e4628d494937ce873c7a9f1c9af82e911cb'

@@ -13,7 +13,7 @@ interface TransactionTableProps {
 	selectedDate: Date | null;
 }
 
-const TransactionTable: React.FC<TransactionTableProps> = ({
+export const TransactionTable: React.FC<TransactionTableProps> = ({
 	selectedDate,
 }) => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
@@ -190,5 +190,3 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
 		</div>
 	);
 };
-
-export default TransactionTable;

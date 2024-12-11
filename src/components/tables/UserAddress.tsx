@@ -22,7 +22,12 @@ export const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
 	return (
 		<div className="flex items-center space-x-2">
 			<FiUser className="text-blue-500" size={20} />
-			<Label explore={true} isTransaction={false} value={address} />
+			<Label
+				explore={false}
+				isTransaction={false}
+				navigateToAccount={true}
+				value={address}
+			/>
 			<button
 				className="text-gray-500 hover:text-white"
 				onClick={copyToClipboard}

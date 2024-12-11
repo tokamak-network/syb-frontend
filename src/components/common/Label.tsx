@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
+import { useRouter } from 'next/navigation';
 
 import { shortenAddress } from '@/utils';
 
@@ -8,6 +9,7 @@ interface LabelProps {
 	shorten?: 'middle' | 'end';
 	explore?: boolean;
 	isTransaction: boolean;
+	navigateToAccount?: boolean;
 	className?: string;
 }
 
@@ -16,13 +18,27 @@ export const Label: React.FC<LabelProps> = ({
 	shorten = 'middle',
 	explore = false,
 	isTransaction = false,
+	navigateToAccount = false,
 	className = '',
 }) => {
+	const router = useRouter();
+
 	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
-
 	const explorerPath = isTransaction ? `tx/${value}` : `address/${value}`;
-
 	const displayValue = shortenAddress(value, shorten);
+
+	const handleClick = () => {
+		if (navigateToAccount) {
+			router.push(`/account/${value}`);
+		}
+	};
+
+	const handleKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
+	};
 
 	return (
 		<Tooltip.Provider>
@@ -30,14 +46,23 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Trigger asChild>
 					{explore ? (
 						<a
-							className={`inline-block w-fit cursor-pointer text-blue-500 ${className}`}
+							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
 							href={`${explorerUrl}/${explorerPath}`}
 							rel="noopener noreferrer"
-							style={{ width: 'fit-content' }}
 							target="_blank"
 						>
 							{displayValue.toLocaleUpperCase()}
 						</a>
+					) : navigateToAccount ? (
+						<span
+							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							role="button"
+							tabIndex={0}
+							onClick={handleClick}
+							onKeyDown={handleKeyDown}
+						>
+							{displayValue.toLocaleUpperCase()}
+						</span>
 					) : (
 						<span
 							className={`inline-block w-fit cursor-pointer text-gray-700 ${className}`}

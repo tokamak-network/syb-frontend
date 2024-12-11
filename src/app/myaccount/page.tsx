@@ -2,8 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import { AccountInfo, UserGraph } from '@/components';
-import TransactionTable from '@/components/tables/TransactionActivity';
+import { AccountInfo, UserGraph, TransactionTable } from '@/components';
 
 const MyAccount: React.FC = () => {
 	const [showTransactionTable, setShowTransactionTable] =
