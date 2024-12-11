@@ -67,6 +67,7 @@ export const Header: React.FC<{
 				<NavLinkButton href="/" label="Home" />
 				<NavLinkButton href="/myaccount" label="My Account" />
 				<NavLinkButton href="/account" label="Account" />
+				<NavLinkButton href="/login" label="Login/Signup" />
 				<Button
 					ref={buttonRef}
 					className="flex items-center justify-between font-bold"
