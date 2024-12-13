@@ -20,10 +20,7 @@ export const SignupForm: React.FC = () => {
 	return (
 		<form className="space-y-4" onSubmit={handleSubmit}>
 			<div>
-				<label
-					className="block text-sm font-medium text-gray-700"
-					htmlFor="email"
-				>
+				<label className="block text-sm font-medium" htmlFor="email">
 					Email
 				</label>
 				<input
@@ -36,10 +33,7 @@ export const SignupForm: React.FC = () => {
 				/>
 			</div>
 			<div>
-				<label
-					className="block text-sm font-medium text-gray-700"
-					htmlFor="password"
-				>
+				<label className="block text-sm font-medium" htmlFor="password">
 					Password
 				</label>
 				<input
@@ -52,10 +46,7 @@ export const SignupForm: React.FC = () => {
 				/>
 			</div>
 			<div>
-				<label
-					className="block text-sm font-medium text-gray-700"
-					htmlFor="confirmPassword"
-				>
+				<label className="block text-sm font-medium" htmlFor="confirmPassword">
 					Confirm Password
 				</label>
 				<input
@@ -68,7 +59,7 @@ export const SignupForm: React.FC = () => {
 				/>
 			</div>
 			<button
-				className="w-full rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
+				className="w-full rounded-lg bg-blue-500 py-2 hover:bg-blue-600"
 				type="submit"
 			>
 				Signup

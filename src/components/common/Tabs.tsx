@@ -26,7 +26,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
 						className={`flex-1 py-2 text-center ${
 							activeTab === tab.value
 								? 'border-b-2 border-blue-500 text-blue-500'
-								: 'text-gray-500'
+								: ''
 						}`}
 						value={tab.value}
 					>

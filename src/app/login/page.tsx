@@ -11,8 +11,8 @@ const LoginPage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
 
 	return (
-		<div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
-			<div className="w-full max-w-md rounded-lg bg-white p-6 shadow-md">
+		<div className="flex min-h-screen flex-col items-center justify-center">
+			<div className="w-full max-w-md rounded-lg p-6 shadow-md">
 				<Tabs
 					activeTab={activeTab}
 					tabs={[

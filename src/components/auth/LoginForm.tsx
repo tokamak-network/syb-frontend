@@ -15,10 +15,7 @@ export const LoginForm: React.FC = () => {
 	return (
 		<form className="space-y-4" onSubmit={handleSubmit}>
 			<div>
-				<label
-					className="block text-sm font-medium text-gray-700"
-					htmlFor="email"
-				>
+				<label className="block text-sm font-medium" htmlFor="email">
 					Email
 				</label>
 				<input
@@ -28,6 +25,19 @@ export const LoginForm: React.FC = () => {
 					type="email"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
+				/>
+			</div>
+			<div>
+				<label className="block text-sm font-medium" htmlFor="password">
+					Password
+				</label>
+				<input
+					required
+					className="w-full rounded-lg border px-3 py-2"
+					id="password"
+					type="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 				/>
 			</div>
 			<button
