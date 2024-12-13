@@ -7,6 +7,7 @@ import { metaMask } from 'wagmi/connectors';
 import { WalletProvider, ToastProvider } from '@/context';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
 import { mainNetwork, l1TestNetwork, l2TestNetwork } from '@/types';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 interface AppProvidersProps {
 	children: React.ReactNode;
@@ -25,11 +26,13 @@ export const config = createConfig({
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 	return (
 		<WagmiProvider config={config}>
-			<WalletProvider>
-				<ToastProvider>
-					<ReactQueryProvider>{children}</ReactQueryProvider>
-				</ToastProvider>
-			</WalletProvider>
+			<ThemeProvider>
+				<WalletProvider>
+					<ToastProvider>
+						<ReactQueryProvider>{children}</ReactQueryProvider>
+					</ToastProvider>
+				</WalletProvider>
+			</ThemeProvider>
 		</WagmiProvider>
 	);
 };

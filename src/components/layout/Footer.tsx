@@ -10,12 +10,12 @@ import {
 	FooterSocialMedia,
 } from '@/const';
 
-import { LinkButton } from '../common/LinkButton';
+import { LinkButton } from '../button/LinkButton';
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 	return (
-		<footer className={cn('bg-primary', className)}>
-			<div className="flex items-center justify-between border-b border-gray-600 p-20 text-white">
+		<footer className={cn('', className)}>
+			<div className="flex items-center justify-between border-b border-gray-600 p-20">
 				<div className="items-left container mx-auto flex flex-col space-y-10">
 					<h2 className="text-4xl font-bold">Sybil Guard</h2>
 					<p className="max-w-lg text-left">

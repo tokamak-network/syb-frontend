@@ -287,6 +287,7 @@ body {
 	bottom: 0;
 	height: 2px;
 	transition: transform 0.5s ease-in-out;
+	background-color: var(--before-bg, black);
 }
 
 .link-button::before {
@@ -313,4 +314,139 @@ body {
 .blur-background {
 	filter: blur(5px);
 	transition: filter 0.3s ease;
+}
+
+/* Light Theme */
+.theme-light {
+	--bg-color: #ffffff;
+	--text-color: #000000;
+	--primary-color: #007bff;
+	--border-color: #cccccc;
+	--selected-color: #e0f7ff;
+	--button-primary: #1e90ff;
+	--button-secondary: #ff6347;
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	--table-background: #ffffff;
+	--table-header: #f8f9fa;
+	--table-border: #dee2e6;
+	--table-hover: #f1f3f5;
+	--table-text-primary: #212529;
+	--table-text-secondary: #495057;
+	--table-text-highlight: #e9ecef;
+	--table-button-background: #7ba5d3;
+	--table-button-text: #ffffff;
+	--table-row-background: #f8f9fa;
+	--table-text-info: #17a2b8;
+	--table-text-notice: #ffc107;
+	--pagination-button: #ffffff;
+	--pagination-button-border: #dee2e6;
+	--pagination-button-text: #007bff;
+	--pagination-text: #6c757d;
+	--tx-deposit: #ffa000;
+	--tx-deposit-text: #ffffff;
+
+	--tx-withdraw: #353025;
+	--tx-withdraw-text: #e6d7be;
+
+	--tx-explode: #ef443b;
+	--tx-explode-text: #e6d7be;
+
+	--tx-default: #4caf50;
+	--tx-default-text: #e6d7be;
+	--primary-text: #000000;
+	--secondary-text: #6c757d;
+	--background: #ffffff;
+	--foreground: #f8f9fa;
+}
+
+/* Dark Theme */
+.theme-dark {
+	--bg-color: #000000;
+	--text-color: #ffffff;
+	--primary-color: #1e90ff;
+	--border-color: #444444;
+	--selected-color: #333333;
+	--button-primary: #4caf50;
+	--button-secondary: #f44336;
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	--table-background: #101112;
+	--table-header: #232425;
+	--table-border: #23323e;
+	--table-hover: #26292c;
+	--table-text-primary: #b0b0b0;
+	--table-text-secondary: #70b4e8;
+	--table-text-highlight: #e6d7be;
+	--table-button-background: #1b3b5c;
+	--table-button-text: #6290b6;
+	--table-row-background: #353025;
+	--table-text-info: #4897ef;
+	--table-text-notice: #d7bc90;
+	--pagination-button: #101112;
+	--pagination-button-border: #23323e;
+	--pagination-button-text: #6290b6;
+	--pagination-text: #4b5569;
+	--tx-deposit: #ffcc80;
+	--tx-deposit-text: #000000;
+
+	--tx-withdraw: #2a2a2a;
+	--tx-withdraw-text: #d7bc90;
+
+	--tx-explode: #d32f2f;
+	--tx-explode-text: #ffffff;
+
+	--tx-default: #388e3c;
+	--tx-default-text: #ffffff;
+	--primary-text: #ffffff;
+	--secondary-text: #adb5bd;
+	--background: #101112;
+	--foreground: #232425;
+}
+
+/* Dim Theme */
+.theme-dim {
+	--bg-color: #121212;
+	--text-color: #e0e0e0;
+	--primary-color: #bb86fc;
+	--border-color: #2a2a2a;
+	--selected-color: #1a1a1a;
+	--button-primary: #bb86fc;
+	--button-secondary: #03dac6;
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	--table-background: #121212;
+	--table-header: #1e1e1e;
+	--table-border: #2a2a2a;
+	--table-hover: #1a1a1a;
+	--table-text-primary: #e0e0e0;
+	--table-text-secondary: #bb86fc;
+	--table-text-highlight: #03dac6;
+	--table-button-background: #624486;
+	--table-button-text: #ffffff;
+	--table-row-background: #1a1a1a;
+	--table-text-info: #03dac6;
+	--table-text-notice: #ff6347;
+	--pagination-button: #121212;
+	--pagination-button-border: #2a2a2a;
+	--pagination-button-text: #bb86fc;
+	--pagination-text: #e0e0e0;
+	--tx-deposit: #ffb74d;
+	--tx-deposit-text: #000000;
+
+	--tx-withdraw: #424242;
+	--tx-withdraw-text: #cfcfcf;
+
+	--tx-explode: #e57373;
+	--tx-explode-text: #ffffff;
+
+	--tx-default: #66bb6a;
+	--tx-default-text: #ffffff;
+	--primary-text: #e0e0e0;
+	--secondary-text: #b0b0b0;
+	--background: #121212;
+	--foreground: #1e1e1e;
+}
+html {
+	overflow-y: scroll;
 }

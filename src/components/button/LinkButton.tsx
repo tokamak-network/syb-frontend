@@ -2,11 +2,11 @@ import React from 'react';
 import { IconType } from 'react-icons';
 
 import { cn } from '@/utils/cn';
-
-import { Button } from './Button';
+import { useTheme } from '@/context/ThemeContext';
+import { themeStyles } from '@/const';
 
 interface LinkButtonProps
-	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 	label?: string;
 	href: string;
 	className?: string;
@@ -18,23 +18,28 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
 	href,
 	className,
 	icon: Icon,
-	onMouseEnter,
 	...props
 }) => {
+	const { theme } = useTheme();
+	const currentThemeStyles = themeStyles[theme];
+
 	return (
-		<Button
+		<a
 			className={cn(
-				'link-button relative flex w-max overflow-hidden px-0 pb-1 before:bg-white after:bg-white hover:bg-inherit',
+				'link-button relative flex w-max overflow-hidden px-0 pb-1',
 				className,
 			)}
-			onClick={() => {
-				window.open(href, '_blank');
-			}}
-			onMouseEnter={onMouseEnter}
+			href={href}
+			style={
+				{
+					'--before-bg': currentThemeStyles.beforeBg,
+					'--after-bg': currentThemeStyles.afterBg,
+				} as React.CSSProperties
+			}
 			{...props}
 		>
 			{Icon && <Icon className="flex-shrink-0" size={20} />}
 			{label && <span className="text-md font-medium">{label}</span>}
-		</Button>
+		</a>
 	);
 };

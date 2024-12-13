@@ -7,3 +7,5 @@ export * from './settings';
 export * from './layout';
 export * from './contextmenu';
 export * from './modal';
+export * from './button';
+export * from './auth';

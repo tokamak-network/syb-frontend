@@ -15,13 +15,19 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 
 	return (
 		<div className={`flex min-h-screen flex-col`}>
-			<Header onMegaMenuToggle={handleMegaMenuToggle} />
+			<Header
+				isMegaMenuOpen={isMegaMenuOpen}
+				onMegaMenuToggle={handleMegaMenuToggle}
+			/>
+			{isMegaMenuOpen && (
+				<div className="fixed inset-0 z-40 bg-black bg-opacity-50" />
+			)}
 			<main
-				className={`mt-24 w-full flex-grow ${isMegaMenuOpen ? 'blur-background' : ''}`}
+				className={`mt-32 w-full flex-grow ${isMegaMenuOpen ? 'blur-background' : ''}`}
 			>
 				{children}
 			</main>
-			<Footer />
+			<Footer className={`${isMegaMenuOpen ? 'blur-background' : ''}`} />
 		</div>
 	);
 };
