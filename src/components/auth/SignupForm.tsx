@@ -2,6 +2,9 @@
 
 import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+
+import { apiRequest } from '@/utils/api';
 
 interface SignupFormInputs {
 	email: string;
@@ -16,9 +19,21 @@ export const SignupForm: React.FC = () => {
 		watch,
 		formState: { errors },
 	} = useForm<SignupFormInputs>();
+	const router = useRouter();
 
-	const onSubmit: SubmitHandler<SignupFormInputs> = (data) => {
-		console.log('Signup with:', data);
+	const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+		try {
+			await apiRequest({
+				method: 'POST',
+				url: '/auth/register',
+				data,
+			});
+			alert('Registration successful! You can now log in.');
+			router.push('/login');
+		} catch (error) {
+			alert('Registration failed. Please try again.');
+			console.log(error, 'error');
+		}
 	};
 
 	const password = watch('password');
