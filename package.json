@@ -18,6 +18,7 @@
 	"dependencies": {
 		"@ethersproject/providers": "^5.7.2",
 		"@material-tailwind/react": "^2.1.10",
+		"@prisma/client": "^6.0.1",
 		"@radix-ui/react-checkbox": "^1.1.1",
 		"@radix-ui/react-context-menu": "^2.2.2",
 		"@radix-ui/react-dialog": "^1.1.2",
@@ -43,7 +44,9 @@
 		"framer-motion": "^11.11.17",
 		"next": "14.2.13",
 		"next-auth": "^4.24.11",
+		"pg": "^8.13.1",
 		"pino-pretty": "^13.0.0",
+		"prisma": "^6.0.1",
 		"react": "^18",
 		"react-chartjs-2": "^5.2.0",
 		"react-datepicker": "^7.5.0",
