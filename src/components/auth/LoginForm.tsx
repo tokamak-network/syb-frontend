@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface LoginFormInputs {
 	email: string;
@@ -14,9 +16,21 @@ export const LoginForm: React.FC = () => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<LoginFormInputs>();
+	const router = useRouter();
 
-	const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-		console.log('Login with:', data);
+	const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+		const result = await signIn('credentials', {
+			redirect: false,
+			email: data.email,
+			password: data.password,
+		});
+
+		if (result?.error) {
+			alert('Login failed. Please check your credentials.');
+		} else {
+			alert('Login successful');
+			router.push('/account');
+		}
 	};
 
 	return (

@@ -1,9 +1,6 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import GoogleProvider from 'next-auth/providers/google';
-import GitHubProvider from 'next-auth/providers/github';
-import EmailProvider from 'next-auth/providers/email';
 import bcrypt from 'bcrypt';
 
 import prisma from '@/lib/prisma';
@@ -30,41 +27,22 @@ export const authOptions: AuthOptions = {
 					throw new Error('No user found with this email');
 				}
 
-				const isValidPassword = await bcrypt.compare(
+				const isPasswordValid = await bcrypt.compare(
 					credentials.password,
 					user.password,
 				);
 
-				if (!isValidPassword) {
+				if (!isPasswordValid) {
 					throw new Error('Invalid password');
 				}
 
-				return user;
+				return {
+					id: user.id,
+					email: user.email,
+				};
 			},
-		}),
-		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID!,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-		}),
-		GitHubProvider({
-			clientId: process.env.GITHUB_CLIENT_ID!,
-			clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-		}),
-		EmailProvider({
-			server: {
-				host: process.env.EMAIL_SERVER_HOST!,
-				port: process.env.EMAIL_SERVER_PORT!,
-				auth: {
-					user: process.env.EMAIL_SERVER_USER!,
-					pass: process.env.EMAIL_SERVER_PASSWORD!,
-				},
-			},
-			from: process.env.EMAIL_FROM!,
 		}),
 	],
-	session: {
-		strategy: 'jwt',
-	},
 	secret: process.env.NEXTAUTH_SECRET,
 	callbacks: {
 		async jwt({ token, user }) {
