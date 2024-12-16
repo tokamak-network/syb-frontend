@@ -5,6 +5,7 @@ interface ApiRequestOptions {
 	url: string;
 	data?: any;
 	params?: any;
+	headers?: Record<string, string>;
 }
 
 export const apiRequest = async <T>({
@@ -12,6 +13,7 @@ export const apiRequest = async <T>({
 	url,
 	data,
 	params,
+	headers,
 }: ApiRequestOptions): Promise<T> => {
 	try {
 		const response = await axiosInstance({
@@ -19,6 +21,7 @@ export const apiRequest = async <T>({
 			url,
 			data,
 			params,
+			headers,
 		});
 
 		return response.data;

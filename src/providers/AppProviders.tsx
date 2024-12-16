@@ -3,6 +3,7 @@
 import React from 'react';
 import { createConfig, http, WagmiProvider } from 'wagmi';
 import { metaMask } from 'wagmi/connectors';
+import { SessionProvider } from 'next-auth/react';
 
 import { WalletProvider, ToastProvider } from '@/context';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
@@ -25,14 +26,16 @@ export const config = createConfig({
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 	return (
-		<WagmiProvider config={config}>
-			<ThemeProvider>
-				<WalletProvider>
-					<ToastProvider>
-						<ReactQueryProvider>{children}</ReactQueryProvider>
-					</ToastProvider>
-				</WalletProvider>
-			</ThemeProvider>
-		</WagmiProvider>
+		<SessionProvider>
+			<WagmiProvider config={config}>
+				<ThemeProvider>
+					<WalletProvider>
+						<ToastProvider>
+							<ReactQueryProvider>{children}</ReactQueryProvider>
+						</ToastProvider>
+					</WalletProvider>
+				</ThemeProvider>
+			</WagmiProvider>
+		</SessionProvider>
 	);
 };

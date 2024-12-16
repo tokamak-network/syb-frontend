@@ -28,15 +28,24 @@ export async function POST(req: Request) {
 
 	const hashedPassword = await bcrypt.hash(password, 10);
 
-	const user = await prisma.user.create({
-		data: {
-			email,
-			password: hashedPassword,
-		},
-	});
+	try {
+		const user = await prisma.user.create({
+			data: {
+				email,
+				password: hashedPassword,
+			},
+		});
 
-	return NextResponse.json(
-		{ message: 'User registered successfully', user },
-		{ status: HttpStatusCode.Created },
-	);
+		return NextResponse.json(
+			{ message: 'User registered successfully', user },
+			{ status: HttpStatusCode.Created },
+		);
+	} catch (error) {
+		console.error('Error creating user:', error);
+
+		return NextResponse.json(
+			{ message: 'Internal server error' },
+			{ status: HttpStatusCode.InternalServerError },
+		);
+	}
 }

@@ -29,7 +29,8 @@ export const LoginForm: React.FC = () => {
 			alert('Login failed. Please check your credentials.');
 		} else {
 			alert('Login successful');
-			router.push('/account');
+			console.log(result, 'result');
+			// router.push('/myaccount');
 		}
 	};
 

@@ -1,11 +1,14 @@
-import NextAuth, { AuthOptions } from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
+
+import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import prisma from '@/lib/prisma';
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
@@ -28,7 +31,7 @@ export const authOptions: AuthOptions = {
 				}
 
 				const isPasswordValid = await bcrypt.compare(
-					credentials.password,
+					credentials!.password,
 					user.password,
 				);
 
@@ -39,24 +42,37 @@ export const authOptions: AuthOptions = {
 				return {
 					id: user.id,
 					email: user.email,
+					name: user.name,
+					image: user.image,
 				};
 			},
 		}),
 	],
+	session: {
+		strategy: 'jwt',
+	},
+	debug: true,
 	secret: process.env.NEXTAUTH_SECRET,
 	callbacks: {
 		async jwt({ token, user }) {
 			if (user) {
 				token.id = user.id;
+				token.email = user.email;
+				token.name = user.name;
+				token.image = user.image;
+
+				token.accessToken = jwt.sign(
+					{ id: user.id, email: user.email },
+					process.env.NEXTAUTH_SECRET as string,
+					{ expiresIn: '1h' },
+				);
 			}
 
 			return token;
 		},
+
 		async session({ session, token }) {
-			if (token) {
-				session.user = session.user || {};
-				session.user.id = token.id as string;
-			}
+			session.user.accessToken = token.accessToken as string;
 
 			return session;
 		},
