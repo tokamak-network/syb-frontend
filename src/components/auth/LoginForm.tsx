@@ -1,11 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-import { useToast } from '@/context';
+import { useTheme, useToast } from '@/context';
+import { Button } from '@/components/button';
+import { inputThemeStyles } from '@/const';
 
 interface LoginFormInputs {
 	email: string;
@@ -20,13 +22,19 @@ export const LoginForm: React.FC = () => {
 	} = useForm<LoginFormInputs>();
 	const router = useRouter();
 	const { addToast } = useToast();
+	const { theme } = useTheme();
+
+	const [loading, setLoadig] = useState<boolean>(false);
 
 	const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+		setLoadig(true);
 		const result = await signIn('credentials', {
 			redirect: false,
 			email: data.email,
 			password: data.password,
 		});
+
+		setLoadig(false);
 
 		if (result?.error) {
 			addToast('error', 'Login Failed', result.error);
@@ -54,7 +62,7 @@ export const LoginForm: React.FC = () => {
 							message: 'Invalid email address',
 						},
 					})}
-					className="w-full rounded-lg border px-3 py-2"
+					className={`w-full rounded-lg border px-3 py-2 ${inputThemeStyles(theme)}`}
 					id="email"
 					type="email"
 				/>
@@ -72,7 +80,7 @@ export const LoginForm: React.FC = () => {
 							message: 'Password must be at least 6 characters',
 						},
 					})}
-					className="w-full rounded-lg border px-3 py-2"
+					className={`w-full rounded-lg border px-3 py-2 ${inputThemeStyles(theme)}`}
 					id="password"
 					type="password"
 				/>
@@ -80,12 +88,13 @@ export const LoginForm: React.FC = () => {
 					<p className="text-red-500">{errors.password.message}</p>
 				)}
 			</div>
-			<button
+			<Button
 				className="w-full rounded-lg bg-blue-500 py-2 text-white hover:bg-blue-600"
+				isLoading={loading}
 				type="submit"
 			>
 				Login
-			</button>
+			</Button>
 		</form>
 	);
 };

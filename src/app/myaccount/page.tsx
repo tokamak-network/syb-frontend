@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 import { apiRequest } from '@/utils/api';
 import { ChangePasswordModal } from '@/components/account';
+import { PageLoader } from '@/components';
 
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();
@@ -21,8 +22,6 @@ const MyAccount: React.FC = () => {
 	if (!session) {
 		return <p>You are not logged in.</p>;
 	}
-
-	console.log(session, 'session');
 
 	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -60,21 +59,23 @@ const MyAccount: React.FC = () => {
 		<div className="flex flex-col items-center space-y-6 p-6">
 			<h1 className="text-3xl font-bold">My Account</h1>
 			<div className="flex flex-col items-center space-y-4">
-				<div className="relative">
-					<Image
-						alt="Profile"
-						className="h-32 w-32 rounded-full border-2 border-gray-300 object-cover"
-						height={40}
-						src={previewImage || '/images/avatar/default-avatar.png'}
-						width={40}
-					/>
-					<input
-						accept="image/*"
-						className="absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
-						type="file"
-						onChange={handleImageUpload}
-					/>
-				</div>
+				<Suspense fallback={<PageLoader />}>
+					<div className="relative">
+						<Image
+							alt="Profile"
+							className="h-32 w-32 rounded-full border-2 border-gray-300 object-cover"
+							height={40}
+							src={previewImage || '/images/avatar/default-avatar.png'}
+							width={40}
+						/>
+						<input
+							accept="image/*"
+							className="absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+							type="file"
+							onChange={handleImageUpload}
+						/>
+					</div>
+				</Suspense>
 				<button
 					className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
 					onClick={handleSaveProfileImage}

@@ -51,7 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				{...props}
 			>
 				{isLoading ? (
-					<ImSpinner2 className="animate-spin" />
+					<ImSpinner2 className={`animate-spin ${currentThemeStyles.text}`} />
 				) : (
 					<div className="flex w-full items-center justify-center whitespace-nowrap">
 						{LeftIcon && <LeftIcon className="mr-2 flex-shrink-0" size={20} />}
