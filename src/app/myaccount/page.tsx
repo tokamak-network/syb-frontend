@@ -65,7 +65,7 @@ const MyAccount: React.FC = () => {
 						alt="Profile"
 						className="h-32 w-32 rounded-full border-2 border-gray-300 object-cover"
 						height={40}
-						src={previewImage || '/default-profile.png'}
+						src={previewImage || '/images/avatar/default-avatar.png'}
 						width={40}
 					/>
 					<input

@@ -5,6 +5,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
+import { useToast } from '@/context';
+
 interface LoginFormInputs {
 	email: string;
 	password: string;
@@ -17,6 +19,7 @@ export const LoginForm: React.FC = () => {
 		formState: { errors },
 	} = useForm<LoginFormInputs>();
 	const router = useRouter();
+	const { addToast } = useToast();
 
 	const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
 		const result = await signIn('credentials', {
@@ -26,11 +29,14 @@ export const LoginForm: React.FC = () => {
 		});
 
 		if (result?.error) {
-			alert('Login failed. Please check your credentials.');
+			addToast('error', 'Login Failed', result.error);
 		} else {
-			alert('Login successful');
-			console.log(result, 'result');
-			// router.push('/myaccount');
+			addToast(
+				'success',
+				'Login Successful',
+				'You have successfully logged in.',
+			);
+			router.push('/myaccount');
 		}
 	};
 

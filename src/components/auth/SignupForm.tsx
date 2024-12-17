@@ -4,6 +4,7 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
+import { useToast } from '@/context';
 import { apiRequest } from '@/utils/api';
 
 interface SignupFormInputs {
@@ -20,19 +21,32 @@ export const SignupForm: React.FC = () => {
 		formState: { errors },
 	} = useForm<SignupFormInputs>();
 	const router = useRouter();
+	const { addToast } = useToast();
 
 	const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+		if (data.password !== data.confirmPassword) {
+			addToast('error', 'Signup Failed', 'Passwords do not match.');
+
+			return;
+		}
+
 		try {
 			await apiRequest({
 				method: 'POST',
 				url: '/auth/register',
 				data,
 			});
-			alert('Registration successful! You can now log in.');
+			addToast(
+				'success',
+				'Signup Successful',
+				'Your account has been created.',
+			);
 			router.push('/login');
-		} catch (error) {
-			alert('Registration failed. Please try again.');
-			console.log(error, 'error');
+		} catch (error: any) {
+			const errorMessage =
+				error.response?.data?.message || 'An unexpected error occurred.';
+
+			addToast('error', 'Signup Error', errorMessage);
 		}
 	};
 
