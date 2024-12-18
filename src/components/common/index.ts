@@ -6,3 +6,4 @@ export * from './ThemeDropdown';
 export * from './DropDown';
 export * from './OrbitingIcons';
 export * from './Label';
+export * from './PageLoader';
