@@ -7,9 +7,12 @@ import Image from 'next/image';
 import { apiRequest } from '@/utils/api';
 import { ChangePasswordModal } from '@/components/account';
 import { Button, PageLoader, SearchBarComponent, Tabs } from '@/components';
+import { pinata } from '@/config';
+import { useToast } from '@/context';
 
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();
+	const { addToast } = useToast();
 	// const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -18,6 +21,7 @@ const MyAccount: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<
 		'all' | 'vouchesDid' | 'vouchesReceived'
 	>('all');
+	const [fileUploading, setFileUploading] = useState<boolean>(false);
 
 	// Mock data for vouches and score
 	const vouchesReceived = 15;
@@ -80,23 +84,20 @@ const MyAccount: React.FC = () => {
 	const handleSaveProfileImage = async () => {
 		if (!profileImage) return;
 
-		const formData = new FormData();
-
-		formData.append('file', profileImage);
-
 		try {
-			await apiRequest({
-				method: 'POST',
-				url: '/api/account/upload-profile-image',
-				data: formData,
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
+			setFileUploading(true);
+
+			const keyData: any = await apiRequest({
+				method: 'GET',
+				url: '/account/update-profile-image',
 			});
-			alert('Profile image updated successfully!');
+
+			const upload = await pinata.upload.file(profileImage).key(keyData.JWT);
+			setFileUploading(false);
+			addToast('success', 'Successful', 'Profile Image Saved Successfully!');
 		} catch (error) {
 			console.error('Error uploading profile image:', error);
-			alert('Failed to upload profile image.');
+			addToast('error', 'Failed', 'Failed to Upload Profile Image!');
 		}
 	};
 
@@ -140,6 +141,7 @@ const MyAccount: React.FC = () => {
 				<Button
 					className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
 					onClick={handleSaveProfileImage}
+					isLoading={fileUploading}
 				>
 					Save Profile Image
 				</Button>
