@@ -7,3 +7,4 @@ export * from './DropDown';
 export * from './OrbitingIcons';
 export * from './Label';
 export * from './PageLoader';
+export * from './Tabs';
