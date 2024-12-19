@@ -93,6 +93,15 @@ const MyAccount: React.FC = () => {
 			});
 
 			const upload = await pinata.upload.file(profileImage).key(keyData.JWT);
+
+			const imageUrl = `https://gateway.pinata.cloud/ipfs/${upload.IpfsHash}`;
+
+			await apiRequest({
+				method: 'POST',
+				url: '/account/update-profile-image',
+				data: { userId: session.user.id, imageUrl },
+			});
+
 			setFileUploading(false);
 			addToast('success', 'Successful', 'Profile Image Saved Successfully!');
 		} catch (error) {
@@ -140,8 +149,8 @@ const MyAccount: React.FC = () => {
 				</Suspense>
 				<Button
 					className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-					onClick={handleSaveProfileImage}
 					isLoading={fileUploading}
+					onClick={handleSaveProfileImage}
 				>
 					Save Profile Image
 				</Button>
