@@ -3,6 +3,7 @@
 import React, { Suspense, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
 
 import { apiRequest } from '@/utils/api';
 import { ChangePasswordModal } from '@/components/account';
@@ -22,6 +23,22 @@ const MyAccount: React.FC = () => {
 		'all' | 'vouchesDid' | 'vouchesReceived'
 	>('all');
 	const [fileUploading, setFileUploading] = useState<boolean>(false);
+
+	// const {
+	// 	data: user,
+	// 	isLoading,
+	// 	isError,
+	// } = useQuery({
+	// 	queryKey: ['userProfile'],
+	// 	queryFn: async () => {
+	// 		const response: any = await apiRequest({
+	// 			method: 'GET',
+	// 			url: '/account/user',
+	// 		});
+
+	// 		return response.data;
+	// 	},
+	// });
 
 	// Mock data for vouches and score
 	const vouchesReceived = 15;
