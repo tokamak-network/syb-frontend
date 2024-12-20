@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { HttpStatusCode } from 'axios';
 
 import { authOptions } from '@/lib/auth'; // Ensure this points to your NextAuth configuration
 import prisma from '@/lib/prisma'; // Ensure this points to your Prisma client
@@ -21,23 +22,23 @@ export async function GET() {
 				id: true,
 				email: true,
 				name: true,
-				image: true, // Include the profile image
+				image: true,
 			},
 		});
 
 		// If the user is not found, return a 404 response
 		if (!user) {
-			return NextResponse.json({ error: 'User not found' }, { status: 404 });
+			return NextResponse.json(
+				{ error: 'User not found' },
+				{ status: HttpStatusCode.NotFound },
+			);
 		}
 
-		// Return the user data
-		return NextResponse.json(user, { status: 200 });
+		return NextResponse.json(user, { status: HttpStatusCode.Ok });
 	} catch (error) {
-		console.error('Error fetching user data:', error);
-
 		return NextResponse.json(
-			{ error: 'Internal Server Error' },
-			{ status: 500 },
+			{ message: error },
+			{ status: HttpStatusCode.InternalServerError },
 		);
 	}
 }

@@ -3,7 +3,6 @@
 import React, { Suspense, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
 
 import { apiRequest } from '@/utils/api';
 import { ChangePasswordModal } from '@/components/account';
@@ -17,30 +16,12 @@ const MyAccount: React.FC = () => {
 	// const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
-	const [previewImage, setPreviewImage] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [activeTab, setActiveTab] = useState<
 		'all' | 'vouchesDid' | 'vouchesReceived'
 	>('all');
 	const [fileUploading, setFileUploading] = useState<boolean>(false);
 
-	// const {
-	// 	data: user,
-	// 	isLoading,
-	// 	isError,
-	// } = useQuery({
-	// 	queryKey: ['userProfile'],
-	// 	queryFn: async () => {
-	// 		const response: any = await apiRequest({
-	// 			method: 'GET',
-	// 			url: '/account/user',
-	// 		});
-
-	// 		return response.data;
-	// 	},
-	// });
-
-	// Mock data for vouches and score
 	const vouchesReceived = 15;
 	const vouchesGiven = 10;
 	const score = 85;
@@ -94,7 +75,6 @@ const MyAccount: React.FC = () => {
 
 		if (file) {
 			setProfileImage(file);
-			setPreviewImage(URL.createObjectURL(file));
 		}
 	};
 
@@ -122,8 +102,11 @@ const MyAccount: React.FC = () => {
 			setFileUploading(false);
 			addToast('success', 'Successful', 'Profile Image Saved Successfully!');
 		} catch (error) {
-			console.error('Error uploading profile image:', error);
-			addToast('error', 'Failed', 'Failed to Upload Profile Image!');
+			addToast(
+				'error',
+				'Failed',
+				`Failed to Upload Profile Image! with ${error}`,
+			);
 		}
 	};
 
@@ -153,7 +136,7 @@ const MyAccount: React.FC = () => {
 							alt="Profile"
 							className="h-64 w-64 rounded-full border-2 border-gray-300 object-cover"
 							height={100}
-							src={previewImage || '/images/avatar/default-avatar.png'}
+							src={session.user.image || '/images/avatar/default-avatar.png'}
 							width={100}
 						/>
 						<input
