@@ -16,6 +16,9 @@ const MyAccount: React.FC = () => {
 	// const router = useRouter();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
+	const [displayedImage, setDisplayedImage] = useState<string>(
+		session?.user?.image || '/images/avatar/default-avatar.png',
+	);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [activeTab, setActiveTab] = useState<
 		'all' | 'vouchesDid' | 'vouchesReceived'
@@ -75,6 +78,15 @@ const MyAccount: React.FC = () => {
 
 		if (file) {
 			setProfileImage(file);
+
+			const fileReader = new FileReader();
+
+			fileReader.onload = () => {
+				if (fileReader.result) {
+					setDisplayedImage(fileReader.result as string);
+				}
+			};
+			fileReader.readAsDataURL(file);
 		}
 	};
 
@@ -98,6 +110,8 @@ const MyAccount: React.FC = () => {
 				url: '/account/update-profile-image',
 				data: { userId: session.user.id, imageUrl },
 			});
+
+			setDisplayedImage(imageUrl);
 
 			setFileUploading(false);
 			addToast('success', 'Successful', 'Profile Image Saved Successfully!');
@@ -136,7 +150,7 @@ const MyAccount: React.FC = () => {
 							alt="Profile"
 							className="h-64 w-64 rounded-full border-2 border-gray-300 object-cover"
 							height={100}
-							src={session.user.image || '/images/avatar/default-avatar.png'}
+							src={displayedImage}
 							width={100}
 						/>
 						<input
