@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 import { apiRequest } from '@/utils/api';
-import { ChangePasswordModal } from '@/components/account';
+import { ChangePasswordModal, ChangeUsernameModal } from '@/components';
 import { Button, PageLoader, SearchBarComponent, Tabs } from '@/components';
 import { pinata } from '@/config';
 import { useToast } from '@/context';
@@ -13,8 +13,10 @@ import { useToast } from '@/context';
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();
 	const { addToast } = useToast();
-	// const router = useRouter();
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isPasswordModalOpen, setIsPasswordModalOpen] =
+		useState<boolean>(false);
+	const [isUsernameModalOpen, setIsUsernameModalOpen] =
+		useState<boolean>(false);
 	const [profileImage, setProfileImage] = useState<File | null>(null);
 	const [displayedImage, setDisplayedImage] = useState<string>(
 		session?.user?.image || '/images/avatar/default-avatar.png',
@@ -183,7 +185,10 @@ const MyAccount: React.FC = () => {
 					<div className="text-lg">
 						<strong>Username:</strong> {session?.user?.name || 'Default User'}
 					</div>
-					<Button className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600">
+					<Button
+						className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+						onClick={() => setIsUsernameModalOpen(true)}
+					>
 						Change Username
 					</Button>
 				</div>
@@ -193,7 +198,7 @@ const MyAccount: React.FC = () => {
 					</div>
 					<Button
 						className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-						onClick={() => setIsModalOpen(true)}
+						onClick={() => setIsPasswordModalOpen(true)}
 					>
 						Change Password
 					</Button>
@@ -283,10 +288,19 @@ const MyAccount: React.FC = () => {
 			</div>
 
 			{/* Change Password Modal */}
-			{isModalOpen && (
+			{isPasswordModalOpen && (
 				<ChangePasswordModal
-					isOpen={isModalOpen}
-					onClose={() => setIsModalOpen(false)}
+					isOpen={isPasswordModalOpen}
+					onClose={() => setIsPasswordModalOpen(false)}
+				/>
+			)}
+
+			{/* Change Password Modal */}
+			{isUsernameModalOpen && (
+				<ChangeUsernameModal
+					currentUsername={session.user.name || 'Default User'}
+					isOpen={isUsernameModalOpen}
+					onClose={() => setIsUsernameModalOpen(false)}
 				/>
 			)}
 		</div>
