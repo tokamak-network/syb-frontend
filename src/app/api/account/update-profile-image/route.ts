@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { HttpStatusCode } from 'axios';
+import { getServerSession } from 'next-auth';
 
 import { pinata } from '@/config';
 import { authOptions } from '@/lib/auth';
-import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';

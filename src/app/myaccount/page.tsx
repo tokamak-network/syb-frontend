@@ -21,6 +21,9 @@ const MyAccount: React.FC = () => {
 	const [displayedImage, setDisplayedImage] = useState<string>(
 		session?.user?.image || '/images/avatar/default-avatar.png',
 	);
+	const [displayedUsername, setDisplayedUsername] = useState<string>(
+		session?.user?.name || 'Default User',
+	);
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [activeTab, setActiveTab] = useState<
 		'all' | 'vouchesDid' | 'vouchesReceived'
@@ -183,7 +186,7 @@ const MyAccount: React.FC = () => {
 				</div>
 				<div className="flex items-center justify-between">
 					<div className="text-lg">
-						<strong>Username:</strong> {session?.user?.name || 'Default User'}
+						<strong>Username:</strong> {displayedUsername}
 					</div>
 					<Button
 						className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
@@ -298,9 +301,10 @@ const MyAccount: React.FC = () => {
 			{/* Change Password Modal */}
 			{isUsernameModalOpen && (
 				<ChangeUsernameModal
-					currentUsername={session.user.name || 'Default User'}
+					currentUsername={displayedUsername}
 					isOpen={isUsernameModalOpen}
 					onClose={() => setIsUsernameModalOpen(false)}
+					onUsernameChange={(newUsername) => setDisplayedUsername(newUsername)}
 				/>
 			)}
 		</div>

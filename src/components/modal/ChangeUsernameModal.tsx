@@ -3,20 +3,26 @@
 import React, { useState } from 'react';
 
 import { apiRequest } from '@/utils/api';
+import { useToast } from '@/context';
+
+import { Button } from '../button';
 
 interface ChangeUsernameModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	currentUsername: string;
+	onUsernameChange: (newUsername: string) => void;
 }
 
 export const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
 	isOpen,
 	onClose,
 	currentUsername,
+	onUsernameChange,
 }) => {
 	const [newUsername, setNewUsername] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { addToast } = useToast();
 
 	const handleChangeUsername = async () => {
 		if (!newUsername) {
@@ -28,18 +34,29 @@ export const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
 		setIsLoading(true);
 
 		try {
-			await apiRequest({
+			const response: any = await apiRequest({
 				method: 'POST',
-				url: '/api/account/update-profile',
+				url: '/account/update-profile',
 				data: {
 					newUsername,
 				},
 			});
-			alert('Username changed successfully!');
+
+			addToast(
+				'success',
+				'Username Changed',
+				response.message || 'Username changed successfully!',
+			);
+
+			onUsernameChange(newUsername);
+
 			onClose();
-		} catch (error) {
-			console.error('Error changing username:', error);
-			alert('Failed to change username.');
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Error',
+				error.response?.data?.error || 'Failed to change username.',
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -71,13 +88,13 @@ export const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
 					>
 						Cancel
 					</button>
-					<button
+					<Button
 						className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-						disabled={isLoading}
+						isLoading={isLoading}
 						onClick={handleChangeUsername}
 					>
-						{isLoading ? 'Saving...' : 'Save'}
-					</button>
+						Save
+					</Button>
 				</div>
 			</div>
 		</div>

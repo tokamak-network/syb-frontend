@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { apiRequest } from '@/utils/api';
+import { useToast } from '@/context';
 
 interface ChangePasswordModalProps {
 	isOpen: boolean;
@@ -13,14 +14,19 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 	isOpen,
 	onClose,
 }) => {
-	const [currentPassword, setCurrentPassword] = useState('');
-	const [newPassword, setNewPassword] = useState('');
-	const [confirmPassword, setConfirmPassword] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
+	const [currentPassword, setCurrentPassword] = useState<string>('');
+	const [newPassword, setNewPassword] = useState<string>('');
+	const [confirmPassword, setConfirmPassword] = useState<string>('');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { addToast } = useToast();
 
 	const handleChangePassword = async () => {
 		if (newPassword !== confirmPassword) {
-			alert('New password and confirm password do not match.');
+			addToast(
+				'error',
+				'Validation Error',
+				'New password and confirm password do not match.',
+			);
 
 			return;
 		}
@@ -28,19 +34,27 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 		setIsLoading(true);
 
 		try {
-			await apiRequest({
+			const response: any = await apiRequest({
 				method: 'POST',
-				url: '/api/account/change-password',
+				url: '/account/update-profile',
 				data: {
 					currentPassword,
 					newPassword,
 				},
 			});
-			alert('Password changed successfully!');
+
+			addToast(
+				'success',
+				'Password Changed',
+				response.message || 'Password changed successfully!',
+			);
 			onClose();
-		} catch (error) {
-			console.error('Error changing password:', error);
-			alert('Failed to change password.');
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Error',
+				error.response?.data?.error || 'Failed to change password.',
+			);
 		} finally {
 			setIsLoading(false);
 		}
