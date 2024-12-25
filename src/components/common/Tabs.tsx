@@ -19,11 +19,11 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
 			value={activeTab}
 			onValueChange={onTabChange}
 		>
-			<TabsPrimitive.List className="flex border-b">
+			<TabsPrimitive.List className="flex space-x-4 border-b">
 				{tabs.map((tab) => (
 					<TabsPrimitive.Trigger
 						key={tab.value}
-						className={`flex-1 py-2 text-center ${
+						className={`text-nowrap py-2 text-center ${
 							activeTab === tab.value
 								? 'border-b-2 border-blue-500 text-blue-500'
 								: ''
