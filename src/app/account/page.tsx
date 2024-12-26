@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button, SearchBarComponent } from '@/components';
-import { useWallet } from '@/hooks/useWallet'; // Import the useWallet hook
+import { useWallet } from '@/hooks/useWallet';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
@@ -72,7 +72,7 @@ const AccountPage: React.FC = () => {
 					{filteredAccounts.map((account) => (
 						<tr
 							key={account.id}
-							className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
+							className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
 							onClick={() => router.push(`/account/${account.id}`)}
 						>
 							<td className="px-6 py-2 text-left font-normal">{account.id}</td>

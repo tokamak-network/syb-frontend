@@ -8,6 +8,7 @@ import { ThemeDropdown } from '@/components/common';
 import { useTheme } from '@/context/ThemeContext';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
+import { useWallet } from '@/hooks/useWallet';
 
 import { Button, NavLinkButton, LinkButton } from '../button';
 
@@ -21,6 +22,8 @@ export const Header: React.FC<{
 
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
+
+	const { connect, isConnected, disconnect, connectors } = useWallet();
 
 	const handleButtonHover = (button: string) => {
 		setActiveButton(button);
@@ -118,7 +121,30 @@ export const Header: React.FC<{
 					/>
 				</div>
 			</div>
-			<ThemeDropdown />
+			<div className="flex space-x-2">
+				<ThemeDropdown />
+				<Button
+					className="flex items-center space-x-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+					onClick={
+						isConnected
+							? () => disconnect()
+							: () => connect({ connector: connectors[0] })
+					}
+				>
+					{!isConnected ? (
+						<>
+							<Image
+								alt="MetaMask Icon"
+								height={20}
+								src="/images/wallets/metamask.svg"
+								width={20}
+							/>
+						</>
+					) : (
+						<span>Disconnect</span>
+					)}
+				</Button>
+			</div>
 		</header>
 	);
 };
