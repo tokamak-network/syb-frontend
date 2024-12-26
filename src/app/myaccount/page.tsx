@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -69,6 +69,15 @@ const MyAccount: React.FC = () => {
 			score: 70,
 		},
 	];
+
+	useEffect(() => {
+		if (session) {
+			setDisplayedImage(
+				session.user?.image || '/images/avatar/default-avatar.png',
+			);
+			setDisplayedUsername(session.user?.name || 'Default User');
+		}
+	}, [session]);
 
 	if (status === 'loading') {
 		return <PageLoader />;

@@ -8,7 +8,7 @@ import { useWallet } from '@/hooks/useWallet'; // Import the useWallet hook
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
-	const { isConnected } = useWallet(); // Get MetaMask connection status from useWallet
+	const { isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [accounts, setAccounts] = useState<
 		{
