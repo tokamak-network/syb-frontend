@@ -9,9 +9,11 @@ import { ChangePasswordModal, ChangeUsernameModal } from '@/components';
 import { Button, PageLoader, SearchBarComponent, Tabs } from '@/components';
 import { pinata } from '@/config';
 import { useToast } from '@/context';
+import { useWallet } from '@/hooks/useWallet';
 
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();
+	const { isConnected, address, balance, chain } = useWallet();
 	const { addToast } = useToast();
 	const [isPasswordModalOpen, setIsPasswordModalOpen] =
 		useState<boolean>(false);
@@ -155,6 +157,8 @@ const MyAccount: React.FC = () => {
 		user.id.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
+	console.log(isConnected, address, chain, 'wallet status');
+
 	return (
 		<div className="flex flex-col items-center space-y-12 p-6">
 			<div className="flex flex-col items-center space-y-4">
@@ -216,6 +220,45 @@ const MyAccount: React.FC = () => {
 					</Button>
 				</div>
 			</div>
+			{isConnected && address && chain ? (
+				<div className="w-full max-w-2xl space-y-6">
+					{/* Account Address */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Address:</span>
+						<span>{address}</span>
+					</div>
+
+					{/* Account Balance */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Balance:</span>
+						<span>
+							{balance} {chain.nativeCurrency?.symbol || 'ETH'}
+						</span>
+					</div>
+
+					{/* Network Information */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Network:</span>
+						<div className="flex items-center space-x-2">
+							{chain.icon && (
+								<Image
+									alt={`${chain.name} Icon`}
+									height={10}
+									src={chain.icon}
+									width={10}
+								/>
+							)}
+							<span>{chain.name}</span>
+						</div>
+					</div>
+				</div>
+			) : (
+				<div className="flex flex-col items-center space-y-4">
+					<p className="text-gray-600">
+						Please login to MetaMask to activate your account.
+					</p>
+				</div>
+			)}
 			<div className="flex items-center space-x-20">
 				<div className="text-lg">
 					<strong>Vouches Received:</strong> {vouchesReceived}

@@ -11,6 +11,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 import { config } from '@/config';
+import { NETWORKS } from '@/const';
 
 export const useWallet = () => {
 	const { address, isConnected, chain, chainId } = useAccount();
@@ -45,12 +46,24 @@ export const useWallet = () => {
 		refetchOnWindowFocus: false,
 	});
 
+	const networkIcon =
+		NETWORKS.find(
+			(network) => network.value === chain?.name.toLocaleLowerCase(),
+		)?.icon || null;
+
+	const extendedChain = chain
+		? {
+				...chain,
+				icon: networkIcon,
+			}
+		: null;
+
 	return {
 		address,
 		balance,
 		isBalanceLoading,
 		isConnected,
-		chain,
+		chain: extendedChain,
 		currencySymbol,
 		chainId,
 		connectors,

@@ -6,3 +6,4 @@ export * from './landingPage';
 export * from './slider';
 export * from './projectStructure';
 export * from './themeStyles';
+export * from './networks';

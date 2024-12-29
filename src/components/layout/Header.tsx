@@ -85,7 +85,7 @@ export const Header: React.FC<{
 			</nav>
 			<div
 				ref={menuRef}
-				className={`absolute left-0 top-full ml-0 flex w-full bg-secondary p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+				className={`absolute left-0 top-full ml-0 flex w-full p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
 					isMegaMenuOpen
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
@@ -124,7 +124,7 @@ export const Header: React.FC<{
 			<div className="flex space-x-2">
 				<ThemeDropdown />
 				<Button
-					className="flex items-center space-x-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+					className="flex items-center space-x-2 rounded-lg px-4 py-2"
 					onClick={
 						isConnected
 							? () => disconnect()
