@@ -114,7 +114,7 @@ const MyAccount: React.FC = () => {
 
 			const keyData: any = await apiRequest({
 				method: 'GET',
-				url: '/account/update-profile-image',
+				url: '/myaccount/update-profile-image',
 			});
 
 			const upload = await pinata.upload.file(profileImage).key(keyData.JWT);
@@ -123,7 +123,7 @@ const MyAccount: React.FC = () => {
 
 			await apiRequest({
 				method: 'POST',
-				url: '/account/update-profile-image',
+				url: '/myaccount/update-profile-image',
 				data: { userId: session.user.id, imageUrl },
 			});
 

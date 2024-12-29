@@ -36,7 +36,7 @@ export const ChangeUsernameModal: React.FC<ChangeUsernameModalProps> = ({
 		try {
 			const response: any = await apiRequest({
 				method: 'POST',
-				url: '/account/update-profile',
+				url: '/myaccount/update-profile',
 				data: {
 					newUsername,
 				},

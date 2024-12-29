@@ -36,7 +36,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 		try {
 			const response: any = await apiRequest({
 				method: 'POST',
-				url: '/account/update-profile',
+				url: '/myaccount/update-profile',
 				data: {
 					currentPassword,
 					newPassword,
