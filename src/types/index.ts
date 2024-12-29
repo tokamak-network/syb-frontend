@@ -112,3 +112,9 @@ export interface NetworkType {
 		};
 	};
 }
+
+export interface AccountType {
+	id: string;
+	name: string;
+	image: string;
+}

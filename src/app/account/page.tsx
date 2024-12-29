@@ -1,39 +1,36 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 
-import { Button, SearchBarComponent } from '@/components';
+import { Button, PageLoader, SearchBarComponent } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
+import { apiRequest } from '@/utils/api';
+import { AccountType } from '@/types';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
 	const { isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	const [accounts, setAccounts] = useState<
-		{
-			id: string;
-			vouchesGiven: number;
-			vouchesReceived: number;
-			score: number;
-		}[]
-	>([]);
 
-	// Mock data for accounts
-	const mockAccounts = [
-		{ id: '0x123', vouchesGiven: 10, vouchesReceived: 15, score: 85 },
-		{ id: '0x456', vouchesGiven: 5, vouchesReceived: 8, score: 80 },
-		{ id: '0x789', vouchesGiven: 7, vouchesReceived: 10, score: 90 },
-		{ id: '0xabc', vouchesGiven: 2, vouchesReceived: 2, score: 70 },
-	];
+	const { data: accounts, isLoading } = useQuery({
+		queryKey: ['accounts'],
+		queryFn: async () => {
+			const response: AccountType[] = await apiRequest({
+				method: 'GET',
+				url: '/account',
+			});
 
-	useEffect(() => {
-		// Simulate fetching accounts from an API
-		setAccounts(mockAccounts);
-	}, []);
+			return response;
+		},
+	});
+
+	if (isLoading) return <PageLoader />;
 
 	// Filter accounts based on the search query
-	const filteredAccounts = accounts.filter((account) =>
+	const filteredAccounts = accounts?.filter((account: any) =>
 		account.id.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
@@ -53,13 +50,10 @@ const AccountPage: React.FC = () => {
 							User ID
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							Vouches Given
+							Name
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							Vouches Received
-						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							Score
+							User Image
 						</th>
 						{isConnected && (
 							<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
@@ -69,37 +63,45 @@ const AccountPage: React.FC = () => {
 					</tr>
 				</thead>
 				<tbody className="bg-tableBackground font-abhaya">
-					{filteredAccounts.map((account) => (
-						<tr
-							key={account.id}
-							className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
-							onClick={() => router.push(`/account/${account.id}`)}
-						>
-							<td className="px-6 py-2 text-left font-normal">{account.id}</td>
-							<td className="px-6 py-2 text-left font-normal">
-								{account.vouchesGiven}
-							</td>
-							<td className="px-6 py-2 text-left font-normal">
-								{account.vouchesReceived}
-							</td>
-							<td className="px-6 py-2 text-left font-normal">
-								{account.score}
-							</td>
-							{isConnected && (
-								<td className="flex flex-col space-y-4 whitespace-nowrap px-6 py-2 text-left font-normal">
-									<Button
-										className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-										onClick={(e) => {
-											e.stopPropagation();
-											alert(`Vouching for ${account.id}`);
-										}}
-									>
-										Vouch
-									</Button>
+					{filteredAccounts &&
+						filteredAccounts.map((account: AccountType) => (
+							<tr
+								key={account.id}
+								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
+								onClick={() => router.push(`/account/${account.id}`)}
+							>
+								<td className="px-6 py-2 text-left font-normal">
+									{account.id}
 								</td>
-							)}
-						</tr>
-					))}
+								<td className="px-6 py-2 text-left font-normal">
+									{account.name || 'Default User'}
+								</td>
+								<td className="px-6 py-2 text-left font-normal">
+									<div className="relative h-16 w-16 overflow-hidden rounded-full">
+										<Image
+											alt="User Image"
+											fill={true}
+											loading="lazy"
+											src={account.image}
+											style={{ objectFit: 'cover' }}
+										/>
+									</div>
+								</td>
+								{isConnected && (
+									<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
+										<Button
+											className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+											onClick={(e) => {
+												e.stopPropagation();
+												alert(`Vouching for ${account.id}`);
+											}}
+										>
+											Vouch
+										</Button>
+									</td>
+								)}
+							</tr>
+						))}
 				</tbody>
 			</table>
 		</div>

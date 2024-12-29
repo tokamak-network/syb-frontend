@@ -157,8 +157,6 @@ const MyAccount: React.FC = () => {
 		user.id.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
-	console.log(isConnected, address, chain, 'wallet status');
-
 	return (
 		<div className="flex flex-col items-center space-y-12 p-6">
 			<div className="flex flex-col items-center space-y-4">
