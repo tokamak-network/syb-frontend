@@ -127,7 +127,7 @@ export const Header: React.FC<{
 					className="flex items-center space-x-2 rounded-lg px-4 py-2"
 					onClick={
 						isConnected
-							? () => disconnect()
+							? () => disconnect({ connector: connectors[0] })
 							: () => connect({ connector: connectors[0] })
 					}
 				>

@@ -4,9 +4,9 @@ import { useState } from 'react';
 import {
 	useAccount,
 	useConnect,
-	useDisconnect,
 	useEnsAvatar,
 	useEnsName,
+	useDisconnect,
 } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
 

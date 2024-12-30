@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { HttpStatusCode } from 'axios';
 
 import prisma from '@/lib/prisma';
 
@@ -12,13 +13,22 @@ export async function GET(req: Request) {
 			// Fetch a specific user by ID
 			const user = await prisma.user.findUnique({
 				where: { id },
+				select: {
+					id: true,
+					email: true,
+					name: true,
+					image: true,
+				},
 			});
 
 			if (!user) {
-				return NextResponse.json({ error: 'User not found' }, { status: 404 });
+				return NextResponse.json(
+					{ error: 'User not found' },
+					{ status: HttpStatusCode.NotFound },
+				);
 			}
 
-			return NextResponse.json(user, { status: 200 });
+			return NextResponse.json(user, { status: HttpStatusCode.Ok });
 		} else {
 			// Fetch all users
 			const users = await prisma.user.findMany();
@@ -30,7 +40,7 @@ export async function GET(req: Request) {
 
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
-			{ status: 500 },
+			{ status: HttpStatusCode.InternalServerError },
 		);
 	}
 }
