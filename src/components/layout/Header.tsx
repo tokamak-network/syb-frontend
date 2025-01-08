@@ -125,11 +125,14 @@ export const Header: React.FC<{
 				<ThemeDropdown />
 				<Button
 					className="flex items-center space-x-2 rounded-lg px-4 py-2"
-					onClick={
-						isConnected
-							? () => disconnect({ connector: connectors[0] })
-							: () => connect({ connector: connectors[0] })
-					}
+					onClick={async () => {
+						if (isConnected) {
+							await disconnect(); // Use the updated disconnect function
+							console.log('Wallet disconnected successfully');
+						} else {
+							connect({ connector: connectors[0] }); // Connect wallet
+						}
+					}}
 				>
 					{!isConnected ? (
 						<>
