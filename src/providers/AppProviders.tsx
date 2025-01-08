@@ -5,7 +5,7 @@ import { createConfig, http, WagmiProvider } from 'wagmi';
 import { metaMask } from 'wagmi/connectors';
 import { SessionProvider } from 'next-auth/react';
 
-import { WalletProvider, ToastProvider } from '@/context';
+import { ToastProvider } from '@/context';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
 import { mainNetwork, l1TestNetwork, l2TestNetwork } from '@/types';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -29,11 +29,11 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 		<SessionProvider>
 			<WagmiProvider config={config}>
 				<ThemeProvider>
-					<WalletProvider>
-						<ToastProvider>
-							<ReactQueryProvider>{children}</ReactQueryProvider>
-						</ToastProvider>
-					</WalletProvider>
+					{/* <WalletProvider> */}
+					<ToastProvider>
+						<ReactQueryProvider>{children}</ReactQueryProvider>
+					</ToastProvider>
+					{/* </WalletProvider> */}
 				</ThemeProvider>
 			</WagmiProvider>
 		</SessionProvider>
