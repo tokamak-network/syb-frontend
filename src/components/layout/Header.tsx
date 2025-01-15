@@ -8,6 +8,7 @@ import { ThemeDropdown } from '@/components/common';
 import { useTheme } from '@/context/ThemeContext';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
+import { useWallet } from '@/hooks/useWallet';
 
 import { Button, NavLinkButton, LinkButton } from '../button';
 
@@ -16,11 +17,15 @@ export const Header: React.FC<{
 	isMegaMenuOpen: boolean;
 }> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
 	const [activeButton, setActiveButton] = useState<string | null>(null);
+	const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
+
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
+
+	const { connect, isConnected, disconnect, connectors, address } = useWallet();
 
 	const handleButtonHover = (button: string) => {
 		setActiveButton(button);
@@ -44,6 +49,17 @@ export const Header: React.FC<{
 			!buttonRef.current.contains(event.target as Node)
 		) {
 			onMegaMenuToggle(false);
+		}
+	};
+
+	const handleWalletMenuToggle = () => {
+		setIsWalletMenuOpen((prev) => !prev);
+	};
+
+	const handleCopyAddress = async () => {
+		if (address) {
+			await navigator.clipboard.writeText(address);
+			alert('Address copied to clipboard!');
 		}
 	};
 
@@ -82,7 +98,7 @@ export const Header: React.FC<{
 			</nav>
 			<div
 				ref={menuRef}
-				className={`absolute left-0 top-full ml-0 flex w-full bg-secondary p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+				className={`absolute left-0 top-full ml-0 flex w-full p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
 					isMegaMenuOpen
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
@@ -118,7 +134,60 @@ export const Header: React.FC<{
 					/>
 				</div>
 			</div>
-			<ThemeDropdown />
+			<div className="flex space-x-2">
+				<ThemeDropdown />
+				{isConnected ? (
+					<div className="relative">
+						{/* Wallet Dropdown Button */}
+						<Button
+							className="flex items-center space-x-2 rounded-lg px-4 py-2"
+							onClick={handleWalletMenuToggle}
+						>
+							<span>
+								{address?.slice(0, 6)}...{address?.slice(-4)}
+							</span>
+							<FiChevronDown
+								className={`ml-2 h-4 w-4 transition-transform ${isWalletMenuOpen ? 'rotate-180' : ''}`}
+								strokeWidth={2.5}
+							/>
+						</Button>
+
+						{/* Wallet Dropdown Menu */}
+						{isWalletMenuOpen && (
+							<div className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg">
+								<button
+									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									onClick={handleCopyAddress}
+								>
+									Copy Address
+								</button>
+								<button
+									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									onClick={async () => {
+										await disconnect();
+										setIsWalletMenuOpen(false);
+									}}
+								>
+									Disconnect
+								</button>
+							</div>
+						)}
+					</div>
+				) : (
+					<Button
+						className="flex items-center space-x-2 rounded-lg px-4 py-2"
+						onClick={() => connect({ connector: connectors[0] })}
+					>
+						<Image
+							alt="MetaMask Icon"
+							height={20}
+							src="/images/wallets/metamask.svg"
+							width={20}
+						/>
+						<span>Connect</span>
+					</Button>
+				)}
+			</div>
 		</header>
 	);
 };

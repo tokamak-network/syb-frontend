@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -9,9 +9,11 @@ import { ChangePasswordModal, ChangeUsernameModal } from '@/components';
 import { Button, PageLoader, SearchBarComponent, Tabs } from '@/components';
 import { pinata } from '@/config';
 import { useToast } from '@/context';
+import { useWallet } from '@/hooks/useWallet';
 
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();
+	const { isConnected, address, balance, chain } = useWallet();
 	const { addToast } = useToast();
 	const [isPasswordModalOpen, setIsPasswordModalOpen] =
 		useState<boolean>(false);
@@ -70,6 +72,15 @@ const MyAccount: React.FC = () => {
 		},
 	];
 
+	useEffect(() => {
+		if (session) {
+			setDisplayedImage(
+				session.user?.image || '/images/avatar/default-avatar.png',
+			);
+			setDisplayedUsername(session.user?.name || 'Default User');
+		}
+	}, [session]);
+
 	if (status === 'loading') {
 		return <PageLoader />;
 	}
@@ -103,7 +114,7 @@ const MyAccount: React.FC = () => {
 
 			const keyData: any = await apiRequest({
 				method: 'GET',
-				url: '/account/update-profile-image',
+				url: '/myaccount/update-profile-image',
 			});
 
 			const upload = await pinata.upload.file(profileImage).key(keyData.JWT);
@@ -112,7 +123,7 @@ const MyAccount: React.FC = () => {
 
 			await apiRequest({
 				method: 'POST',
-				url: '/account/update-profile-image',
+				url: '/myaccount/update-profile-image',
 				data: { userId: session.user.id, imageUrl },
 			});
 
@@ -207,6 +218,45 @@ const MyAccount: React.FC = () => {
 					</Button>
 				</div>
 			</div>
+			{isConnected && address && chain ? (
+				<div className="w-full max-w-2xl space-y-6">
+					{/* Account Address */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Address:</span>
+						<span>{address}</span>
+					</div>
+
+					{/* Account Balance */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Balance:</span>
+						<span>
+							{balance} {chain.nativeCurrency?.symbol || 'ETH'}
+						</span>
+					</div>
+
+					{/* Network Information */}
+					<div className="flex items-center justify-between">
+						<span className="font-semibold">Network:</span>
+						<div className="flex items-center space-x-2">
+							{chain.icon && (
+								<Image
+									alt={`${chain.name} Icon`}
+									height={10}
+									src={chain.icon}
+									width={10}
+								/>
+							)}
+							<span>{chain.name}</span>
+						</div>
+					</div>
+				</div>
+			) : (
+				<div className="flex flex-col items-center space-y-4">
+					<p className="text-gray-600">
+						Please login to MetaMask to activate your account.
+					</p>
+				</div>
+			)}
 			<div className="flex items-center space-x-20">
 				<div className="text-lg">
 					<strong>Vouches Received:</strong> {vouchesReceived}

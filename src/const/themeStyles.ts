@@ -2,7 +2,7 @@ export const themeStyles = {
 	light: {
 		text: 'text-black',
 		hoverText: 'hover:text-gray-600',
-		hoverBg: 'hover:bg-gray-400',
+		hoverBg: 'hover:bg-gray-100',
 		beforeBg: '#000000',
 		afterBg: '#000000',
 		borderColor: 'border-gray-300',
@@ -12,7 +12,7 @@ export const themeStyles = {
 	dark: {
 		text: 'text-white',
 		hoverText: 'hover:text-gray-300',
-		hoverBg: 'hover:bg-gray-600',
+		hoverBg: 'hover:bg-gray-900',
 		beforeBg: '#ffffff',
 		afterBg: '#ffffff',
 		borderColor: 'border-gray-600',
@@ -22,7 +22,7 @@ export const themeStyles = {
 	dim: {
 		text: 'text-gray-200',
 		hoverText: 'hover:text-gray-500',
-		hoverBg: 'hover:bg-gray-500',
+		hoverBg: 'hover:bg-gray-400',
 		beforeBg: '#cccccc',
 		afterBg: '#cccccc',
 		borderColor: 'border-gray-500',
