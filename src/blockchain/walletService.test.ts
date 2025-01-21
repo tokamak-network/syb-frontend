@@ -28,9 +28,11 @@ describe('walletService', () => {
 		}));
 
 		// Mock ethers behavior
-		(ethers.providers.Web3Provider as unknown as jest.Mock).mockImplementation(() => ({
-			getSigner: mockGetSigner,
-		}));
+		(ethers.providers.Web3Provider as unknown as jest.Mock).mockImplementation(
+			() => ({
+				getSigner: mockGetSigner,
+			}),
+		);
 
 		(ethers.utils.parseEther as jest.Mock).mockImplementation(
 			(value: string) => value,
