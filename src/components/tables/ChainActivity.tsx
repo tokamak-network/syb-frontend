@@ -8,9 +8,6 @@ import TxTypes from './TxType';
 import TxStatus from './TxStatus';
 import { UserAddress } from './UserAddress';
 
-// interface ChainActivityTableProps {
-// }
-
 export const ChainActivityTable: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -99,7 +96,7 @@ export const ChainActivityTable: React.FC = () => {
 								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
 							>
 								<td className="flex flex-col space-y-4 whitespace-nowrap px-6 py-2 text-left font-normal">
-									<span className="text-tableTextSecondary">{`0xHash${index}`}</span>
+									<UserAddress address={`0x${index}`} type="tx" />
 									<span className="text-tableTextSecondary">{'1m ago'}</span>
 								</td>
 								<td className="space-y-2 whitespace-nowrap px-6 py-2 text-left font-normal">
@@ -120,8 +117,14 @@ export const ChainActivityTable: React.FC = () => {
 										size={16}
 									/>
 									<div>
-										<UserAddress address={transaction.txUser.from} />
-										<UserAddress address={transaction.txUser.to} />
+										<UserAddress
+											address={transaction.txUser.from}
+											type="address"
+										/>
+										<UserAddress
+											address={transaction.txUser.to}
+											type="address"
+										/>
 									</div>
 								</td>
 								<td className="font-norma whitespace-nowrap px-6 py-2 text-right font-acme text-tableTextSecondary">

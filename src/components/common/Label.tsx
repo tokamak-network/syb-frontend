@@ -24,12 +24,14 @@ export const Label: React.FC<LabelProps> = ({
 	const router = useRouter();
 
 	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
-	const explorerPath = isTransaction ? `tx/${value}` : `address/${value}`;
+	const explorerPath = isTransaction ? `txs/${value}` : `address/${value}`;
 	const displayValue = shortenAddress(value, shorten);
 
 	const handleClick = () => {
 		if (navigateToAccount) {
-			router.push(`/account/${value}`);
+			const absolutePath = `${window.location.pathname}/${explorerPath}`;
+
+			router.push(absolutePath);
 		}
 	};
 

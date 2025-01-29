@@ -9,9 +9,10 @@ import { Label } from '../common';
 
 interface UserAddressProps {
 	address: string;
+	type: 'address' | 'tx';
 }
 
-export const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
+export const UserAddress: React.FC<UserAddressProps> = ({ address, type }) => {
 	const { addToast } = useToast();
 
 	const copyToClipboard = () => {
@@ -24,7 +25,7 @@ export const UserAddress: React.FC<UserAddressProps> = ({ address }) => {
 			<FiUser className="text-blue-500" size={20} />
 			<Label
 				explore={false}
-				isTransaction={false}
+				isTransaction={type === 'tx'}
 				navigateToAccount={true}
 				value={address}
 			/>
