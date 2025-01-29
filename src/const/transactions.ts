@@ -2,7 +2,7 @@ import { ActionMethod, ActionStatus, ActionType, ExplorerType } from '@/types';
 
 export const transactionData: ExplorerType[] = [
 	{
-		txHash: '0xUser1TransactionHash',
+		txHash: '0x0',
 		type: {
 			txType: ActionType.DEPOSIT,
 			txStatus: ActionStatus.SUCCESS,
@@ -18,7 +18,7 @@ export const transactionData: ExplorerType[] = [
 		timestamp: new Date('2024-10-16T10:30:00Z'),
 	},
 	{
-		txHash: '0xUser2TransactionHash',
+		txHash: '0x1',
 		type: {
 			txType: ActionType.WITHDRAW,
 			txStatus: ActionStatus.PENDING,
