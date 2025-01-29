@@ -1,0 +1,138 @@
+import { renderHook, act } from '@testing-library/react-hooks';
+import {
+	useAccount,
+	useConnect,
+	useDisconnect,
+	useEnsName,
+	useEnsAvatar,
+} from 'wagmi';
+import { ethers } from 'ethers';
+
+import { useWallet } from './useWallet';
+
+// Mock wagmi hooks
+jest.mock('wagmi', () => ({
+	useAccount: jest.fn(),
+	useConnect: jest.fn(),
+	useDisconnect: jest.fn(),
+	useEnsName: jest.fn(),
+	useEnsAvatar: jest.fn(),
+}));
+
+// Mock react-query's useQuery
+jest.mock('@tanstack/react-query', () => ({
+	useQuery: jest.fn(() => ({
+		data: '1.23', // Mocked balance data
+		isLoading: false, // Mocked loading state
+	})),
+}));
+
+// Mock ethers
+jest.mock('ethers', () => ({
+	ethers: {
+		utils: {
+			formatEther: jest.fn((value) => value), // Mock formatEther to return the input value
+		},
+	},
+}));
+
+describe('useWallet', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	it('should return default values when not connected', () => {
+		(useAccount as jest.Mock).mockReturnValue({
+			address: null,
+			isConnected: false,
+			chain: null,
+			chainId: null,
+		});
+		(useConnect as jest.Mock).mockReturnValue({
+			connectors: [],
+			connect: jest.fn(),
+		});
+		(useDisconnect as jest.Mock).mockReturnValue({
+			disconnect: jest.fn(),
+		});
+		(useEnsName as jest.Mock).mockReturnValue({ data: null });
+		(useEnsAvatar as jest.Mock).mockReturnValue({ data: null });
+
+		const { result } = renderHook(() => useWallet());
+
+		expect(result.current.address).toBeNull();
+		expect(result.current.isConnected).toBe(false);
+		expect(result.current.chain).toBeNull();
+		expect(result.current.chainId).toBeNull();
+		expect(result.current.balance).toBeNull();
+		expect(result.current.isBalanceLoading).toBe(false);
+		expect(result.current.currencySymbol).toBe('ETH');
+		expect(result.current.ensName).toBeNull();
+		expect(result.current.ensAvatar).toBeNull();
+		expect(result.current.connectors).toEqual([]);
+	});
+
+	it('should return wallet data when connected', async () => {
+		(useAccount as jest.Mock).mockReturnValue({
+			address: '0x123',
+			isConnected: true,
+			chain: { id: 1, name: 'Ethereum', nativeCurrency: { symbol: 'ETH' } },
+			chainId: 1,
+		});
+		(useConnect as jest.Mock).mockReturnValue({
+			connectors: [{ id: 'injected', name: 'MetaMask' }],
+			connect: jest.fn(),
+		});
+		(useDisconnect as jest.Mock).mockReturnValue({
+			disconnect: jest.fn(),
+		});
+		(useEnsName as jest.Mock).mockReturnValue({ data: 'example.eth' });
+		(useEnsAvatar as jest.Mock).mockReturnValue({ data: 'avatar_url' });
+
+		(ethers.utils.formatEther as jest.Mock).mockReturnValue('1.23');
+
+		const { result, waitForNextUpdate } = renderHook(() => useWallet());
+
+		await waitForNextUpdate();
+
+		expect(result.current.address).toBe('0x123');
+		expect(result.current.isConnected).toBe(true);
+		expect(result.current.chain).toEqual({
+			id: 1,
+			name: 'Ethereum',
+			nativeCurrency: { symbol: 'ETH' },
+			icon: null,
+		});
+		expect(result.current.chainId).toBe(1);
+		expect(result.current.balance).toBe('1.23');
+		expect(result.current.isBalanceLoading).toBe(false);
+		expect(result.current.currencySymbol).toBe('ETH');
+		expect(result.current.ensName).toBe('example.eth');
+		expect(result.current.ensAvatar).toBe('avatar_url');
+		expect(result.current.connectors).toEqual([
+			{ id: 'injected', name: 'MetaMask' },
+		]);
+	});
+
+	it('should handle disconnect correctly', async () => {
+		const mockDisconnect = jest.fn();
+
+		(useAccount as jest.Mock).mockReturnValue({
+			address: '0x123',
+			isConnected: true,
+			chain: { id: 1, name: 'Ethereum', nativeCurrency: { symbol: 'ETH' } },
+			chainId: 1,
+		});
+		(useDisconnect as jest.Mock).mockReturnValue({
+			disconnect: mockDisconnect,
+		});
+
+		const { result } = renderHook(() => useWallet());
+
+		await act(async () => {
+			await result.current.disconnect();
+		});
+
+		expect(mockDisconnect).toHaveBeenCalled();
+	});
+});

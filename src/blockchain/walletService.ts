@@ -1,7 +1,5 @@
 import { ethers } from 'ethers';
 
-// Function to deposit ETH
-
 export const depositETH = async (amount: number, platformAddress: string) => {
 	try {
 		if (!window.ethereum) {
@@ -18,10 +16,10 @@ export const depositETH = async (amount: number, platformAddress: string) => {
 		console.log(`Deposited ${amount} ETH to ${platformAddress}`);
 	} catch (error) {
 		console.error('Deposit failed:', error);
+		throw error;
 	}
 };
 
-// Function to withdraw ETH
 export const withdrawETH = async (amount: number, userAddress: string) => {
 	try {
 		const provider = new ethers.providers.Web3Provider(window.ethereum as any);
@@ -35,5 +33,6 @@ export const withdrawETH = async (amount: number, userAddress: string) => {
 		console.log(`Withdrew ${amount} ETH to ${userAddress}`);
 	} catch (error) {
 		console.error('Withdrawal failed:', error);
+		throw error;
 	}
 };
