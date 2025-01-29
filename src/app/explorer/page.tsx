@@ -6,7 +6,6 @@ import {
 	Button,
 	Modal,
 	UserActivityLineChart,
-	UserGraph,
 	ChainActivityTable,
 } from '@/components';
 
@@ -14,24 +13,23 @@ const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
 
 	return (
-		<div className="space-y-4 bg-primary p-8">
-			<UserGraph />
+		<div className="space-y-4 p-8">
 			<div className="flex justify-between space-x-10">
-				<div className="flex w-full flex-col space-y-14 font-narnoor text-[#9E9EA3]">
-					<div className="flex flex-col space-y-14 rounded-lg bg-[#1E1F2090] px-2.5 pt-5">
+				<div className="flex w-full flex-col space-y-14 font-narnoor">
+					<div className="flex flex-col space-y-14 rounded-lg bg-gray-300 px-2.5 pt-5">
 						<span className="text-3xl">Transactions</span>
 						<span className="text-xl">
 							<span className="text-3xl text-white">1,129,100</span> (24h)
 						</span>
 					</div>
-					<div className="flex flex-col space-y-14 rounded-lg bg-[#1E1F2090] px-2.5 pt-5">
+					<div className="flex flex-col space-y-14 rounded-lg bg-gray-300 px-2.5 pt-5">
 						<span className="text-3xl">Pending transactions</span>
 						<span className="text-xl">
 							<span className="text-3xl text-white">151</span> (24h)
 						</span>
 					</div>
 				</div>
-				<div className="w-full bg-[#1E1F2090]">
+				<div className="w-full bg-gray-300">
 					<UserActivityLineChart />
 				</div>
 			</div>

@@ -29,11 +29,9 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 		<SessionProvider>
 			<WagmiProvider config={config}>
 				<ThemeProvider>
-					{/* <WalletProvider> */}
 					<ToastProvider>
 						<ReactQueryProvider>{children}</ReactQueryProvider>
 					</ToastProvider>
-					{/* </WalletProvider> */}
 				</ThemeProvider>
 			</WagmiProvider>
 		</SessionProvider>

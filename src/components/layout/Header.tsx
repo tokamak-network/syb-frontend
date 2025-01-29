@@ -18,6 +18,7 @@ export const Header: React.FC<{
 }> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
 	const [activeButton, setActiveButton] = useState<string | null>(null);
 	const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
+	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +39,7 @@ export const Header: React.FC<{
 			return;
 		}
 
-		onMegaMenuToggle(false); // Updates state in Layout
+		onMegaMenuToggle(false);
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
@@ -81,20 +82,8 @@ export const Header: React.FC<{
 			/>
 			<nav className="flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
 				<NavLinkButton href="/" label="Home" />
-				<NavLinkButton href="/myaccount" label="My Account" />
-				<NavLinkButton href="/account" label="Account" />
-				<NavLinkButton href="/login" label="Login/Signup" />
-				<Button
-					ref={buttonRef}
-					className="flex items-center justify-between font-bold"
-					onClick={() => onMegaMenuToggle(!isMegaMenuOpen)}
-				>
-					About
-					<FiChevronDown
-						className={`ml-2 h-4 w-4 transition-transform ${isMegaMenuOpen ? 'rotate-180' : ''}`}
-						strokeWidth={2.5}
-					/>
-				</Button>
+				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
+				<NavLinkButton href="/explorer" label="Explorer" />
 			</nav>
 			<div
 				ref={menuRef}
