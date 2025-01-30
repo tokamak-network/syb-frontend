@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { IoArrowBackSharp } from 'react-icons/io5';
 
 import { transactionData } from '@/const/transactions';
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
+import { Button } from '@/components';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();
@@ -17,6 +20,16 @@ const TransactionDetailsPage: React.FC = () => {
 
 	return (
 		<div className="p-8">
+			<div className="mb-4">
+				<Link href="/explorer/txs">
+					<Button
+						className="inline-flex w-auto items-center text-blue-500 hover:underline"
+						leftIcon={IoArrowBackSharp}
+					>
+						Back to Transaction List
+					</Button>
+				</Link>
+			</div>
 			<h1 className="mb-4 text-2xl font-bold">Transaction Details</h1>
 			<div className="space-y-4">
 				<div>

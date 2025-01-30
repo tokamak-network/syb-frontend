@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { transactionData } from '@/const/transactions';
 import { SearchBarComponent } from '@/components';
 import TxTypes from '@/components/tables/TxType';
@@ -15,6 +16,7 @@ const TransactionsPage: React.FC = () => {
 
 	const filteredTransactions = transactionData.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
+
 		return (
 			transaction.txHash.toLowerCase().includes(query) ||
 			transaction.txUser.from.toLowerCase().includes(query) ||
@@ -71,9 +73,7 @@ const TransactionsPage: React.FC = () => {
 						<tr
 							key={transaction.txHash}
 							className="cursor-pointer hover:bg-gray-100"
-							onClick={() =>
-								router.push(`/explorer/transactions/${transaction.txHash}`)
-							}
+							onClick={() => router.push(`/explorer/txs/${transaction.txHash}`)}
 						>
 							<td className="px-6 py-2">{transaction.txHash}</td>
 							<td className="px-6 py-2">

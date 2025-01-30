@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 import {
 	Button,
@@ -16,12 +17,14 @@ const ExplorerPage: React.FC = () => {
 		<div className="space-y-4 p-8">
 			<div className="flex justify-between space-x-10">
 				<div className="flex w-full flex-col space-y-14 font-narnoor">
-					<div className="flex flex-col space-y-14 rounded-lg bg-gray-300 px-2.5 pt-5">
-						<span className="text-3xl">Transactions</span>
-						<span className="text-xl">
-							<span className="text-3xl text-white">1,129,100</span> (24h)
-						</span>
-					</div>
+					<Link href={'/explorer/txs'}>
+						<div className="flex flex-col space-y-14 rounded-lg bg-gray-300 px-2.5 pt-5">
+							<span className="text-3xl">Transactions</span>
+							<span className="text-xl">
+								<span className="text-3xl text-white">1,129,100</span> (24h)
+							</span>
+						</div>
+					</Link>
 					<div className="flex flex-col space-y-14 rounded-lg bg-gray-300 px-2.5 pt-5">
 						<span className="text-3xl">Pending transactions</span>
 						<span className="text-xl">

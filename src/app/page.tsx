@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { UserActivityLineChart, ChainActivityTable, Label } from '@/components';
+import { UserActivityLineChart, Label } from '@/components';
 
 const HomePage: React.FC = () => {
 	return (
