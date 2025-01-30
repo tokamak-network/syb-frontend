@@ -29,9 +29,9 @@ export const Label: React.FC<LabelProps> = ({
 
 	const handleClick = () => {
 		if (navigateToAccount) {
-			const absolutePath = `${window.location.pathname}/${explorerPath}`;
+			const relativePath = `explorer/${explorerPath}`;
 
-			router.push(absolutePath);
+			router.push(relativePath);
 		}
 	};
 
