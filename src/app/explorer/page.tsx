@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import {
 	Button,
@@ -17,6 +18,8 @@ const ExplorerPage: React.FC = () => {
 	const [showMoreUsers, setShowMoreUsers] = useState(false);
 
 	const [txOption, setTxOption] = useState('all');
+
+	const router = useRouter();
 
 	const filteredTransactions = transactionData.filter((tx) => {
 		if (txOption === 'all') return true;
@@ -90,7 +93,7 @@ const ExplorerPage: React.FC = () => {
 						<Button
 							className="rounded-xl bg-buttonPrimary font-kanit font-bold text-white"
 							onClick={() => {
-								window.location.href = '/explorer/txs';
+								router.push('/explorer/txs');
 							}}
 						>
 							Show All Transactions
