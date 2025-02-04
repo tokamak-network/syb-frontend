@@ -35,9 +35,6 @@ const ExplorerPage: React.FC = () => {
 			<div className="space-y-8">
 				<TransactionDropDown value={txOption} onChange={setTxOption} />
 				<div>
-					<h2 className="text-2xl">
-						{formatFirstLetter(txOption)} Transactions
-					</h2>
 					<table className="w-full text-left text-sm text-tableTextPrimary">
 						<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
 							<tr>
@@ -102,13 +99,6 @@ const ExplorerPage: React.FC = () => {
 				</div>
 			</div>
 			<div className="space-y-8">
-				{/* User Activity Chart */}
-				<div className="rounded-lg bg-gray-300 p-5">
-					<h2 className="text-3xl">User Activity</h2>
-					<UserActivityLineChart />
-				</div>
-
-				{/* Top Users */}
 				<div className="rounded-lg bg-gray-300 p-5">
 					<h2 className="text-3xl">Top Users</h2>
 					<Button

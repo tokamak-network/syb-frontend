@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { IoArrowBackSharp } from 'react-icons/io5';
 
 import { transactionData } from '@/const/transactions';
-import { SearchBarComponent } from '@/components';
+import { Button, SearchBarComponent } from '@/components';
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
 
@@ -43,7 +44,15 @@ const TransactionsPage: React.FC = () => {
 
 	return (
 		<div className="p-8">
-			<h1 className="mb-4 text-2xl font-bold">All Transactions</h1>
+			<Button
+				className="inline-flex w-auto items-center text-blue-500 hover:underline"
+				leftIcon={IoArrowBackSharp}
+				onClick={() => {
+					router.push('/explorer');
+				}}
+			>
+				Back to Explorer Page
+			</Button>
 			<SearchBarComponent
 				placeholder="Search by Transaction Hash, From, or To"
 				onChange={(e) => setSearchQuery(e.target.value)}
