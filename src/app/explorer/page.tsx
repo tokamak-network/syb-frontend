@@ -35,7 +35,7 @@ const ExplorerPage: React.FC = () => {
 					<h2 className="text-2xl">
 						{formatFirstLetter(txOption)} Transactions
 					</h2>
-					<table className="w-full bg-tableRowBackground text-left text-sm text-tableTextPrimary">
+					<table className="w-full text-left text-sm text-tableTextPrimary">
 						<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
 							<tr>
 								<th className="px-6 py-3" scope="col">
@@ -52,7 +52,7 @@ const ExplorerPage: React.FC = () => {
 								</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className="bg-tableRowBackground">
 							{filteredTransactions.map((tx, index) => (
 								<tr
 									key={tx.txHash}
@@ -86,6 +86,16 @@ const ExplorerPage: React.FC = () => {
 							))}
 						</tbody>
 					</table>
+					<div className="mt-4">
+						<Button
+							className="bg-buttonPrimary rounded-xl font-kanit font-bold"
+							onClick={() => {
+								window.location.href = '/explorer/txs';
+							}}
+						>
+							Show All Transactions
+						</Button>
+					</div>
 				</div>
 			</div>
 			<div className="space-y-8">
