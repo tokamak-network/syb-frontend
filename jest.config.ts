@@ -12,16 +12,21 @@ const config: Config = {
   testEnvironment: 'jsdom',
   transformIgnorePatterns: [
     // Transpile these modules that use ESM syntax
-    'node_modules/(?!(@wagmi|@tanstack/react-query)/)',
+    'node_modules/(?!(@wagmi|@tanstack/react-query|viem)/)',
   ],
   transform: {
     // Use babel-jest to transform files
     '^.+\\.(t|j)sx?$': 'babel-jest',
+    '^.+\\.mjs$': 'jest-esm-transformer',
+    '^.+\\.tsx?$': 'ts-jest',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^wagmi$': 'wagmi/dist/cjs/index.js',
+    '^viem$': 'viem/dist/cjs/index.js',
   },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   globals: {
     'ts-jest': {
       isolatedModules: true, // Optimize TypeScript parsing

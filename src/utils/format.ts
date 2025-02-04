@@ -66,3 +66,11 @@ export const formatFullTime = (date: Date) => {
 
 	return new Intl.DateTimeFormat('en-US', options).format(date);
 };
+
+export const formatFirstLetter = (input: string) => {
+	if (!input) {
+		return input;
+	}
+
+	return input.charAt(0).toUpperCase() + input.slice(1);
+};

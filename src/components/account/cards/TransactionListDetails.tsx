@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { ActionStatus, ActionType, TransactionType } from '@/types';
-import { formatDate, formatTime } from '@/utils';
+import { TransactionType } from '@/types';
+import { formatDate, formatTime, statusStyles, typeStyles } from '@/utils';
 
 export const TransactionListDetailsCard: React.FC<TransactionType> = ({
 	time,
@@ -9,21 +9,6 @@ export const TransactionListDetailsCard: React.FC<TransactionType> = ({
 	type,
 	status,
 }) => {
-	// Define color styles based on ActionType
-	const typeStyles = {
-		[ActionType.DEPOSIT]: 'text-green-500',
-		[ActionType.WITHDRAW]: 'text-sky-500',
-		[ActionType.EXPLODE]: 'text-gray-500',
-		[ActionType.VOUCH]: 'text-blue-500',
-	};
-
-	// Define color styles based on ActionStatus
-	const statusStyles = {
-		[ActionStatus.SUCCESS]: 'text-green-700',
-		[ActionStatus.PENDING]: 'text-yellow-700',
-		[ActionStatus.FAILED]: 'text-red-700',
-	};
-
 	return (
 		<div className="flex justify-between rounded-lg border-2 border-gray-200 border-opacity-40 p-2">
 			{/* Transaction Information */}

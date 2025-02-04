@@ -9,7 +9,8 @@ import {
 	UserActivityLineChart,
 } from '@/components';
 import transactionData from '@/const/transactions';
-import { ActionStatus } from '@/types';
+import { ActionStatus, ActionType } from '@/types';
+import { formatFirstLetter, statusStyles, typeStyles } from '@/utils';
 
 const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -28,18 +29,63 @@ const ExplorerPage: React.FC = () => {
 
 	return (
 		<div className="grid grid-cols-2 gap-8 p-8">
-			{/* Transactions Column */}
 			<div className="space-y-8">
 				<TransactionDropDown value={txOption} onChange={setTxOption} />
 				<div>
-					<h2 className="text-2xl">Filtered Transactions</h2>
-					<ul>
-						{filteredTransactions.map((tx) => (
-							<li key={tx.txHash} className="p-2">
-								{tx.txHash}
-							</li>
-						))}
-					</ul>
+					<h2 className="text-2xl">
+						{formatFirstLetter(txOption)} Transactions
+					</h2>
+					<table className="w-full bg-tableRowBackground text-left text-sm text-tableTextPrimary">
+						<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
+							<tr>
+								<th className="px-6 py-3" scope="col">
+									Transaction Hash
+								</th>
+								<th className="px-6 py-3" scope="col">
+									Type
+								</th>
+								<th className="px-6 py-3" scope="col">
+									Status
+								</th>
+								<th className="px-6 py-3" scope="col">
+									Amount
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{filteredTransactions.map((tx, index) => (
+								<tr
+									key={tx.txHash}
+									className={`${
+										index % 2 === 0
+											? 'bg-tableRowBackground'
+											: 'bg-tableBackground'
+									} hover:bg-tableHover`}
+								>
+									<td className="px-6 py-4 font-medium text-tableTextPrimary">
+										{tx.txHash}
+									</td>
+									<td
+										className={`px-6 py-4 ${
+											typeStyles[tx.type.txType as ActionType] || ''
+										}`}
+									>
+										{tx.type.txType}
+									</td>
+									<td
+										className={`px-6 py-4 font-bold ${
+											statusStyles[tx.type.txStatus as ActionStatus] || ''
+										}`}
+									>
+										{tx.type.txStatus}
+									</td>
+									<td className="px-6 py-4 text-tableTextPrimary">
+										{tx.value}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			</div>
 			<div className="space-y-8">
