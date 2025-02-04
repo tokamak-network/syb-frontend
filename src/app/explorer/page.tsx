@@ -88,7 +88,7 @@ const ExplorerPage: React.FC = () => {
 					</table>
 					<div className="mt-4">
 						<Button
-							className="bg-buttonPrimary rounded-xl font-kanit font-bold"
+							className="rounded-xl bg-buttonPrimary font-kanit font-bold"
 							onClick={() => {
 								window.location.href = '/explorer/txs';
 							}}
