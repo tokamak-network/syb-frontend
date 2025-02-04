@@ -8,6 +8,7 @@ export const themeStyles = {
 		borderColor: 'border-gray-300',
 		selectedColor: 'bg-blue-100',
 		background: 'bg-white',
+		buttonBg: 'bg-blue-500',
 	},
 	dark: {
 		text: 'text-white',
@@ -18,6 +19,7 @@ export const themeStyles = {
 		borderColor: 'border-gray-600',
 		selectedColor: 'bg-gray-700',
 		background: 'bg-black',
+		buttonBg: 'bg-gray-700',
 	},
 	dim: {
 		text: 'text-gray-200',
@@ -28,6 +30,7 @@ export const themeStyles = {
 		borderColor: 'border-gray-500',
 		selectedColor: 'bg-gray-800',
 		background: 'bg-gray-600',
+		buttonBg: 'bg-gray-500',
 	},
 };
 

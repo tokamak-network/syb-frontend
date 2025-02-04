@@ -88,7 +88,7 @@ const ExplorerPage: React.FC = () => {
 					</table>
 					<div className="mt-4">
 						<Button
-							className="rounded-xl bg-buttonPrimary font-kanit font-bold"
+							className="rounded-xl bg-buttonPrimary font-kanit font-bold text-white"
 							onClick={() => {
 								window.location.href = '/explorer/txs';
 							}}
@@ -135,7 +135,7 @@ const ExplorerPage: React.FC = () => {
 					Add MetaMask
 				</Button>
 				<Button
-					className="rounded-xl bg-[#1379FF] font-kanit font-bold text-white"
+					className="rounded-xl bg-buttonPrimary font-kanit font-bold text-white"
 					onClick={() => setModalOpen(false)}
 				>
 					Close

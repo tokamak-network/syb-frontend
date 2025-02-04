@@ -40,7 +40,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					backgroundImage ? 'bg-cover bg-center bg-no-repeat' : '',
 					isLoading && 'cursor-wait',
 					className,
-					currentThemeStyles.hoverText,
 				)}
 				disabled={isLoading || disabled}
 				style={{
