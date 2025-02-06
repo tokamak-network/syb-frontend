@@ -9,3 +9,6 @@ export * from './Label';
 export * from './PageLoader';
 export * from './Tabs';
 export * from './TransactionDropDown';
+export * from './Select';
+export * from './Input';
+export * from './Form';
