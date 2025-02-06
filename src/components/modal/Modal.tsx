@@ -2,7 +2,7 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 
 import { cn } from '@/utils/cn';
-import { Button } from '@/components';
+import { themeStyles } from '@/const';
 
 interface ModalProps {
 	isOpen: boolean;
@@ -10,6 +10,7 @@ interface ModalProps {
 	className?: string;
 	children: React.ReactNode;
 	title: string;
+	theme?: 'light' | 'dark' | 'dim';
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -18,26 +19,29 @@ export const Modal: React.FC<ModalProps> = ({
 	className,
 	children,
 	title,
+	theme = 'light',
 }) => {
+	const styles = themeStyles[theme];
+
 	return (
 		<Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
 			<Dialog.Portal>
 				{/* Overlay */}
 				<Dialog.Overlay
-					className={cn(
-						'fixed inset-0 bg-black bg-opacity-50 transition-opacity',
-					)}
+					className={cn('fixed inset-0 bg-opacity-50 transition-opacity')}
 				/>
 
 				{/* Content */}
 				<Dialog.Content
 					className={cn(
-						'fixed left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-6 shadow-lg focus:outline-none',
+						'fixed left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-6 shadow-lg focus:outline-none',
+						styles.background,
+						styles.text,
 						className,
 					)}
 				>
 					{/* Title */}
-					<Dialog.Title className="mb-4 text-lg font-bold">
+					<Dialog.Title className={cn('mb-4 text-lg font-bold', styles.text)}>
 						{title}
 					</Dialog.Title>
 
@@ -46,14 +50,16 @@ export const Modal: React.FC<ModalProps> = ({
 
 					{/* Close Button */}
 					<Dialog.Close asChild>
-						<Button
+						<button
 							aria-label="Close"
 							className={cn(
-								'absolute right-2 top-2 text-gray-500 hover:text-gray-700',
+								'absolute right-2 top-2 rounded-full p-1',
+								styles.hoverBg,
+								styles.hoverText,
 							)}
 						>
 							✕
-						</Button>
+						</button>
 					</Dialog.Close>
 				</Dialog.Content>
 			</Dialog.Portal>
