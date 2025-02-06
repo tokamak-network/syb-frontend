@@ -81,7 +81,7 @@ export const Header: React.FC<{
 				width={200}
 			/>
 			<nav className="flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
-				<NavLinkButton href="/" label="Home" />
+				<NavLinkButton href="/home" label="Home" />
 				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
 			</nav>

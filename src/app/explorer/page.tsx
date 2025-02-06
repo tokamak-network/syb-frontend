@@ -3,15 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import {
-	Button,
-	TransactionDropDown,
-	Modal,
-	UserActivityLineChart,
-} from '@/components';
+import { Button, TransactionDropDown, Modal } from '@/components';
 import transactionData from '@/const/transactions';
 import { ActionStatus, ActionType } from '@/types';
-import { formatFirstLetter, statusStyles, typeStyles } from '@/utils';
+import { statusStyles, typeStyles } from '@/utils';
 
 const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
