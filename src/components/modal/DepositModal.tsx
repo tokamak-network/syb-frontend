@@ -311,7 +311,6 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 			</Dialog.Content>
 			<Modal
 				className="z-50"
-				content={`Are you sure you want to deposit ${amount} ETH?`}
 				isOpen={isConfirmOpen}
 				title={'Confirm Deposit'}
 				onClose={() => setIsConfirmOpen(false)}

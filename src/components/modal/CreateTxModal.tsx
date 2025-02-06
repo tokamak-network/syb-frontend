@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { Input, Select, Button } from '@/components';
-import { Modal } from '@/components/modal/Modal';
+import { Input, Select, Button, Modal } from '@/components';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -36,7 +35,6 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	return (
 		<Modal
 			className="max-w-md"
-			content={''}
 			isOpen={isOpen}
 			title="Create Transaction"
 			onClose={onClose}

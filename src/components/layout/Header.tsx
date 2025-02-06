@@ -11,6 +11,7 @@ import { cn } from '@/utils/cn';
 import { useWallet } from '@/hooks/useWallet';
 
 import { Button, NavLinkButton, LinkButton } from '../button';
+import { CreateTxModal } from '../modal';
 
 export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
@@ -18,6 +19,8 @@ export const Header: React.FC<{
 }> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
 	const [activeButton, setActiveButton] = useState<string | null>(null);
 	const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
+	const [isCreateTxModalOpen, setIsCreateTxModalOpen] =
+		useState<boolean>(false);
 	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
 	const menuRef = useRef<HTMLDivElement>(null);
@@ -64,6 +67,19 @@ export const Header: React.FC<{
 		}
 	};
 
+	const handleCreateTxModalToggle = () => {
+		setIsCreateTxModalOpen((prev) => !prev);
+	};
+
+	const handleTransactionSubmit = (data: {
+		type: string;
+		from: string;
+		to: string;
+		amount: string;
+	}) => {
+		console.log('Transaction Data:', data);
+	};
+
 	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside);
 
@@ -84,6 +100,12 @@ export const Header: React.FC<{
 				<NavLinkButton href="/home" label="Home" />
 				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
+				<Button
+					className="flex items-center space-x-2 rounded-lg px-4 py-2"
+					onClick={handleCreateTxModalToggle}
+				>
+					CreateTx
+				</Button>
 			</nav>
 			<div
 				ref={menuRef}
@@ -177,6 +199,13 @@ export const Header: React.FC<{
 					</Button>
 				)}
 			</div>
+			<CreateTxModal
+				isConnected={isConnected}
+				isOpen={isCreateTxModalOpen}
+				walletAddress={address}
+				onClose={handleCreateTxModalToggle}
+				onSubmit={handleTransactionSubmit}
+			/>
 		</header>
 	);
 };
