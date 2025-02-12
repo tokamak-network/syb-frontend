@@ -6,6 +6,17 @@ import { useTheme } from '@/context/ThemeContext';
 import { cn } from '@/utils/cn';
 import { themeStyles } from '@/const/themeStyles';
 
+export const navButtonStyles = (
+	currentThemeStyles: { text: string; hoverText: string },
+	className?: string,
+) =>
+	cn(
+		`relative flex flex-col items-center rounded px-8 py-1 transition-colors duration-200`,
+		currentThemeStyles.text,
+		currentThemeStyles.hoverText,
+		className,
+	);
+
 interface NavLinkButtonProps {
 	href: string;
 	label: string;
@@ -27,12 +38,7 @@ export const NavLinkButton: React.FC<NavLinkButtonProps> = ({
 	return (
 		<Link
 			{...props}
-			className={cn(
-				`relative flex flex-col items-center rounded px-8 py-1 transition-colors duration-200`,
-				currentThemeStyles.text,
-				currentThemeStyles.hoverText,
-				className,
-			)}
+			className={navButtonStyles(currentThemeStyles, className)}
 			href={href}
 		>
 			<span>{label}</span>

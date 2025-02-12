@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Input, Select, Button, Modal } from '@/components';
+import { useWallet } from '@/hooks/useWallet';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -22,15 +23,40 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	isConnected,
 	walletAddress,
 }) => {
-	const [txType, setTxType] = useState('create account');
-	const [txFrom, setTxFrom] = useState(walletAddress || '');
-	const [txTo, setTxTo] = useState('');
-	const [txAmount, setTxAmount] = useState('');
+	const { balance } = useWallet();
+	const [txType, setTxType] = useState<string>('create account');
+	const [txFrom, setTxFrom] = useState<string>(walletAddress || '');
+	const [txTo, setTxTo] = useState<string>('');
+	const [txAmount, setTxAmount] = useState<string>('');
+	const [error, setError] = useState<string | null>(null);
 
 	const handleSend = () => {
+		// Validate the amount input
+		if (!txAmount || parseFloat(txAmount) <= 0) {
+			setError('Amount must be greater than 0');
+
+			return;
+		}
+
+		// Clear any existing error and proceed with submission
+		setError(null);
 		onSubmit({ type: txType, from: txFrom, to: txTo, amount: txAmount });
 		onClose();
 	};
+
+	useEffect(() => {
+		if (walletAddress) {
+			setTxFrom(walletAddress);
+		}
+	}, [walletAddress]);
+
+	useEffect(() => {
+		if (!isConnected) {
+			setTxFrom('');
+			setTxTo('');
+			setTxAmount('');
+		}
+	}, [isConnected]);
 
 	return (
 		<Modal
@@ -55,14 +81,21 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				/>
 
 				<Input
-					disabled={!!walletAddress}
+					disabled={!!walletAddress || !isConnected}
 					label="From"
 					value={txFrom}
 					onChange={(e) => setTxFrom(e.target.value)}
 				/>
 
+				{isConnected && (
+					<div className="text-sm text-gray-500">
+						Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
+					</div>
+				)}
+
 				{['vouch', 'unvouch', 'explode'].includes(txType) && (
 					<Input
+						disabled={!isConnected}
 						label="To"
 						placeholder={
 							txType === 'explode' ? 'Select from list...' : 'Enter address'
@@ -73,12 +106,14 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				)}
 
 				<Input
+					disabled={!isConnected}
 					label="Amount"
 					placeholder="Enter amount"
 					type="number"
 					value={txAmount}
 					onChange={(e) => setTxAmount(e.target.value)}
 				/>
+				{error && <p className="text-sm text-red-500">{error}</p>}
 
 				<Button
 					className="mt-4 w-full"

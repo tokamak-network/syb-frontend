@@ -28,9 +28,7 @@ export const Select: React.FC<SelectProps> = ({
 	return (
 		<div className={cn('flex flex-col space-y-2', className)}>
 			{label && (
-				<label
-					className={cn('text-sm font-medium text-gray-700', labelClassName)}
-				>
+				<label className={cn('text-sm font-medium', labelClassName)}>
 					{label}
 				</label>
 			)}
@@ -57,7 +55,7 @@ export const Select: React.FC<SelectProps> = ({
 							{options.map((option) => (
 								<RadixSelect.Item
 									key={option.value}
-									className="cursor-pointer p-2 text-sm hover:bg-blue-100"
+									className="cursor-pointer p-2 text-sm text-primary hover:bg-blue-100"
 									value={option.value}
 								>
 									<RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>

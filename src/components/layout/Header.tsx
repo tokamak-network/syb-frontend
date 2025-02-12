@@ -10,7 +10,7 @@ import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useWallet } from '@/hooks/useWallet';
 
-import { Button, NavLinkButton, LinkButton } from '../button';
+import { Button, NavLinkButton, LinkButton, navButtonStyles } from '../button';
 import { CreateTxModal } from '../modal';
 
 export const Header: React.FC<{
@@ -100,12 +100,6 @@ export const Header: React.FC<{
 				<NavLinkButton href="/home" label="Home" />
 				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
-				<Button
-					className="flex items-center space-x-2 rounded-lg px-4 py-2"
-					onClick={handleCreateTxModalToggle}
-				>
-					CreateTx
-				</Button>
 			</nav>
 			<div
 				ref={menuRef}
@@ -146,10 +140,17 @@ export const Header: React.FC<{
 				</div>
 			</div>
 			<div className="flex space-x-2">
+				<Button
+					className={
+						(navButtonStyles(currentThemeStyles), 'items-center font-bold')
+					}
+					onClick={handleCreateTxModalToggle}
+				>
+					CreateTx
+				</Button>
 				<ThemeDropdown />
 				{isConnected ? (
 					<div className="relative">
-						{/* Wallet Dropdown Button */}
 						<Button
 							className="flex items-center space-x-2 rounded-lg px-4 py-2"
 							onClick={handleWalletMenuToggle}
@@ -163,7 +164,6 @@ export const Header: React.FC<{
 							/>
 						</Button>
 
-						{/* Wallet Dropdown Menu */}
 						{isWalletMenuOpen && (
 							<div className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg">
 								<button

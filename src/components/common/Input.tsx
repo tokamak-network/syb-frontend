@@ -20,7 +20,7 @@ export const Input: React.FC<InputProps> = ({
 		<div className="flex flex-col space-y-2">
 			{label && (
 				<label
-					className={cn('text-sm font-medium text-gray-700', labelClassName)}
+					className={cn('text-sm font-medium', labelClassName)}
 					htmlFor={props.id}
 				>
 					{label}
@@ -28,7 +28,7 @@ export const Input: React.FC<InputProps> = ({
 			)}
 			<input
 				className={cn(
-					'w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50',
+					'w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50',
 					className,
 				)}
 				{...props}
