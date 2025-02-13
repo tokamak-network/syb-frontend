@@ -24,7 +24,11 @@ export const Modal: React.FC<ModalProps> = ({
 	const styles = themeStyles[theme];
 
 	return (
-		<Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+		<Dialog.Root
+			modal={false}
+			open={isOpen}
+			onOpenChange={(open) => !open && onClose()}
+		>
 			<Dialog.Portal>
 				{/* Overlay */}
 				<Dialog.Overlay
