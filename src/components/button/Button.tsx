@@ -39,6 +39,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					'flex items-center justify-center rounded px-4 py-2 font-medium transition-colors duration-200',
 					backgroundImage ? 'bg-cover bg-center bg-no-repeat' : '',
 					isLoading && 'cursor-wait',
+					currentThemeStyles.buttonBg,
+					currentThemeStyles.buttonText,
+					currentThemeStyles.hoverBg,
 					className,
 				)}
 				disabled={isLoading || disabled}

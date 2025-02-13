@@ -31,17 +31,21 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const [error, setError] = useState<string | null>(null);
 
 	const handleSend = () => {
-		// Validate the amount input
 		if (!txAmount || parseFloat(txAmount) <= 0) {
 			setError('Amount must be greater than 0');
 
 			return;
 		}
 
-		// Clear any existing error and proceed with submission
 		setError(null);
 		onSubmit({ type: txType, from: txFrom, to: txTo, amount: txAmount });
 		onClose();
+	};
+
+	const handleSetMaxAmount = () => {
+		if (balance) {
+			setTxAmount(parseFloat(balance).toFixed(2));
+		}
 	};
 
 	useEffect(() => {
@@ -65,7 +69,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			title="Create Transaction"
 			onClose={onClose}
 		>
-			<div className="space-y-4">
+			<div className="flex flex-col space-y-4">
 				<Select
 					label="Type"
 					options={[
@@ -106,24 +110,36 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					/>
 				)}
 
-				<Input
-					disabled={!isConnected}
-					label="Amount"
-					placeholder="Enter amount"
-					type="number"
-					value={txAmount}
-					onChange={(e) => setTxAmount(e.target.value)}
-				/>
+				<div className="flex space-x-2">
+					<Input
+						disabled={!isConnected}
+						placeholder="Enter amount"
+						type="number"
+						value={txAmount}
+						onChange={(e) => setTxAmount(e.target.value)}
+					/>
+					<Button
+						className="px-2 py-1 text-sm"
+						disabled={!isConnected || !balance}
+						onClick={handleSetMaxAmount}
+					>
+						Max
+					</Button>
+				</div>
+
 				{error && <p className="text-sm text-red-500">{error}</p>}
 
-				<Button
-					className="mt-4 w-full"
-					disabled={!isConnected}
-					title={!isConnected ? 'Please connect with MetaMask first' : ''}
-					onClick={handleSend}
-				>
-					Send
-				</Button>
+				<div className="flex w-full justify-center">
+					<Button
+						className="mt-4 w-auto"
+						disabled={!isConnected}
+						onClick={handleSend}
+					>
+						{!isConnected
+							? 'Please connect with MetaMask first'
+							: txType.toLocaleUpperCase()}
+					</Button>
+				</div>
 			</div>
 		</Modal>
 	);

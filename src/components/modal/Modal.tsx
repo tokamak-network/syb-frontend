@@ -56,11 +56,7 @@ export const Modal: React.FC<ModalProps> = ({
 					<Dialog.Close asChild>
 						<button
 							aria-label="Close"
-							className={cn(
-								'absolute right-2 top-2 rounded-full p-1',
-								styles.hoverBg,
-								styles.hoverText,
-							)}
+							className={cn('absolute right-2 top-2 rounded-full p-1')}
 						>
 							✕
 						</button>
