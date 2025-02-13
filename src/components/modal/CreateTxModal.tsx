@@ -89,7 +89,8 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 				{isConnected && (
 					<div className="text-sm text-gray-500">
-						Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
+						Current Balance:{' '}
+						{balance ? `${parseFloat(balance).toFixed(2)} ETH` : 'Loading...'}
 					</div>
 				)}
 
