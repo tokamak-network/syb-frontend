@@ -114,9 +114,13 @@ export interface NetworkType {
 }
 
 export interface AccountType {
-	id: string;
-	name: string;
-	image: string;
+	accountIndex: string;
+	balance: string;
+	name?: string;
+	image?: string;
+	tonEthereumAddress: string;
+	itemId: number;
+	nonce: number;
 }
 
 interface L1Info {

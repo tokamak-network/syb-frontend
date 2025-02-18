@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button, TransactionDropDown, Modal, PageLoader } from '@/components';
 import transactionData from '@/const/transactions';
 import {
+	AccountType,
 	ActionStatus,
 	ActionType,
 	ExplorerType,
@@ -20,12 +21,18 @@ import {
 } from '@/utils';
 import { apiRequest } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'path';
 
 const fetchTransactions = async (): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
 		url: '/transactions-history',
+	});
+};
+
+const fetchAccounts = async (): Promise<any> => {
+	return apiRequest({
+		method: 'GET',
+		url: '/accounts',
 	});
 };
 
@@ -39,8 +46,8 @@ const ExplorerPage: React.FC = () => {
 
 	const {
 		data: transactionHistory,
-		isLoading,
-		error,
+		isLoading: isLoadingTx,
+		error: txError,
 	} = useQuery({
 		queryKey: ['transactions'],
 		queryFn: fetchTransactions,
@@ -48,15 +55,28 @@ const ExplorerPage: React.FC = () => {
 		refetchInterval: 30000,
 	});
 
-	if (isLoading) return <PageLoader />;
+	const {
+		data: accountsData,
+		isLoading: isLoadingAccounts,
+		error: accountsError,
+	} = useQuery({
+		queryKey: ['accounts'],
+		queryFn: fetchAccounts,
+	});
 
-	if (error) {
+	if (isLoadingTx || isLoadingAccounts) return <PageLoader />;
+
+	if (txError || accountsError) {
 		return (
 			<div className="p-8 text-center text-red-500">
-				Error loading transactions. Please try again later.
+				{txError ? 'Error loading transactions. ' : ''}
+				{accountsError ? 'Error loading accounts. ' : ''}
+				Please try again later.
 			</div>
 		);
 	}
+
+	const accounts = accountsData?.accounts || [];
 
 	const filteredTransactions = transactionHistory?.transactions.filter((tx) => {
 		if (txOption === 'all') return true;
@@ -69,7 +89,7 @@ const ExplorerPage: React.FC = () => {
 		<div className="grid grid-cols-2 gap-8 p-8">
 			<div className="space-y-8">
 				<TransactionDropDown value={txOption} onChange={setTxOption} />
-				<div>
+				<div className="space-y-1">
 					<table className="w-full text-left text-sm text-tableTextPrimary">
 						<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
 							<tr>
@@ -117,6 +137,45 @@ const ExplorerPage: React.FC = () => {
 							{transactionHistory.pendingItems} pending transactions
 						</div>
 					)}
+					<Button
+						className="rounded-full"
+						onClick={() => {
+							router.push('/explorer/txs');
+						}}
+					>
+						Show All Transactions
+					</Button>
+				</div>
+			</div>
+
+			<div className="space-y-8">
+				<h2 className="py-1 text-xl font-bold">Active Accounts</h2>
+				<div>
+					<table className="w-full text-left text-sm text-tableTextPrimary">
+						<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
+							<tr>
+								<th className="px-6 py-3">Address</th>
+								<th className="px-6 py-3">Balance</th>
+							</tr>
+						</thead>
+						<tbody className="bg-tableRowBackground">
+							{accounts.map((account: AccountType, index: number) => (
+								<tr
+									key={account.accountIndex}
+									className={`${
+										index % 2 === 0
+											? 'bg-tableRowBackground'
+											: 'bg-tableBackground'
+									} hover:bg-tableHover`}
+								>
+									<td className="px-6 py-4 font-medium">
+										{formatAddress(account.tonEthereumAddress)}
+									</td>
+									<td className="px-6 py-4">{formatAmount(account.balance)}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
