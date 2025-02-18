@@ -13,6 +13,8 @@ import {
 	TransactionResponse,
 } from '@/types';
 import {
+	fetchAccounts,
+	fetchTransactions,
 	formatAddress,
 	formatAmount,
 	formatTime,
@@ -21,20 +23,6 @@ import {
 } from '@/utils';
 import { apiRequest } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
-
-const fetchTransactions = async (): Promise<TransactionResponse> => {
-	return apiRequest({
-		method: 'GET',
-		url: '/transactions-history',
-	});
-};
-
-const fetchAccounts = async (): Promise<any> => {
-	return apiRequest({
-		method: 'GET',
-		url: '/accounts',
-	});
-};
 
 const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);

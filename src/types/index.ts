@@ -21,14 +21,15 @@ export interface User {
 }
 
 export enum ActionType {
-	DEPOSIT = 'Deposit',
+	DEPOSIT = 'CreateAccountDeposit',
 	WITHDRAW = 'Withdraw',
 	EXPLODE = 'Explode',
 	VOUCH = 'Vouch',
+	EXIT = 'ForceExit',
 }
 
 export enum ActionStatus {
-	SUCCESS = 'Success',
+	FORGED = 'Forged',
 	PENDING = 'Pending',
 	FAILED = 'Failed',
 }

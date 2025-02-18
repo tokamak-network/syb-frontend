@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IoArrowBackSharp } from 'react-icons/io5';
 
-import { transactionData } from '@/const/transactions';
-import { Button, SearchBarComponent } from '@/components';
+import { Button, PageLoader, SearchBarComponent } from '@/components';
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
+import { useQuery } from '@tanstack/react-query';
+import { fetchTransactions } from '@/utils';
+import { ActionType } from '@/types';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
@@ -15,13 +17,28 @@ const TransactionsPage: React.FC = () => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const itemsPerPage = 10;
 
-	const filteredTransactions = transactionData.filter((transaction) => {
+	const {
+		data: transactionHistory,
+		isLoading: isLoadingTx,
+		error: txError,
+	} = useQuery({
+		queryKey: ['transactions'],
+		queryFn: fetchTransactions,
+		staleTime: 30000,
+		refetchInterval: 30000,
+	});
+
+	if (isLoadingTx) return <PageLoader />;
+
+	const transactions = transactionHistory?.transactions || [];
+
+	const filteredTransactions = transactions.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
 
 		return (
-			transaction.txHash.toLowerCase().includes(query) ||
-			transaction.txUser.from.toLowerCase().includes(query) ||
-			transaction.txUser.to.toLowerCase().includes(query)
+			transaction.id.toLowerCase().includes(query) ||
+			transaction.fromTonEthereumAddress.toLowerCase().includes(query) ||
+			transaction.fromAccountIndex.toLowerCase().includes(query)
 		);
 	});
 
@@ -43,9 +60,9 @@ const TransactionsPage: React.FC = () => {
 	};
 
 	return (
-		<div className="p-8">
+		<div className="space-y-2 p-8">
 			<Button
-				className="inline-flex w-auto items-center text-blue-500 hover:underline"
+				className="inline-flex w-auto items-center hover:underline"
 				leftIcon={IoArrowBackSharp}
 				onClick={() => {
 					router.push('/explorer');
@@ -80,19 +97,21 @@ const TransactionsPage: React.FC = () => {
 				<tbody className="divide-y divide-gray-200">
 					{currentTransactions.map((transaction) => (
 						<tr
-							key={transaction.txHash}
+							key={transaction.id}
 							className="cursor-pointer hover:bg-gray-100"
-							onClick={() => router.push(`/explorer/txs/${transaction.txHash}`)}
+							onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
 						>
-							<td className="px-6 py-2">{transaction.txHash}</td>
+							<td className="px-6 py-2">{transaction.L1Info.ethereumTxHash}</td>
 							<td className="px-6 py-2">
-								<TxTypes txType={transaction.type.txType} />
+								<TxTypes txType={transaction.type as ActionType.DEPOSIT} />
 							</td>
-							<td className="px-6 py-2">{transaction.txUser.from}</td>
-							<td className="px-6 py-2">{transaction.txUser.to}</td>
 							<td className="px-6 py-2">
-								<TxStatus status={transaction.type.txStatus} />
+								{transaction.fromTonEthereumAddress}
 							</td>
+							<td className="px-6 py-2">{transaction.toTonEthereumAddress}</td>
+							{/* <td className="px-6 py-2">
+								<TxStatus status={transaction.type} />
+							</td> */}
 						</tr>
 					))}
 				</tbody>

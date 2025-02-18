@@ -16,7 +16,7 @@ const TxTypes: React.FC<TxTypesProps> = ({ txType }) => {
 
 	return (
 		<div
-			className={`flex rounded-md ${txTypesStyles} items-center space-x-2 px-2 py-1 text-center`}
+			className={`flex rounded-md ${txTypesStyles} w-fit items-center space-x-2 px-2 py-1 text-center`}
 		>
 			{txType}
 		</div>

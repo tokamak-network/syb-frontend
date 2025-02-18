@@ -1,5 +1,7 @@
 // utils/format.ts
 
+import { format, formatDistanceToNow } from 'date-fns';
+
 /**
  * Shortens an Ethereum address for display.
  * @param address - The Ethereum address to shorten.
@@ -84,4 +86,12 @@ export const formatAddress = (address: string) => {
 	if (!address) return '-';
 	const cleanAddress = address.replace('ton:', '');
 	return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
+};
+
+export const formatTimestamp = (timestamp: string | Date): string => {
+	const date = new Date(timestamp);
+	const timeAgo = formatDistanceToNow(date, { addSuffix: true });
+	const fullDate = format(date, "MMM-dd-yyyy hh:mm:ss a '+UTC'");
+
+	return `${timeAgo} (${fullDate})`;
 };
