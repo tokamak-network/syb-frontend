@@ -44,7 +44,7 @@ const AccountDetailsPage: React.FC = () => {
 			{account && (
 				<div className="flex flex-col items-center space-y-4">
 					<h1 className="text-3xl font-bold">Account Details</h1>
-					<p className="text-lg">Account ID: {account.id}</p>
+					<p className="text-lg">Account ID: {account.accountIndex}</p>
 					<p className="text-lg">Name: {account.name || 'No Name Provided'}</p>
 					<div className="relative h-32 w-32 overflow-hidden rounded-full">
 						<Image

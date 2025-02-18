@@ -66,12 +66,12 @@ const AccountPage: React.FC = () => {
 					{filteredAccounts &&
 						filteredAccounts.map((account: AccountType) => (
 							<tr
-								key={account.id}
+								key={account.accountIndex}
 								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
-								onClick={() => router.push(`/account/${account.id}`)}
+								onClick={() => router.push(`/account/${account.accountIndex}`)}
 							>
 								<td className="px-6 py-2 text-left font-normal">
-									{account.id}
+									{account.accountIndex}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
 									{account.name || 'Default User'}
@@ -82,7 +82,7 @@ const AccountPage: React.FC = () => {
 											alt="User Image"
 											fill={true}
 											loading="lazy"
-											src={account.image}
+											src={account.image as string}
 											style={{ objectFit: 'cover' }}
 										/>
 									</div>
@@ -93,7 +93,7 @@ const AccountPage: React.FC = () => {
 											className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
 											onClick={(e) => {
 												e.stopPropagation();
-												alert(`Vouching for ${account.id}`);
+												alert(`Vouching for ${account.accountIndex}`);
 											}}
 										>
 											Vouch

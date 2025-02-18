@@ -6,7 +6,7 @@ export const explorerData: ExplorerType[] = [
 			'0x512dd790de38114e95fbc98477605caf3e26f1a48963f9b5aaeebd5613cf48e7',
 		type: {
 			txType: ActionType.DEPOSIT,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.FORGED,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863455,
@@ -57,7 +57,7 @@ export const explorerData: ExplorerType[] = [
 			'0xd64dd790de38114e95fbc98477605caf3e26f1a48963f9b5aaeebd5613cf48c8',
 		type: {
 			txType: ActionType.VOUCH,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.PENDING,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863458,
@@ -91,7 +91,7 @@ export const explorerData: ExplorerType[] = [
 			'0xf95dd790de38114e95fbc98477605caf3e26f1a48963f9b5aaeebd5613cf48e0',
 		type: {
 			txType: ActionType.WITHDRAW,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.FORGED,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863460,
@@ -142,7 +142,7 @@ export const explorerData: ExplorerType[] = [
 			'0xi48dd790de38114e95fbc98477605caf3e26f1a48963f9b5aaeebd5613cf48b6',
 		type: {
 			txType: ActionType.EXPLODE,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.PENDING,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863463,

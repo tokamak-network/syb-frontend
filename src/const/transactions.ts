@@ -5,7 +5,7 @@ export const transactionData: ExplorerType[] = [
 		txHash: '0x0',
 		type: {
 			txType: ActionType.DEPOSIT,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.FORGED,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863465,
@@ -53,7 +53,7 @@ export const transactionData: ExplorerType[] = [
 		txHash: '0xUser4TransactionHash',
 		type: {
 			txType: ActionType.VOUCH,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.FAILED,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863468,
@@ -85,7 +85,7 @@ export const transactionData: ExplorerType[] = [
 		txHash: '0xUser6TransactionHash',
 		type: {
 			txType: ActionType.WITHDRAW,
-			txStatus: ActionStatus.SUCCESS,
+			txStatus: ActionStatus.FORGED,
 		},
 		method: ActionMethod.TRANSFER,
 		blockNumber: 20863470,

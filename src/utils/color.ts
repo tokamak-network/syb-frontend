@@ -25,7 +25,7 @@ export const typeStyles = {
 };
 
 export const statusStyles = {
-	[ActionStatus.SUCCESS]: 'text-green-700',
+	[ActionStatus.FORGED]: 'text-green-700',
 	[ActionStatus.PENDING]: 'text-yellow-700',
 	[ActionStatus.FAILED]: 'text-red-700',
 };
