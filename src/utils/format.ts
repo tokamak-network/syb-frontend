@@ -76,12 +76,12 @@ export const formatFirstLetter = (input: string) => {
 };
 
 export const formatAmount = (amount: string) => {
-  const ethAmount = parseFloat(amount) / 1e18;
-  return `${ethAmount.toFixed(4)} ETH`;
+	const ethAmount = parseFloat(amount) / 1e18;
+	return `${ethAmount.toFixed(4)} ETH`;
 };
 
 export const formatAddress = (address: string) => {
-  if (!address) return '-';
-  const cleanAddress = address.replace('ton:', '');
-  return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
+	if (!address) return '-';
+	const cleanAddress = address.replace('ton:', '');
+	return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
 };
