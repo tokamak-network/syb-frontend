@@ -74,3 +74,14 @@ export const formatFirstLetter = (input: string) => {
 
 	return input.charAt(0).toUpperCase() + input.slice(1);
 };
+
+export const formatAmount = (amount: string) => {
+  const ethAmount = parseFloat(amount) / 1e18;
+  return `${ethAmount.toFixed(4)} ETH`;
+};
+
+export const formatAddress = (address: string) => {
+  if (!address) return '-';
+  const cleanAddress = address.replace('ton:', '');
+  return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
+};

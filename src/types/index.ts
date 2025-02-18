@@ -118,3 +118,33 @@ export interface AccountType {
 	name: string;
 	image: string;
 }
+
+interface L1Info {
+  ethereumBlockNum: number;
+  historicDepositAmountUSD: number | null;
+  depositAmount: string;
+  toForgeL1TransactionsNum: number;
+  userOrigin: boolean;
+  ethereumTxHash: string;
+  l1Fee: string;
+}
+
+export interface Transaction {
+  L1Info: L1Info;
+  amount: string;
+  batchNum: number;
+  fromAccountIndex: string;
+  fromTonEthereumAddress: string;
+  id: string;
+  itemId: number;
+  position: number;
+  timestamp: string;
+  toAccountIndex: string;
+  toTonEthereumAddress: string | null;
+  type: string;
+}
+
+export interface TransactionResponse {
+  transactions: Transaction[];
+  pendingItems: number;
+}
