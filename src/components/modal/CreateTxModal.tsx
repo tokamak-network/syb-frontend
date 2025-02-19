@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
+import { contracts } from '@/contracts';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
