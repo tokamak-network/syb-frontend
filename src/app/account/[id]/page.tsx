@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import { apiRequest } from '@/utils/api';
 import { Button, PageLoader } from '@/components';
-import { AccountType } from '@/types';
+import { Account } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
 
 const AccountDetailsPage: React.FC = () => {
@@ -22,7 +22,7 @@ const AccountDetailsPage: React.FC = () => {
 	} = useQuery({
 		queryKey: ['account', id],
 		queryFn: async () => {
-			const response: AccountType = await apiRequest({
+			const response: Account = await apiRequest({
 				method: 'GET',
 				url: `/account?id=${id}`,
 			});

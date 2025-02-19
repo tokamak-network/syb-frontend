@@ -114,7 +114,7 @@ export interface NetworkType {
 	};
 }
 
-export interface AccountType {
+export interface Account {
 	accountIndex: string;
 	balance: string;
 	name?: string;
@@ -151,5 +151,10 @@ export interface Transaction {
 
 export interface TransactionResponse {
 	transactions: Transaction[];
+	pendingItems: number;
+}
+
+export interface AccountsResponse {
+	accounts: Account[];
 	pendingItems: number;
 }

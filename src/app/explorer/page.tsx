@@ -4,14 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button, TransactionDropDown, Modal, PageLoader } from '@/components';
-import transactionData from '@/const/transactions';
-import {
-	AccountType,
-	ActionStatus,
-	ActionType,
-	ExplorerType,
-	TransactionResponse,
-} from '@/types';
 import {
 	fetchAccounts,
 	fetchTransactions,
@@ -23,6 +15,7 @@ import {
 } from '@/utils';
 import { apiRequest } from '@/utils/api';
 import { useQuery } from '@tanstack/react-query';
+import { Account } from '@/types';
 
 const ExplorerPage: React.FC = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -147,7 +140,7 @@ const ExplorerPage: React.FC = () => {
 							</tr>
 						</thead>
 						<tbody className="bg-tableRowBackground">
-							{accounts.map((account: AccountType, index: number) => (
+							{accounts.map((account: Account, index: number) => (
 								<tr
 									key={account.accountIndex}
 									className={`${
@@ -165,6 +158,14 @@ const ExplorerPage: React.FC = () => {
 						</tbody>
 					</table>
 				</div>
+				<Button
+					className="rounded-full"
+					onClick={() => {
+						router.push('/explorer/accounts');
+					}}
+				>
+					Show All Accounts
+				</Button>
 			</div>
 		</div>
 	);

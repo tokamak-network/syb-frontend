@@ -7,11 +7,13 @@ import Image from 'next/image';
 
 import { apiRequest } from '@/utils/api';
 import { Button, PageLoader } from '@/components';
-import { AccountType } from '@/types';
+import { Account } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
+import { fetchAccountByID } from '@/utils';
 
 const AccountDetailsPage: React.FC = () => {
-	const { id } = useParams();
+	const params = useParams();
+	const id = decodeURIComponent(params.ethaddress as string);
 	const { isConnected } = useWallet();
 
 	const {
@@ -20,16 +22,13 @@ const AccountDetailsPage: React.FC = () => {
 		isError,
 	} = useQuery({
 		queryKey: ['account', id],
-		queryFn: async () => {
-			const response: AccountType = await apiRequest({
-				method: 'GET',
-				url: `/account?id=${id}`,
-			});
-
-			return response;
-		},
+		queryFn: () => fetchAccountByID(id as string),
+		staleTime: 30000,
+		refetchInterval: 30000,
 		enabled: !!id,
 	});
+
+	console.log(account, 'account');
 
 	if (isError) {
 		return (
@@ -44,16 +43,10 @@ const AccountDetailsPage: React.FC = () => {
 				<div className="flex flex-col items-center space-y-4">
 					<h1 className="text-3xl font-bold">Account Details</h1>
 					<p className="text-lg">Account ID: {account.accountIndex}</p>
-					<p className="text-lg">Name: {account.name || 'No Name Provided'}</p>
-					<div className="relative h-32 w-32 overflow-hidden rounded-full">
-						<Image
-							alt="User Image"
-							fill={true}
-							loading="lazy"
-							src={account.image || '/images/avatar/default-avatar.png'}
-							style={{ objectFit: 'cover' }}
-						/>
-					</div>
+					<p className="text-lg">
+						Ethereum Address: {account.tonEthereumAddress}
+					</p>
+					<p className="text-lg">Balance: {account.balance}</p>
 					{isConnected && (
 						<Button className="rounded-lg bg-blue-500 px-4 py-2 text-white">
 							Vouch

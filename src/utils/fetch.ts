@@ -1,4 +1,4 @@
-import { Transaction, TransactionResponse } from '@/types';
+import { Account, Transaction, TransactionResponse } from '@/types';
 import { apiRequest } from './api';
 
 export const fetchTransactions = async (): Promise<TransactionResponse> => {
@@ -21,5 +21,14 @@ export const fetchTransactionByHash = async (
 	return apiRequest({
 		method: 'GET',
 		url: `/transactions-history/${txHash}`,
+	});
+};
+
+export const fetchAccountByID = async (
+	accountIndex: string,
+): Promise<Account> => {
+	return apiRequest({
+		method: 'GET',
+		url: `/accounts/${accountIndex}`,
 	});
 };

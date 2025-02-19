@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, PageLoader, SearchBarComponent } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { apiRequest } from '@/utils/api';
-import { AccountType } from '@/types';
+import { Account } from '@/types';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
@@ -18,7 +18,7 @@ const AccountPage: React.FC = () => {
 	const { data: accounts, isLoading } = useQuery({
 		queryKey: ['accounts'],
 		queryFn: async () => {
-			const response: AccountType[] = await apiRequest({
+			const response: Account[] = await apiRequest({
 				method: 'GET',
 				url: '/account',
 			});
@@ -47,13 +47,13 @@ const AccountPage: React.FC = () => {
 				<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
 					<tr>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							User ID
+							Account ID
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							Name
+							Ethereum Address
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							User Image
+							Balance
 						</th>
 						{isConnected && (
 							<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
@@ -64,7 +64,7 @@ const AccountPage: React.FC = () => {
 				</thead>
 				<tbody className="bg-tableBackground font-abhaya">
 					{filteredAccounts &&
-						filteredAccounts.map((account: AccountType) => (
+						filteredAccounts.map((account: Account) => (
 							<tr
 								key={account.accountIndex}
 								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
@@ -74,18 +74,10 @@ const AccountPage: React.FC = () => {
 									{account.accountIndex}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
-									{account.name || 'Default User'}
+									{account.tonEthereumAddress}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
-									<div className="relative h-16 w-16 overflow-hidden rounded-full">
-										<Image
-											alt="User Image"
-											fill={true}
-											loading="lazy"
-											src={account.image as string}
-											style={{ objectFit: 'cover' }}
-										/>
-									</div>
+									{account.balance}
 								</td>
 								{isConnected && (
 									<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
