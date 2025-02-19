@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
-import { contracts } from '@/contracts';
+import { useSepoliaTransactions } from '@/hooks/useSepolia';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -12,6 +12,7 @@ interface CreateTxModalProps {
 		from: string;
 		to: string;
 		amount: string;
+		hash?: `0x${string}`;
 	}) => void;
 	isConnected: boolean;
 	walletAddress?: string;
@@ -25,27 +26,87 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	walletAddress,
 }) => {
 	const { balance } = useWallet();
+	const { handleCreateAccount, handleDeposit } = useSepoliaTransactions();
+
 	const [txType, setTxType] = useState<string>('create account');
 	const [txFrom, setTxFrom] = useState<string>(walletAddress || '');
 	const [txTo, setTxTo] = useState<string>('');
 	const [txAmount, setTxAmount] = useState<string>('');
 	const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSend = () => {
-		if (!txAmount || parseFloat(txAmount) <= 0) {
-			setError('Amount must be greater than 0');
-
+	const handleSend = async () => {
+		if (!isConnected) {
+			setError('Please connect your wallet first');
 			return;
 		}
 
+		if (!txAmount || parseFloat(txAmount) <= 0) {
+			setError('Amount must be greater than 0');
+			return;
+		}
+
+		setIsLoading(true);
 		setError(null);
-		onSubmit({ type: txType, from: txFrom, to: txTo, amount: txAmount });
-		onClose();
+
+		try {
+			let hash: `0x${string}`;
+
+			switch (txType) {
+				case 'create account':
+					hash = await handleCreateAccount(txAmount);
+					break;
+
+				case 'deposit':
+					if (!txTo) throw new Error('Recipient address required');
+					hash = await handleDeposit(txTo, txAmount);
+					break;
+
+				// case 'vouch':
+				//   if (!txTo) throw new Error('Recipient address required');
+				//   hash = await handleVouch(txTo, txAmount);
+				//   break;
+
+				// case 'unvouch':
+				//   if (!txTo) throw new Error('Recipient address required');
+				//   hash = await handleUnvouch(txTo);
+				//   break;
+
+				// case 'exit':
+				//   if (!txTo) throw new Error('Recipient address required');
+				//   hash = await handleExit(txTo);
+				//   break;
+
+				// case 'explode':
+				//   if (!txTo) throw new Error('Recipient address required');
+				//   hash = await handleExplode(txTo);
+				//   break;
+
+				default:
+					throw new Error('Unknown transaction type');
+			}
+
+			onSubmit({
+				type: txType,
+				from: txFrom,
+				to: txTo,
+				amount: txAmount,
+				hash,
+			});
+			onClose();
+			setTxAmount('');
+			setTxTo('');
+			setError(null);
+		} catch (err: any) {
+			setError(err.message || 'Transaction failed');
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleSetMaxAmount = () => {
 		if (balance) {
-			setTxAmount(parseFloat(balance).toFixed(2));
+			setTxAmount(balance);
 		}
 	};
 
@@ -94,12 +155,13 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 				{isConnected && (
 					<div className="text-sm text-gray-500">
-						Current Balance:{' '}
-						{balance ? `${parseFloat(balance).toFixed(2)} ETH` : 'Loading...'}
+						Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
 					</div>
 				)}
 
-				{['vouch', 'unvouch', 'explode'].includes(txType) && (
+				{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
+					txType,
+				) && (
 					<Input
 						disabled={!isConnected}
 						label="To"
@@ -111,34 +173,40 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					/>
 				)}
 
-				<div className="flex space-x-2">
-					<Input
-						disabled={!isConnected}
-						placeholder="Enter amount"
-						type="number"
-						value={txAmount}
-						onChange={(e) => setTxAmount(e.target.value)}
-					/>
-					<Button
-						className="px-2 py-1 text-sm"
-						disabled={!isConnected || !balance}
-						onClick={handleSetMaxAmount}
-					>
-						Max
-					</Button>
-				</div>
+				{['create account', 'deposit', 'vouch'].includes(txType) && (
+					<div className="flex space-x-2">
+						<Input
+							disabled={!isConnected}
+							label="Amount (ETH)"
+							placeholder="Enter amount"
+							type="number"
+							value={txAmount}
+							onChange={(e) => setTxAmount(e.target.value)}
+						/>
+						<Button
+							className="mt-6 px-2 py-1 text-sm"
+							disabled={!isConnected || !balance}
+							onClick={handleSetMaxAmount}
+						>
+							Max
+						</Button>
+					</div>
+				)}
 
 				{error && <p className="text-sm text-red-500">{error}</p>}
 
 				<div className="flex w-full justify-center">
 					<Button
 						className="mt-4 w-auto"
-						disabled={!isConnected}
+						disabled={!isConnected || isLoading}
+						isLoading={isLoading}
 						onClick={handleSend}
 					>
 						{!isConnected
 							? 'Please connect with MetaMask first'
-							: txType.toLocaleUpperCase()}
+							: isLoading
+								? 'Processing...'
+								: txType.toLocaleUpperCase()}
 					</Button>
 				</div>
 			</div>

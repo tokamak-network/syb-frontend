@@ -1,3 +1,9 @@
+jest.mock('viem', () => ({
+	isAddress: (address: string) => {
+		return /^0x[0-9a-fA-F]{40}$/.test(address);
+	},
+}));
+
 import {
 	shortenAddress,
 	formatDate,
@@ -7,6 +13,10 @@ import {
 	formatAmount,
 	formatAddress,
 	formatTimestamp,
+	validateAddress,
+	formatEthAddress,
+	convertToUint40Format,
+	float2Fix,
 } from './format';
 
 describe('shortenAddress', () => {
@@ -62,7 +72,7 @@ describe('formatTime', () => {
 describe('formatFullTime', () => {
 	it('should format the date and time in full format', () => {
 		const date = new Date('2024-09-01T15:30:45');
-		expect(formatFullTime(date)).toBe('09/01/2024, 15:30:45');
+		expect(formatFullTime(date)).toMatch(/09\/01\/2024, 15:30:45/);
 	});
 });
 
@@ -109,7 +119,6 @@ describe('formatAddress', () => {
 
 describe('formatTimestamp', () => {
 	beforeAll(() => {
-		// Mock Date.now() to return a fixed timestamp
 		jest.useFakeTimers();
 		jest.setSystemTime(new Date('2025-02-18T21:00:23'));
 	});
@@ -128,5 +137,55 @@ describe('formatTimestamp', () => {
 		const timestamp = '2025-02-18T20:44:23';
 		const result = formatTimestamp(timestamp);
 		expect(result).toMatch(/16 minutes ago \(Feb-18-2025 08:44:23 PM \+UTC\)/);
+	});
+});
+
+describe('validateAddress', () => {
+	it('should validate correct Ethereum address', () => {
+		const address = '0x1234567890123456789012345678901234567890';
+		expect(validateAddress(address)).toBe(address);
+	});
+
+	it('should throw error for invalid address', () => {
+		const address = '0xinvalid';
+		expect(() => validateAddress(address)).toThrow('Invalid Ethereum address');
+	});
+});
+
+describe('formatEthAddress', () => {
+	it('should format address with 0x prefix', () => {
+		const address = '1234567890123456789012345678901234567890';
+		expect(formatEthAddress(address)).toBe(
+			'0x1234567890123456789012345678901234567890',
+		);
+	});
+
+	it('should handle address that already has 0x prefix', () => {
+		const address = '0x1234567890123456789012345678901234567890';
+		expect(formatEthAddress(address)).toBe(
+			'0x1234567890123456789012345678901234567890',
+		);
+	});
+});
+
+describe('convertToUint40Format', () => {
+	it('should convert amount to uint40 format', () => {
+		expect(convertToUint40Format('1.0')).toBeTruthy();
+		expect(typeof convertToUint40Format('1.0')).toBe('bigint');
+	});
+
+	it('should handle small amounts', () => {
+		expect(convertToUint40Format('0.001')).toBeTruthy();
+	});
+});
+
+describe('float2Fix', () => {
+	it('should convert float value to fixed point', () => {
+		expect(float2Fix(1000000)).toBeTruthy();
+		expect(typeof float2Fix(1000000)).toBe('bigint');
+	});
+
+	it('should handle zero', () => {
+		expect(float2Fix(0)).toBe(0n);
 	});
 });

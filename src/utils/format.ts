@@ -1,6 +1,7 @@
 // utils/format.ts
 
 import { format, formatDistanceToNow } from 'date-fns';
+import { isAddress } from 'viem';
 
 /**
  * Shortens an Ethereum address for display.
@@ -55,7 +56,6 @@ export const formatTime = (date: Date) => {
 };
 
 export const formatFullTime = (date: Date) => {
-	// Ensure the input is a Date object
 	const options: Intl.DateTimeFormatOptions = {
 		year: 'numeric',
 		month: '2-digit',
@@ -63,7 +63,7 @@ export const formatFullTime = (date: Date) => {
 		hour: '2-digit',
 		minute: '2-digit',
 		second: '2-digit',
-		hour12: false, // Use 24-hour format
+		hour12: false,
 	};
 
 	return new Intl.DateTimeFormat('en-US', options).format(date);
@@ -94,4 +94,40 @@ export const formatTimestamp = (timestamp: string | Date): string => {
 	const fullDate = format(date, "MMM-dd-yyyy hh:mm:ss a '+UTC'");
 
 	return `${timeAgo} (${fullDate})`;
+};
+
+export const validateAddress = (address: string): `0x${string}` => {
+	if (!isAddress(address)) {
+		throw new Error('Invalid Ethereum address');
+	}
+	return address as `0x${string}`;
+};
+
+export const formatEthAddress = (address: string): `0x${string}` => {
+	const cleanAddress = address.replace('0x', '');
+	return `0x${cleanAddress}` as `0x${string}`;
+};
+
+export const convertToUint40Format = (amount: string): bigint => {
+	const amountInWei = parseFloat(amount) * 1e18;
+
+	let e = 0;
+	let m = amountInWei;
+
+	while (m >= 0x7ffffffff) {
+		m = m / 10;
+		e += 1;
+	}
+
+	const mantissa = Math.floor(m) & 0x7ffffffff;
+	const uint40Value = (e << 35) | mantissa;
+
+	return BigInt(uint40Value);
+};
+
+export const float2Fix = (floatVal: number): bigint => {
+	const m = BigInt(floatVal & 0x7ffffffff);
+	const e = BigInt(floatVal >> 35);
+	const exp = 10n ** e;
+	return m * exp;
 };

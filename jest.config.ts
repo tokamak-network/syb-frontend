@@ -24,7 +24,6 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^wagmi$': 'wagmi/dist/cjs/index.js',
-    '^viem$': 'viem/dist/cjs/index.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   globals: {
