@@ -29,7 +29,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 }) => {
 	const { balance } = useWallet();
 	const { handleCreateAccount, handleDeposit } = useSepoliaTransactions();
-	const {addToast} = useToast();
+	const { addToast } = useToast();
 
 	const [txType, setTxType] = useState<string>('create account');
 	const [txFrom, setTxFrom] = useState<string>(walletAddress || '');
@@ -37,46 +37,66 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const [txAmount, setTxAmount] = useState<string>('');
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [pendingTxHash, setPendingTxHash] = useState<`0x${string}` | undefined>();
+	const [pendingTxHash, setPendingTxHash] = useState<
+		`0x${string}` | undefined
+	>();
 
-	const { data, isSuccess, isError, isLoading: isConfirming, error: txError } =
-    useWaitForTransactionReceipt({
-      hash: pendingTxHash,
-    });
+	const {
+		data,
+		isSuccess,
+		isError,
+		isLoading: isConfirming,
+		error: txError,
+	} = useWaitForTransactionReceipt({
+		hash: pendingTxHash,
+	});
 
-  useEffect(() => {
-    if (isSuccess && data) {
-      addToast(
-        'success',
-        'Transaction Confirmed',
-        `${txType.charAt(0).toUpperCase() + txType.slice(1)} transaction successful! Hash: ${pendingTxHash}`
-      );
+	useEffect(() => {
+		if (isSuccess && data) {
+			addToast(
+				'success',
+				'Transaction Confirmed',
+				`${txType.charAt(0).toUpperCase() + txType.slice(1)} transaction successful! Hash: ${pendingTxHash}`,
+			);
 
-      onSubmit({
-        type: txType,
-        from: txFrom,
-        to: txTo,
-        amount: txAmount,
-        hash: pendingTxHash,
-      });
+			onSubmit({
+				type: txType,
+				from: txFrom,
+				to: txTo,
+				amount: txAmount,
+				hash: pendingTxHash,
+			});
 
-      onClose();
-      setTxAmount('');
-      setTxTo('');
-      setError(null);
-      setPendingTxHash(undefined);
-    }
+			onClose();
+			setTxAmount('');
+			setTxTo('');
+			setError(null);
+			setPendingTxHash(undefined);
+		}
 
-    if (isError && txError) {
-      addToast(
-        'error',
-        'Transaction Failed',
-        txError.message || 'Transaction failed during execution'
-      );
-      setError(txError.message || 'Transaction failed');
-      setPendingTxHash(undefined);
-    }
-  }, [isSuccess, isError, data, txError, addToast, onSubmit, onClose, txType, txFrom, txTo, txAmount, pendingTxHash]);
+		if (isError && txError) {
+			addToast(
+				'error',
+				'Transaction Failed',
+				txError.message || 'Transaction failed during execution',
+			);
+			setError(txError.message || 'Transaction failed');
+			setPendingTxHash(undefined);
+		}
+	}, [
+		isSuccess,
+		isError,
+		data,
+		txError,
+		addToast,
+		onSubmit,
+		onClose,
+		txType,
+		txFrom,
+		txTo,
+		txAmount,
+		pendingTxHash,
+	]);
 
 	const handleSend = async () => {
 		if (!isConnected) {
@@ -131,18 +151,18 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 			setPendingTxHash(hash);
 
-      addToast(
-        'info',
-        'Transaction Pending',
-        `${txType.charAt(0).toUpperCase() + txType.slice(1)} transaction submitted. Waiting for confirmation...`
-      );
+			addToast(
+				'info',
+				'Transaction Pending',
+				`${txType.charAt(0).toUpperCase() + txType.slice(1)} transaction submitted. \n Waiting for confirmation...`,
+			);
 		} catch (err: any) {
 			setError(err.message || 'Transaction failed');
-      addToast(
-        'error',
-        'Transaction Failed',
-        err.message || 'Transaction failed. Please try again.'
-      );
+			addToast(
+				'error',
+				'Transaction Failed',
+				err.message || 'Transaction failed. Please try again.',
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -242,20 +262,19 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				{error && <p className="text-sm text-red-500">{error}</p>}
 
 				<div className="flex w-full justify-center">
-				<Button
-            className="mt-4 w-auto"
-            disabled={!isConnected || isTransactionProcessing}
-            isLoading={isTransactionProcessing}
-            onClick={handleSend}
-          >
-            {!isConnected
-              ? 'Please connect with MetaMask first'
-              : isTransactionProcessing
-                ? isConfirming 
-                  ? 'Confirming...'
-                  : 'Processing...'
-                : txType.toLocaleUpperCase()}
-          </Button>
+					<Button
+						className="mt-4 w-auto"
+						disabled={!isConnected || isTransactionProcessing}
+						onClick={handleSend}
+					>
+						{!isConnected
+							? 'Please connect with MetaMask first'
+							: isTransactionProcessing
+								? isConfirming
+									? 'Confirming...'
+									: 'Processing...'
+								: txType.toLocaleUpperCase()}
+					</Button>
 				</div>
 			</div>
 		</Modal>

@@ -9,7 +9,6 @@ export const useSepoliaTransactions = () => {
 	const handleCreateAccount = async (amount: string) => {
 		try {
 			const loadAmountF = convertToUint40Format(amount);
-			const tstVal = BigInt(parseFloat(amount) * 1e18);
 			const a = loadAmountF & BigInt(0x7ffffffff);
 			const b = loadAmountF >> BigInt(35);
 			const amountValue = BigInt(10) ** b * a;
