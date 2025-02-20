@@ -9,13 +9,17 @@ export const useSepoliaTransactions = () => {
 	const handleCreateAccount = async (amount: string) => {
 		try {
 			const loadAmountF = convertToUint40Format(amount);
+			const tstVal = BigInt(parseFloat(amount) * 1e18);
+			const a = loadAmountF & BigInt(0x7ffffffff);
+			const b = loadAmountF >> BigInt(35);
+			const amountValue = BigInt(10) ** b * a;
 
 			const hash = await writeContractAsync({
 				address: formatEthAddress(contracts.sepolia.address),
 				abi: SepoliaABI,
 				functionName: 'createAccountDeposit',
-				args: [Number(loadAmountF.toString())],
-				value: loadAmountF,
+				args: [Number(loadAmountF)],
+				value: amountValue,
 			});
 			return hash;
 		} catch (error) {

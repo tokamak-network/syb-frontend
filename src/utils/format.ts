@@ -119,8 +119,10 @@ export const convertToUint40Format = (amount: string): bigint => {
 		e += 1;
 	}
 
-	const mantissa = Math.floor(m) & 0x7ffffffff;
-	const uint40Value = (e << 35) | mantissa;
+	const mantissa = BigInt(Math.floor(m)) & BigInt(0x7ffffffff);
+	const bigE = BigInt(e);
+	const exponent = bigE << 35n;
+	const uint40Value = exponent | mantissa;
 
 	return BigInt(uint40Value);
 };
