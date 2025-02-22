@@ -70,7 +70,9 @@ const AccountPage: React.FC = () => {
 								key={account.accountIndex}
 								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
 								onClick={() =>
-									router.push(`/explorer/accounts/${account.tonEthereumAddress}`)
+									router.push(
+										`/explorer/accounts/${account.tonEthereumAddress}`,
+									)
 								}
 							>
 								<td className="px-6 py-2 text-left font-normal">
