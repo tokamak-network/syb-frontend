@@ -32,3 +32,12 @@ export const fetchAccountByID = async (
 		url: `/accounts/${accountIndex}`,
 	});
 };
+
+export const fetchAccountByAddress = async (
+	accountAddress: string,
+): Promise<Account> => {
+	return apiRequest({
+		method: 'GET',
+		url: `/accounts/address/${accountAddress}`,
+	});
+};

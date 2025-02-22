@@ -9,11 +9,11 @@ import { apiRequest } from '@/utils/api';
 import { Button, PageLoader } from '@/components';
 import { Account } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
-import { fetchAccountByID } from '@/utils';
+import { fetchAccountByAddress, fetchAccountByID } from '@/utils';
 
 const AccountDetailsPage: React.FC = () => {
 	const params = useParams();
-	const id = decodeURIComponent(params.ethaddress as string);
+	const address = decodeURIComponent(params.ethaddress as string);
 	const { isConnected } = useWallet();
 
 	const {
@@ -21,11 +21,11 @@ const AccountDetailsPage: React.FC = () => {
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['account', id],
-		queryFn: () => fetchAccountByID(id as string),
+		queryKey: ['account', address],
+		queryFn: () => fetchAccountByAddress(address as string),
 		staleTime: 30000,
 		refetchInterval: 30000,
-		enabled: !!id,
+		enabled: !!address,
 	});
 
 	console.log(account, 'account');
