@@ -241,11 +241,11 @@ export const UserGraph: React.FC = () => {
 					)}
 
 				<Modal
-					content={`Are you sure you want to vouch for ${vouchTarget}?`}
 					isOpen={showVouchModal}
 					title="Vouch Confirmation"
 					onClose={handleModalCancel}
 				>
+					<p>{`Are you sure you want to vouch for ${vouchTarget}?`}</p>
 					<Button
 						className="rounded bg-gray-300 px-4 py-2"
 						onClick={handleModalCancel}
@@ -261,11 +261,11 @@ export const UserGraph: React.FC = () => {
 				</Modal>
 
 				<Modal
-					content={`Are you sure you want to explode connections for ${menu ? menu.id : ''}?`}
 					isOpen={showExplodeModal}
 					title="Explode Confirmation"
 					onClose={handleModalCancel}
 				>
+					<p>{`Are you sure you want to explode connections for ${menu ? menu.id : ''}?`}</p>
 					<Button
 						className="rounded bg-gray-300 px-4 py-2"
 						onClick={handleModalCancel}

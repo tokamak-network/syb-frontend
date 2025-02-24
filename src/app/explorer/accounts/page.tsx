@@ -8,19 +8,19 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, PageLoader, SearchBarComponent } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { apiRequest } from '@/utils/api';
-import { Account } from '@/types';
+import { Account, AccountsResponse } from '@/types';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
 	const { isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 
-	const { data: accounts, isLoading } = useQuery({
+	const { data: accountResponse, isLoading } = useQuery({
 		queryKey: ['accounts'],
 		queryFn: async () => {
-			const response: Account[] = await apiRequest({
+			const response: AccountsResponse = await apiRequest({
 				method: 'GET',
-				url: '/account',
+				url: '/accounts',
 			});
 
 			return response;
@@ -30,8 +30,9 @@ const AccountPage: React.FC = () => {
 	if (isLoading) return <PageLoader />;
 
 	// Filter accounts based on the search query
-	const filteredAccounts = accounts?.filter((account: any) =>
-		account.id.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredAccounts = accountResponse?.accounts.filter(
+		(account: Account) =>
+			account.accountIndex.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
 	return (
@@ -47,7 +48,7 @@ const AccountPage: React.FC = () => {
 				<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
 					<tr>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
-							Account ID
+							User ID
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 							Ethereum Address
@@ -68,7 +69,11 @@ const AccountPage: React.FC = () => {
 							<tr
 								key={account.accountIndex}
 								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
-								onClick={() => router.push(`/account/${account.accountIndex}`)}
+								onClick={() =>
+									router.push(
+										`/explorer/accounts/${account.tonEthereumAddress}`,
+									)
+								}
 							>
 								<td className="px-6 py-2 text-left font-normal">
 									{account.accountIndex}

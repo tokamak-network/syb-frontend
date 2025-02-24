@@ -12,7 +12,7 @@ interface TxStatusProps {
 
 const TxStatus: React.FC<TxStatusProps> = ({ status }) => {
 	const statusStyles =
-		status === ActionStatus.SUCCESS
+		status === ActionStatus.FORGED
 			? 'bg-[#29543C]'
 			: status === ActionStatus.PENDING
 				? 'bg-[#353025]'
@@ -20,9 +20,9 @@ const TxStatus: React.FC<TxStatusProps> = ({ status }) => {
 
 	return (
 		<div
-			className={`flex rounded-md ${statusStyles} max-w-[120px] items-center space-x-2 px-2 py-1 text-center text-tableTextInfo`}
+			className={`flex rounded-md ${statusStyles} w-fit items-center space-x-2 px-2 py-1 text-center text-tableTextInfo`}
 		>
-			{status === ActionStatus.SUCCESS && <AiOutlineCheckCircle />}
+			{status === ActionStatus.FORGED && <AiOutlineCheckCircle />}
 			{status === ActionStatus.FAILED && <AiOutlineCloseCircle />}
 			{status === ActionStatus.PENDING && <AiOutlineMinusCircle />}
 			<p>{status}</p>

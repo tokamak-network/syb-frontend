@@ -46,6 +46,7 @@ const config: Config = {
         txExplodeText: 'var(--tx-explode-text)',
         txDefault: 'var(--tx-default)',
         txDefaultText: 'var(--tx-default-text)',
+        buttonPrimary: '#1379FF',
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],

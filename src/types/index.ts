@@ -21,14 +21,15 @@ export interface User {
 }
 
 export enum ActionType {
-	DEPOSIT = 'Deposit',
+	DEPOSIT = 'CreateAccountDeposit',
 	WITHDRAW = 'Withdraw',
 	EXPLODE = 'Explode',
 	VOUCH = 'Vouch',
+	EXIT = 'ForceExit',
 }
 
 export enum ActionStatus {
-	SUCCESS = 'Success',
+	FORGED = 'Forged',
 	PENDING = 'Pending',
 	FAILED = 'Failed',
 }
@@ -113,8 +114,47 @@ export interface NetworkType {
 	};
 }
 
-export interface AccountType {
+export interface Account {
+	accountIndex: string;
+	balance: string;
+	name?: string;
+	image?: string;
+	tonEthereumAddress: string;
+	itemId: number;
+	nonce: number;
+}
+
+interface L1Info {
+	ethereumBlockNum: number;
+	historicDepositAmountUSD: number | null;
+	depositAmount: string;
+	toForgeL1TransactionsNum: number;
+	userOrigin: boolean;
+	ethereumTxHash: string;
+	l1Fee: string;
+}
+
+export interface Transaction {
+	L1Info: L1Info;
+	amount: string;
+	batchNum: number;
+	fromAccountIndex: string;
+	fromTonEthereumAddress: string;
 	id: string;
-	name: string;
-	image: string;
+	itemId: number;
+	position: number;
+	timestamp: string;
+	toAccountIndex: string;
+	toTonEthereumAddress: string | null;
+	type: string;
+}
+
+export interface TransactionResponse {
+	transactions: Transaction[];
+	pendingItems: number;
+}
+
+export interface AccountsResponse {
+	accounts: Account[];
+	pendingItems: number;
 }
