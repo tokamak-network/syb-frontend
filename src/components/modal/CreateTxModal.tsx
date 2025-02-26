@@ -227,21 +227,23 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					</div>
 				)}
 
-				{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
+{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
 					txType,
 				) && (
 					<Input
 						disabled={!isConnected}
 						label="To"
 						placeholder={
-							txType === 'explode' ? 'Select from list...' : 'Enter address'
+							['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
+								? 'Enter Index'
+								: 'Enter address'
 						}
 						value={txTo}
 						onChange={(e) => setTxTo(e.target.value)}
 					/>
 				)}
 
-				{['create account', 'deposit', 'vouch'].includes(txType) && (
+				{['create account', 'deposit'].includes(txType) && (
 					<div className="flex space-x-2">
 						<Input
 							disabled={!isConnected}
