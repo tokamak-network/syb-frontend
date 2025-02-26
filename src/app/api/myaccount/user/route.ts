@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { HttpStatusCode } from 'axios';
 
 import { authOptions } from '@/lib/auth'; // Ensure this points to your NextAuth configuration
 import prisma from '@/lib/prisma'; // Ensure this points to your Prisma client
+import { Session } from 'next-auth';
 
 export async function GET() {
 	try {
 		// Get the current session
-		const session = await getServerSession(authOptions);
+		const session: Session | null = await getServerSession(authOptions);
 
 		// If the user is not authenticated, return an unauthorized response
 		if (!session) {

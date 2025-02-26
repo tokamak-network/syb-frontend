@@ -124,7 +124,7 @@ const MyAccount: React.FC = () => {
 			await apiRequest({
 				method: 'POST',
 				url: '/myaccount/update-profile-image',
-				data: { userId: session.user.id, imageUrl },
+				data: { userId: session?.user?.id, imageUrl },
 			});
 
 			setDisplayedImage(imageUrl);

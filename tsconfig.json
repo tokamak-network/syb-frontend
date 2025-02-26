@@ -21,14 +21,14 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["jest", "@testing-library/jest-dom"]
+    "types": ["jest", "@testing-library/jest-dom"],
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/global.d.ts", "src/hooks/useWallet.test.ts", "src/utils/color.test.ts",
+    "src/global.d.ts", "src/hooks/useWallet.test.ts", "src/utils/color.test.ts", "src/**/*",
   ],
   "exclude": ["node_modules"]
 }

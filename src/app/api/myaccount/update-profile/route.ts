@@ -5,13 +5,14 @@ import bcrypt from 'bcrypt';
 
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { Session } from 'next-auth';
 
 export async function POST(req: Request) {
 	try {
 		const body = await req.json();
 		const { newUsername, currentPassword, newPassword } = body;
 
-		const session = await getServerSession(authOptions);
+		const session: Session | null = await getServerSession(authOptions);
 
 		if (!session) {
 			return NextResponse.json(
@@ -22,9 +23,7 @@ export async function POST(req: Request) {
 
 		const userId = session.user.id;
 
-		console.log(newUsername, session.user.id, 'newUsername');
-
-		if (newUsername) {
+		if (newUsername && userId) {
 			await prisma.user.update({
 				where: { id: userId },
 				data: { name: newUsername },
