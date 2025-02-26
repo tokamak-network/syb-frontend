@@ -227,7 +227,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					</div>
 				)}
 
-{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
+				{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
 					txType,
 				) && (
 					<Input
