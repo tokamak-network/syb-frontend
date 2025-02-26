@@ -1,7 +1,6 @@
 import { useWriteContract, useWalletClient } from 'wagmi';
-import { parseEther } from 'viem';
 import { SepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress, convertToUint40Format, float2Fix } from '@/utils';
+import { formatEthAddress, convertToUint40Format } from '@/utils';
 
 export const useSepoliaTransactions = () => {
 	const { writeContractAsync } = useWriteContract();
@@ -27,18 +26,25 @@ export const useSepoliaTransactions = () => {
 		}
 	};
 
-	const handleDeposit = async (to: string, amount: string) => {
+	const handleDeposit = async (fromIdx: number, amount: string) => {
 		try {
-			const fromIdx = 0;
-			const loadAmountF = Number(convertToUint40Format(amount));
-			const value = parseEther(amount);
+			if (fromIdx <= 255) {
+				throw new Error('Invalid fromIdx: must be greater than 255');
+			}
+
+			const loadAmountF = convertToUint40Format(amount);
+			const a = loadAmountF & BigInt(0x7ffffffff);
+			const b = loadAmountF >> BigInt(35);
+			const amountValue = BigInt(10) ** b * a;
+
+			const fromIdxUint48 = BigInt(fromIdx);
 
 			const hash = await writeContractAsync({
 				address: formatEthAddress(contracts.sepolia.address),
 				abi: SepoliaABI,
 				functionName: 'deposit',
-				args: [fromIdx, loadAmountF],
-				value: value,
+				args: [Number(fromIdxUint48), Number(loadAmountF)],
+				value: amountValue,
 			});
 			return hash;
 		} catch (error) {
@@ -47,22 +53,29 @@ export const useSepoliaTransactions = () => {
 		}
 	};
 
-	// const handleVouch = async (to: string) => {
-	//   try {
-	//     const fromIdx = BigInt(0);
-	//     const toIdx = BigInt(to);
+	// const handleVouch = async (fromIdx: number, toIdx: number) => {
+	// 	try {
+	// 		if (fromIdx <= 255) {
+	// 			throw new Error('Invalid fromIdx: must be greater than 255');
+	// 		}
+	// 		if (toIdx <= 255) {
+	// 			throw new Error('Invalid toIdx: must be greater than 255');
+	// 		}
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'vouch',
-	//       args: [fromIdx, toIdx]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error vouching:', error);
-	//     throw error;
-	//   }
+	// 		const fromIdxBigInt = BigInt(fromIdx);
+	// 		const toIdxBigInt = BigInt(toIdx);
+
+	// 		const hash = await writeContractAsync({
+	// 			address: formatEthAddress(contracts.sepolia.address),
+	// 			abi: SepoliaABI,
+	// 			functionName: 'vouch',
+	// 			args: [fromIdxBigInt, toIdxBigInt],
+	// 		});
+	// 		return hash;
+	// 	} catch (error) {
+	// 		console.error('Error vouching:', error);
+	// 		throw error;
+	// 	}
 	// };
 
 	// const handleUnvouch = async (to: string) => {

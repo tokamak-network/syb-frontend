@@ -121,8 +121,10 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					break;
 
 				case 'deposit':
-					if (!txTo) throw new Error('Recipient address required');
-					hash = await handleDeposit(txTo, txAmount);
+					if (!txTo) throw new Error('From index (txTo) is required');
+					const fromIdx = parseInt(txTo, 10);
+					if (isNaN(fromIdx)) throw new Error('Invalid from index');
+					hash = await handleDeposit(fromIdx, txAmount);
 					break;
 
 				// case 'vouch':
@@ -232,14 +234,16 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 						disabled={!isConnected}
 						label="To"
 						placeholder={
-							txType === 'explode' ? 'Select from list...' : 'Enter address'
+							['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
+								? 'Enter Index'
+								: 'Enter address'
 						}
 						value={txTo}
 						onChange={(e) => setTxTo(e.target.value)}
 					/>
 				)}
 
-				{['create account', 'deposit', 'vouch'].includes(txType) && (
+				{['create account', 'deposit'].includes(txType) && (
 					<div className="flex space-x-2">
 						<Input
 							disabled={!isConnected}
