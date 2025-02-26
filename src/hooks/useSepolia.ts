@@ -44,7 +44,7 @@ export const useSepoliaTransactions = () => {
 				address: formatEthAddress(contracts.sepolia.address),
 				abi: SepoliaABI,
 				functionName: 'deposit',
-				args: [Number(fromIdxUint48), Number(loadAmountF)], 
+				args: [Number(fromIdxUint48), Number(loadAmountF)],
 				value: amountValue,
 			});
 			return hash;
