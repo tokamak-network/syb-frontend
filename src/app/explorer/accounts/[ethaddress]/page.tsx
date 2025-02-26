@@ -3,13 +3,10 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
 
-import { apiRequest } from '@/utils/api';
 import { Button, PageLoader } from '@/components';
-import { Account } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
-import { fetchAccountByAddress, fetchAccountByID } from '@/utils';
+import { fetchAccountByAddress } from '@/utils';
 
 const AccountDetailsPage: React.FC = () => {
 	const params = useParams();

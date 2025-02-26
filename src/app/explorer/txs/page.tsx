@@ -3,11 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IoArrowBackSharp } from 'react-icons/io5';
+import { useQuery } from '@tanstack/react-query';
 
 import { Button, PageLoader, SearchBarComponent } from '@/components';
 import TxTypes from '@/components/tables/TxType';
-import TxStatus from '@/components/tables/TxStatus';
-import { useQuery } from '@tanstack/react-query';
 import { fetchTransactions } from '@/utils';
 import { ActionType } from '@/types';
 

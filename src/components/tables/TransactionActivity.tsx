@@ -143,7 +143,7 @@ export const TransactionTable: React.FC<TransactionTableProps> = ({
 						</th>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-gray-200 bg-tableBackground font-abhaya">
+				<tbody className="font-abhaya divide-y divide-gray-200 bg-tableBackground">
 					{currentTransactions.length > 0 ? (
 						currentTransactions.map((transaction, index) => (
 							<tr

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useWaitForTransactionReceipt } from 'wagmi';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
 import { useToast } from '@/context';
-import { useWaitForTransactionReceipt } from 'wagmi';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -101,11 +101,13 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const handleSend = async () => {
 		if (!isConnected) {
 			setError('Please connect your wallet first');
+
 			return;
 		}
 
 		if (!txAmount || parseFloat(txAmount) <= 0) {
 			setError('Amount must be greater than 0');
+
 			return;
 		}
 
@@ -120,12 +122,14 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					hash = await handleCreateAccount(txAmount);
 					break;
 
-				case 'deposit':
+				case 'deposit': {
 					if (!txTo) throw new Error('From index (txTo) is required');
 					const fromIdx = parseInt(txTo, 10);
+
 					if (isNaN(fromIdx)) throw new Error('Invalid from index');
 					hash = await handleDeposit(fromIdx, txAmount);
 					break;
+				}
 
 				// case 'vouch':
 				//   if (!txTo) throw new Error('Recipient address required');

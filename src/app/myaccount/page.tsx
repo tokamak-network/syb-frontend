@@ -288,7 +288,7 @@ const MyAccount: React.FC = () => {
 				/>
 
 				<table className="min-w-full table-auto rounded-lg">
-					<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
+					<thead className="font-abhaya bg-tableHeader text-tableTextPrimary">
 						<tr>
 							<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 								User ID
@@ -307,11 +307,11 @@ const MyAccount: React.FC = () => {
 							</th>
 						</tr>
 					</thead>
-					<tbody className="bg-tableBackground font-abhaya">
+					<tbody className="font-abhaya bg-tableBackground">
 						{displayedUsers.map((user) => (
 							<tr
 								key={user.id}
-								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
+								className={`font-abhaya border-b-2 border-tableBorder bg-tableBackground text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
 							>
 								<td className="space-y-2 whitespace-nowrap px-6 py-2 text-left font-normal">
 									{user.id}

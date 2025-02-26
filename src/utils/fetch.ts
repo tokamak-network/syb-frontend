@@ -1,4 +1,5 @@
 import { Account, Transaction, TransactionResponse } from '@/types';
+
 import { apiRequest } from './api';
 
 export const fetchTransactions = async (): Promise<TransactionResponse> => {

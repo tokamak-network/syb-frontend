@@ -54,7 +54,6 @@ const config: Config = {
         kanit: ["Kanit", "sans-serif"],
         montserrat: ["Montserrat", "sans-serif"],
         narnoor: ["Narnoor", "sans-serif"],
-        abhaya: ["Abhaya Libre", "sans-serif"],
         acme: ["Acme", "sans-serif"],
         openSans: ["Open Sans", "sans-serif"],
         anekDevanagari: ["Anek Devanagari", "sans-serif"],

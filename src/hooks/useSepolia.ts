@@ -1,4 +1,5 @@
-import { useWriteContract, useWalletClient } from 'wagmi';
+import { useWriteContract } from 'wagmi';
+
 import { SepoliaABI, contracts } from '@/contracts';
 import { formatEthAddress, convertToUint40Format } from '@/utils';
 
@@ -19,6 +20,7 @@ export const useSepoliaTransactions = () => {
 				args: [Number(loadAmountF)],
 				value: amountValue,
 			});
+
 			return hash;
 		} catch (error) {
 			console.error('Error creating account:', error);
@@ -46,6 +48,7 @@ export const useSepoliaTransactions = () => {
 				args: [Number(fromIdxUint48), Number(loadAmountF)],
 				value: amountValue,
 			});
+
 			return hash;
 		} catch (error) {
 			console.error('Error depositing:', error);

@@ -3,16 +3,12 @@
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { IoArrowBackSharp } from 'react-icons/io5';
+import { useQuery } from '@tanstack/react-query';
 
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
 import { Button, PageLoader } from '@/components';
-import { useQuery } from '@tanstack/react-query';
-import {
-	fetchTransactionByHash,
-	formatAddress,
-	formatTimestamp,
-} from '@/utils';
+import { fetchTransactionByHash, formatTimestamp } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
 
 const TransactionDetailsPage: React.FC = () => {

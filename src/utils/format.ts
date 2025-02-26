@@ -79,12 +79,14 @@ export const formatFirstLetter = (input: string) => {
 
 export const formatAmount = (amount: string) => {
 	const ethAmount = parseFloat(amount) / 1e18;
+
 	return `${ethAmount.toFixed(4)} ETH`;
 };
 
 export const formatAddress = (address: string) => {
 	if (!address) return '-';
 	const cleanAddress = address.replace('ton:', '');
+
 	return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
 };
 
@@ -100,11 +102,13 @@ export const validateAddress = (address: string): `0x${string}` => {
 	if (!isAddress(address)) {
 		throw new Error('Invalid Ethereum address');
 	}
+
 	return address as `0x${string}`;
 };
 
 export const formatEthAddress = (address: string): `0x${string}` => {
 	const cleanAddress = address.replace('0x', '');
+
 	return `0x${cleanAddress}` as `0x${string}`;
 };
 
@@ -131,5 +135,6 @@ export const float2Fix = (floatVal: number): bigint => {
 	const m = BigInt(floatVal & 0x7ffffffff);
 	const e = BigInt(floatVal >> 35);
 	const exp = 10n ** e;
+
 	return m * exp;
 };

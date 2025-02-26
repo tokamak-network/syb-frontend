@@ -56,7 +56,7 @@ export const ChainActivityTable: React.FC = () => {
 			</div>
 			<div className="overflow-x-auto rounded-lg shadow-lg">
 				<table className="min-w-full table-auto rounded-lg">
-					<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
+					<thead className="font-abhaya bg-tableHeader text-tableTextPrimary">
 						<tr>
 							<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 								Transaction Hash
@@ -81,7 +81,7 @@ export const ChainActivityTable: React.FC = () => {
 							</th>
 						</tr>
 					</thead>
-					<tbody className="bg-tableBackground font-abhaya">
+					<tbody className="font-abhaya bg-tableBackground">
 						<tr>
 							<td className="bg-tableRowBackground px-6 py-1" colSpan={7}>
 								<span className="text-tableTextInfo">
@@ -93,7 +93,7 @@ export const ChainActivityTable: React.FC = () => {
 						{filteredData.map((transaction, index) => (
 							<tr
 								key={index}
-								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
+								className={`font-abhaya border-b-2 border-tableBorder bg-tableBackground text-gray-700 transition-colors duration-300 hover:bg-tableHover`}
 							>
 								<td className="flex flex-col space-y-4 whitespace-nowrap px-6 py-2 text-left font-normal">
 									<UserAddress address={`0x${index}`} type="tx" />
@@ -104,7 +104,7 @@ export const ChainActivityTable: React.FC = () => {
 									<TxStatus status={transaction.type.txStatus} />
 								</td>
 								<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
-									<span className="rounded-lg bg-tableButtonBackground px-2 py-1 font-abhaya text-tableTextPrimary">
+									<span className="font-abhaya rounded-lg bg-tableButtonBackground px-2 py-1 text-tableTextPrimary">
 										{transaction.method.toLocaleLowerCase()}
 									</span>
 								</td>

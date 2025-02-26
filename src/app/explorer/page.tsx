@@ -2,19 +2,16 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 
-import { Button, TransactionDropDown, Modal, PageLoader } from '@/components';
+import { Button, TransactionDropDown, PageLoader } from '@/components';
 import {
 	fetchAccounts,
 	fetchTransactions,
 	formatAddress,
 	formatAmount,
 	formatTime,
-	statusStyles,
-	typeStyles,
 } from '@/utils';
-import { apiRequest } from '@/utils/api';
-import { useQuery } from '@tanstack/react-query';
 import { Account } from '@/types';
 
 const ExplorerPage: React.FC = () => {
@@ -63,6 +60,7 @@ const ExplorerPage: React.FC = () => {
 		if (txOption === 'all') return true;
 		if (txOption === 'pending') return tx.batchNum === 0;
 		if (txOption === 'forged') return tx.batchNum > 0;
+
 		return false;
 	});
 

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
@@ -44,7 +43,7 @@ const AccountPage: React.FC = () => {
 
 			{/* Account List Table */}
 			<table className="min-w-full table-auto rounded-lg">
-				<thead className="bg-tableHeader font-abhaya text-tableTextPrimary">
+				<thead className="font-abhaya bg-tableHeader text-tableTextPrimary">
 					<tr>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase tracking-wider">
 							Account ID
@@ -62,12 +61,12 @@ const AccountPage: React.FC = () => {
 						)}
 					</tr>
 				</thead>
-				<tbody className="bg-tableBackground font-abhaya">
+				<tbody className="font-abhaya bg-tableBackground">
 					{filteredAccounts &&
 						filteredAccounts.map((account: Account) => (
 							<tr
 								key={account.accountIndex}
-								className={`border-b-2 border-tableBorder bg-tableBackground font-abhaya text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
+								className={`font-abhaya border-b-2 border-tableBorder bg-tableBackground text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover`}
 								onClick={() => router.push(`/account/${account.accountIndex}`)}
 							>
 								<td className="px-6 py-2 text-left font-normal">
