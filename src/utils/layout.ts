@@ -1,5 +1,5 @@
 // utils/layout.ts
-import { Node } from "reactflow";
+import { Node } from 'reactflow';
 
 /**
  * Arranges nodes in a circular layout.
@@ -10,19 +10,20 @@ import { Node } from "reactflow";
  * @returns {Node[]} - The nodes with updated positions.
  */
 export const circularLayout = (
-  nodes: Node[],
-  radius: number,
-  centerX: number,
-  centerY: number
+	nodes: Node[],
+	radius: number,
+	centerX: number,
+	centerY: number,
 ): Node[] => {
-  return nodes.map((node, index) => {
-    const angle = (index / nodes.length) * 2 * Math.PI;
-    return {
-      ...node,
-      position: {
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle),
-      },
-    };
-  });
+	return nodes.map((node, index) => {
+		const angle = (index / nodes.length) * 2 * Math.PI;
+
+		return {
+			...node,
+			position: {
+				x: centerX + radius * Math.cos(angle),
+				y: centerY + radius * Math.sin(angle),
+			},
+		};
+	});
 };
