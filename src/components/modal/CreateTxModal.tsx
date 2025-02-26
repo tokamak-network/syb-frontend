@@ -121,8 +121,10 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					break;
 
 				case 'deposit':
-					if (!txTo) throw new Error('Recipient address required');
-					hash = await handleDeposit(txTo, txAmount);
+					if (!txTo) throw new Error('From index (txTo) is required');
+					const fromIdx = parseInt(txTo, 10);
+					if (isNaN(fromIdx)) throw new Error('Invalid from index');
+					hash = await handleDeposit(fromIdx, txAmount);
 					break;
 
 				// case 'vouch':

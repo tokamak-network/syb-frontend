@@ -27,18 +27,25 @@ export const useSepoliaTransactions = () => {
 		}
 	};
 
-	const handleDeposit = async (to: string, amount: string) => {
+	const handleDeposit = async (fromIdx: number, amount: string) => {
 		try {
-			const fromIdx = 0;
-			const loadAmountF = Number(convertToUint40Format(amount));
-			const value = parseEther(amount);
+			if (fromIdx <= 255) {
+				throw new Error('Invalid fromIdx: must be greater than 255');
+			}
+
+			const loadAmountF = convertToUint40Format(amount);
+			const a = loadAmountF & BigInt(0x7ffffffff);
+			const b = loadAmountF >> BigInt(35);
+			const amountValue = BigInt(10) ** b * a;
+
+			const fromIdxUint48 = BigInt(fromIdx);
 
 			const hash = await writeContractAsync({
 				address: formatEthAddress(contracts.sepolia.address),
 				abi: SepoliaABI,
 				functionName: 'deposit',
-				args: [fromIdx, loadAmountF],
-				value: value,
+				args: [Number(fromIdxUint48), Number(loadAmountF)], 
+				value: amountValue,
 			});
 			return hash;
 		} catch (error) {
