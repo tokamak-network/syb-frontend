@@ -10,6 +10,7 @@ import {
 	fetchTransactions,
 	formatAddress,
 	formatAmount,
+	formatFullTime,
 	formatTime,
 } from '@/utils';
 import { Account } from '@/types';
@@ -100,7 +101,7 @@ const ExplorerPage: React.FC = () => {
 											</td>
 											<td className="px-6 py-4">{formatAmount(tx.amount)}</td>
 											<td className="px-6 py-4">
-												{formatTime(new Date(tx.timestamp))}
+												{formatFullTime(new Date(tx.timestamp))}
 											</td>
 										</tr>
 									))}

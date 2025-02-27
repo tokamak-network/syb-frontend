@@ -89,7 +89,7 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Value:</strong> {transaction.amount} ETH
 				</div>
 				<div>
-					<strong>Fee:</strong> {transaction.L1Info.l1Fee} ETH
+					<strong>Fee:</strong> {transaction.L1Info.l1Fee} wETH
 				</div>
 				<div>
 					<strong>Timestamp:</strong> {formatTimestamp(transaction.timestamp)}
