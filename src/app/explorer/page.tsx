@@ -151,7 +151,9 @@ const ExplorerPage: React.FC = () => {
 										<td className="px-6 py-4 font-medium">
 											{formatAddress(account.tonEthereumAddress)}
 										</td>
-										<td className="px-6 py-4">{formatAmount(account.balance)}</td>
+										<td className="px-6 py-4">
+											{formatAmount(account.balance)}
+										</td>
 									</tr>
 								))}
 							</tbody>
