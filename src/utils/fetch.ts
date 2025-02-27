@@ -5,7 +5,7 @@ import { apiRequest } from './api';
 export const fetchTransactions = async (): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
-		url: '/transactions-history',
+		url: '/transactions-history?includePendingL1s=true',
 	});
 };
 
