@@ -16,7 +16,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://sybmvp-seque-elgxfa3hsj4a-1245524200.us-east-2.elb.amazonaws.com:5000/v1/:path*',
+        destination: 'http://sybmvp-seque-5dzhksrodmke-466448758.us-east-2.elb.amazonaws.com:5000/v1/:path*',
       },
     ];
   },
