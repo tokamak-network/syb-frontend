@@ -59,7 +59,9 @@ export const ThemeDropdown: React.FC<ThemeDropdownProps> = ({ className }) => {
 						{currentThemeIcon}
 					</button>
 				}
-				onItemSelect={(item) => setTheme(item.value as 'light' | 'dark' | 'dim')}
+				onItemSelect={(item) =>
+					setTheme(item.value as 'light' | 'dark' | 'dim')
+				}
 			/>
 		</div>
 	);

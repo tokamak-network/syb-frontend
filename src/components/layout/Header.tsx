@@ -82,7 +82,7 @@ export const Header: React.FC<{
 	};
 
 	const toggleMobileMenu = () => {
-		setIsMobileMenuOpen(prev => !prev);
+		setIsMobileMenuOpen((prev) => !prev);
 	};
 
 	useEffect(() => {
@@ -94,50 +94,81 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-6 md:px-8 lg:px-16 xl:px-40 md:py-8">
+		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-6 md:px-8 md:py-8 lg:px-16 xl:px-40">
 			<Image
 				alt="logo"
 				height={50}
 				src={'/images/logo-light.png'}
 				width={150}
-				className="w-auto h-8 md:h-10 lg:h-12"
+				className="h-8 w-auto md:h-10 lg:h-12"
 			/>
-			
-			<button 
-				className="md:hidden p-2 rounded-md"
+
+			<button
+				className="rounded-md p-2 md:hidden"
 				onClick={toggleMobileMenu}
 				aria-label="Toggle mobile menu"
 			>
-				<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					className="h-6 w-6"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d={
+							isMobileMenuOpen
+								? 'M6 18L18 6M6 6l12 12'
+								: 'M4 6h16M4 12h16M4 18h16'
+						}
+					/>
 				</svg>
 			</button>
-			
-			<nav className="hidden md:flex flex-col space-y-2 text-xl font-bold md:mb-0 md:flex-row md:space-x-2 md:space-y-0">
+
+			<nav className="hidden flex-col space-y-2 text-xl font-bold md:mb-0 md:flex md:flex-row md:space-x-2 md:space-y-0">
 				<NavLinkButton href="/home" label="Home" />
 				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
 			</nav>
-			
-			<div className={`absolute left-0 right-0 top-full bg-white dark:bg-gray-800 shadow-lg md:hidden transition-all duration-300 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-				<div className="px-4 py-2 space-y-2">
-					<NavLinkButton href="/home" label="Home" className="block w-full text-left py-2" />
-					{docsURL && <NavLinkButton href={docsURL} label="Docs" className="block w-full text-left py-2" />}
-					<NavLinkButton href="/explorer" label="Explorer" className="block w-full text-left py-2" />
+
+			<div
+				className={`absolute left-0 right-0 top-full bg-white shadow-lg transition-all duration-300 md:hidden dark:bg-gray-800 ${isMobileMenuOpen ? 'block' : 'hidden'}`}
+			>
+				<div className="space-y-2 px-4 py-2">
+					<NavLinkButton
+						href="/home"
+						label="Home"
+						className="block w-full py-2 text-left"
+					/>
+					{docsURL && (
+						<NavLinkButton
+							href={docsURL}
+							label="Docs"
+							className="block w-full py-2 text-left"
+						/>
+					)}
+					<NavLinkButton
+						href="/explorer"
+						label="Explorer"
+						className="block w-full py-2 text-left"
+					/>
 					<hr className="my-2" />
 					<Button
-						className="w-full text-left py-2 font-bold"
+						className="w-full py-2 text-left font-bold"
 						onClick={handleCreateTxModalToggle}
 					>
 						CreateTx
 					</Button>
-					<ThemeDropdown className="w-full my-2" />
+					<ThemeDropdown className="my-2 w-full" />
 				</div>
 			</div>
-			
+
 			<div
 				ref={menuRef}
-				className={`absolute left-0 top-full ml-0 hidden md:flex w-full p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out ${
+				className={`absolute left-0 top-full ml-0 hidden w-full p-8 shadow-lg backdrop-blur-md transition-all duration-300 ease-in-out md:flex ${
 					isMegaMenuOpen
 						? 'visible translate-y-0 opacity-100'
 						: 'invisible -translate-y-4 opacity-0'
@@ -173,9 +204,9 @@ export const Header: React.FC<{
 					/>
 				</div>
 			</div>
-			
+
 			{/* Action Buttons - Desktop only */}
-			<div className="hidden md:flex space-x-2">
+			<div className="hidden space-x-2 md:flex">
 				<Button
 					className={
 						(navButtonStyles(currentThemeStyles), 'items-center font-bold')
@@ -238,7 +269,7 @@ export const Header: React.FC<{
 					</Button>
 				)}
 			</div>
-			
+
 			{/* Wallet Button - Always visible on mobile */}
 			<div className="md:hidden">
 				{isConnected ? (
@@ -246,7 +277,9 @@ export const Header: React.FC<{
 						className="flex items-center rounded-lg px-2 py-1"
 						onClick={handleWalletMenuToggle}
 					>
-						<span>{address?.slice(0, 4)}...{address?.slice(-2)}</span>
+						<span>
+							{address?.slice(0, 4)}...{address?.slice(-2)}
+						</span>
 					</Button>
 				) : (
 					<Button
@@ -262,7 +295,7 @@ export const Header: React.FC<{
 					</Button>
 				)}
 			</div>
-			
+
 			<CreateTxModal
 				isConnected={isConnected}
 				isOpen={isCreateTxModalOpen}
