@@ -15,7 +15,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: '/sequencer/:path*',
         destination: 'http://sybmvp-seque-5dzhksrodmke-466448758.us-east-2.elb.amazonaws.com:5000/v1/:path*',
       },
     ];
