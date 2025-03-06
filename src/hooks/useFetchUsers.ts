@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { User } from '@/types';
 
 const fetchUsers = async (): Promise<User[]> => {
-	const response = await fetch('/api/users'); // example endpoint to fetch users
+	const response = await fetch('/api/users');
 
 	if (!response.ok) {
 		throw new Error('Network response was not ok');
