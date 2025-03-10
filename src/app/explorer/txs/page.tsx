@@ -73,31 +73,31 @@ const TransactionsPage: React.FC = () => {
 				placeholder="Search by Transaction Hash, From, or To"
 				onChange={(e) => setSearchQuery(e.target.value)}
 			/>
-			<table className="mt-4 min-w-full table-auto divide-y divide-gray-300 border border-gray-200">
-				<thead className="bg-gray-100">
+			<table className="mt-4 min-w-full table-auto divide-y divide-tableBorder border border-tableBorder">
+				<thead className="bg-tableHeader">
 					<tr>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase">
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Transaction Hash
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase">
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Type
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase">
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase">
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							To
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase">
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Status
 						</th>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-gray-200">
+				<tbody className="divide-y divide-tableBorder bg-tableBackground">
 					{currentTransactions.map((transaction) => (
 						<tr
 							key={transaction.id}
-							className="cursor-pointer hover:bg-gray-100"
+							className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
 							onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
 						>
 							<td className="px-6 py-2">{transaction.L1Info.ethereumTxHash}</td>
@@ -109,30 +109,30 @@ const TransactionsPage: React.FC = () => {
 							</td>
 							<td className="px-6 py-2">{transaction.toTonEthereumAddress}</td>
 							{/* <td className="px-6 py-2">
-								<TxStatus status={transaction.type} />
-							</td> */}
+                    <TxStatus status={transaction.type} />
+                </td> */}
 						</tr>
 					))}
 				</tbody>
 			</table>
 			<div className="mt-4 flex items-center justify-between">
-				<button
-					className="rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
+				<Button
+					className="rounded border border-paginationButtonBorder bg-paginationButton px-4 py-2 text-paginationButtonText disabled:opacity-50"
 					disabled={currentPage === 1}
 					onClick={handlePreviousPage}
 				>
 					Previous
-				</button>
-				<span>
+				</Button>
+				<span className="text-paginationText">
 					Page {currentPage} of {totalPages}
 				</span>
-				<button
-					className="rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
-					disabled={currentPage === totalPages}
+				<Button
+					className="rounded border border-paginationButtonBorder bg-paginationButton px-4 py-2 text-paginationButtonText disabled:opacity-50"
+					disabled={currentPage === totalPages || totalPages === 0}
 					onClick={handleNextPage}
 				>
 					Next
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
