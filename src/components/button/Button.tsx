@@ -32,16 +32,32 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 		const currentThemeStyles = themeStyles[theme];
 
+		const textColorClass =
+			theme === 'dark' || theme === 'dim'
+				? 'text-white'
+				: currentThemeStyles.buttonText;
+
 		return (
 			<button
 				ref={ref}
 				className={cn(
 					'flex items-center justify-center rounded px-4 py-2 font-medium transition-colors duration-200',
-					backgroundImage ? 'bg-cover bg-center bg-no-repeat' : '',
+					backgroundImage
+						? 'bg-cover bg-center bg-no-repeat'
+						: theme === 'dark'
+							? 'bg-gray-700'
+							: theme === 'dim'
+								? 'bg-gray-600'
+								: currentThemeStyles.buttonBg,
 					isLoading && 'cursor-wait',
-					currentThemeStyles.buttonBg,
-					currentThemeStyles.buttonText,
-					currentThemeStyles.hoverBg,
+					disabled
+						? 'cursor-not-allowed opacity-60'
+						: theme === 'dark'
+							? 'hover:bg-gray-600'
+							: theme === 'dim'
+								? 'hover:bg-gray-500'
+								: currentThemeStyles.hoverBg,
+					textColorClass,
 					className,
 				)}
 				disabled={isLoading || disabled}

@@ -28,7 +28,6 @@ const AccountPage: React.FC = () => {
 
 	if (isLoading) return <PageLoader />;
 
-	// Filter accounts based on the search query
 	const filteredAccounts = accountResponse?.accounts.filter(
 		(account: Account) =>
 			account.accountIndex.toLowerCase().includes(searchQuery.toLowerCase()),
