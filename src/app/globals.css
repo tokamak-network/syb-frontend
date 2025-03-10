@@ -450,3 +450,11 @@ body {
 html {
 	overflow-y: scroll;
 }
+
+.modal-overlay {
+	z-index: 50;
+}
+
+.modal-content {
+	z-index: 51;
+}

@@ -28,26 +28,28 @@ export const Select: React.FC<SelectProps> = ({
 	return (
 		<div className={cn('flex flex-col space-y-2', className)}>
 			{label && (
-				<label className={cn('text-sm font-medium', labelClassName)}>
+				<label
+					className={cn('text-sm font-medium text-gray-200', labelClassName)}
+				>
 					{label}
 				</label>
 			)}
 			<RadixSelect.Root value={value} onValueChange={onChange}>
 				<RadixSelect.Trigger
 					className={cn(
-						'flex w-full items-center justify-between rounded-md border border-gray-300 bg-white p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50',
+						'flex w-full items-center justify-between rounded-md border border-white/20 bg-white/10 p-2 text-sm text-white shadow-sm transition-colors hover:bg-white/20 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50',
 						triggerClassName,
 					)}
 				>
 					<RadixSelect.Value />
 					<RadixSelect.Icon>
-						<FaChevronDown />
+						<FaChevronDown className="text-white" />
 					</RadixSelect.Icon>
 				</RadixSelect.Trigger>
 				<RadixSelect.Portal>
 					<RadixSelect.Content
 						className={cn(
-							'z-50 mt-1 w-full rounded-md border border-gray-300 bg-white shadow-lg',
+							'z-[52] mt-1 w-full rounded-md border border-white/20 bg-modal-primary shadow-lg',
 							contentClassName,
 						)}
 					>
@@ -55,7 +57,7 @@ export const Select: React.FC<SelectProps> = ({
 							{options.map((option) => (
 								<RadixSelect.Item
 									key={option.value}
-									className="cursor-pointer p-2 text-sm text-primary hover:bg-blue-100"
+									className="cursor-pointer p-2 text-sm text-white transition-colors hover:bg-white/10"
 									value={option.value}
 								>
 									<RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
