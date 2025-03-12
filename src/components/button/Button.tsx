@@ -3,8 +3,6 @@ import { ImSpinner2 } from 'react-icons/im';
 import { IconType } from 'react-icons';
 
 import { cn } from '@/utils/cn';
-import { useTheme } from '@/context';
-import { themeStyles } from '@/const';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children: React.ReactNode;
@@ -17,7 +15,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
 		{
-			backgroundImage,
 			children,
 			isLoading = false,
 			leftIcon: LeftIcon,
@@ -28,32 +25,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 		},
 		ref,
 	) => {
-		const { theme } = useTheme();
-
-		const currentThemeStyles = themeStyles[theme];
-
 		return (
 			<button
 				ref={ref}
 				className={cn(
-					'flex items-center justify-center rounded px-4 py-2 font-medium transition-colors duration-200',
-					backgroundImage ? 'bg-cover bg-center bg-no-repeat' : '',
+					'flex items-center justify-center rounded-md px-4 py-2 font-medium transition-colors',
+					'bg-blue-500 text-white hover:bg-blue-600',
+					'disabled:cursor-not-allowed disabled:opacity-50',
 					isLoading && 'cursor-wait',
-					currentThemeStyles.buttonBg,
-					currentThemeStyles.buttonText,
-					currentThemeStyles.hoverBg,
 					className,
 				)}
 				disabled={isLoading || disabled}
-				style={{
-					backgroundImage: backgroundImage
-						? `url(${backgroundImage})`
-						: undefined,
-				}}
 				{...props}
 			>
 				{isLoading ? (
-					<ImSpinner2 className={`animate-spin ${currentThemeStyles.text}`} />
+					<ImSpinner2 className="animate-spin text-white" />
 				) : (
 					<div className="flex w-full items-center justify-center whitespace-nowrap">
 						{LeftIcon && <LeftIcon className="mr-2 flex-shrink-0" size={20} />}

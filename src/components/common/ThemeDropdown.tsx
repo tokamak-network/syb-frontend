@@ -2,10 +2,15 @@ import React from 'react';
 import { FaSun, FaMoon, FaAdjust } from 'react-icons/fa';
 
 import { useTheme } from '@/context/ThemeContext';
+import { cn } from '@/utils/cn';
 
 import { Dropdown } from './DropDown';
 
-export const ThemeDropdown: React.FC = () => {
+interface ThemeDropdownProps {
+	className?: string;
+}
+
+export const ThemeDropdown: React.FC<ThemeDropdownProps> = ({ className }) => {
 	const { theme, setTheme } = useTheme();
 
 	const themeOptions = [
@@ -31,29 +36,33 @@ export const ThemeDropdown: React.FC = () => {
 	)?.icon;
 
 	return (
-		<Dropdown
-			items={themeOptions}
-			renderItem={(item) => (
-				<div className="flex items-center space-x-2">
-					{item.icon}
-					<span className="text-sm">{item.label}</span>
-				</div>
-			)}
-			triggerContent={
-				<button
-					aria-label="Select Theme"
-					className={`flex h-10 w-10 items-center justify-center rounded-full ${
-						theme === 'light'
-							? 'bg-gray-200 text-black'
-							: theme === 'dark'
-								? 'bg-black text-white'
-								: 'bg-gray-600 text-gray-200'
-					}`}
-				>
-					{currentThemeIcon}
-				</button>
-			}
-			onItemSelect={(item) => setTheme(item.value as 'light' | 'dark' | 'dim')}
-		/>
+		<div className={cn(className)}>
+			<Dropdown
+				items={themeOptions}
+				renderItem={(item) => (
+					<div className="flex items-center space-x-2">
+						{item.icon}
+						<span className="text-sm">{item.label}</span>
+					</div>
+				)}
+				triggerContent={
+					<button
+						aria-label="Select Theme"
+						className={`flex h-10 w-10 items-center justify-center rounded-full ${
+							theme === 'light'
+								? 'bg-gray-200 text-black'
+								: theme === 'dark'
+									? 'bg-black text-white'
+									: 'bg-gray-600 text-gray-200'
+						}`}
+					>
+						{currentThemeIcon}
+					</button>
+				}
+				onItemSelect={(item) =>
+					setTheme(item.value as 'light' | 'dark' | 'dim')
+				}
+			/>
+		</div>
 	);
 };

@@ -24,28 +24,20 @@ export const Modal: React.FC<ModalProps> = ({
 	const styles = themeStyles[theme];
 
 	return (
-		<Dialog.Root
-			modal={false}
-			open={isOpen}
-			onOpenChange={(open) => !open && onClose()}
-		>
+		<Dialog.Root modal={true} open={isOpen}>
 			<Dialog.Portal>
-				{/* Overlay */}
-				<Dialog.Overlay
-					className={cn('fixed inset-0 bg-opacity-50 transition-opacity')}
-				/>
+				{/* Overlay with blur effect */}
+				<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
 
 				{/* Content */}
 				<Dialog.Content
 					className={cn(
-						'fixed left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-6 shadow-lg focus:outline-none',
-						styles.background,
-						styles.text,
+						'fixed left-1/2 top-1/2 z-[51] w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-modal-primary p-6 shadow-lg focus:outline-none',
 						className,
 					)}
 				>
 					{/* Title */}
-					<Dialog.Title className={cn('mb-4 text-lg font-bold', styles.text)}>
+					<Dialog.Title className="mb-4 text-lg font-bold text-white">
 						{title}
 					</Dialog.Title>
 
@@ -53,14 +45,13 @@ export const Modal: React.FC<ModalProps> = ({
 					<div className="space-y-4">{children}</div>
 
 					{/* Close Button */}
-					<Dialog.Close asChild>
-						<button
-							aria-label="Close"
-							className={cn('absolute right-2 top-2 rounded-full p-1')}
-						>
-							✕
-						</button>
-					</Dialog.Close>
+					<button
+						onClick={onClose}
+						aria-label="Close"
+						className="absolute right-2 top-2 rounded-full p-1 text-white hover:bg-white/10"
+					>
+						✕
+					</button>
 				</Dialog.Content>
 			</Dialog.Portal>
 		</Dialog.Root>
