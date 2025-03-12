@@ -5,12 +5,12 @@ import { useTheme } from '@/context/ThemeContext';
 import { themeStyles } from '@/const';
 
 interface DropdownProps<T> {
-	items: T[]; // Array of items to display in the dropdown
-	renderItem: (item: T, index: number) => React.ReactNode; // Function to render each item
-	onItemSelect: (item: T) => void; // Callback when an item is selected
-	triggerContent: React.ReactNode; // Content for the dropdown trigger
-	itemClassName?: string; // Optional className for dropdown items
-	sideOffset?: number; // Optional offset for dropdown positioning
+	items: T[];
+	renderItem: (item: T, index: number) => React.ReactNode;
+	onItemSelect: (item: T) => void;
+	triggerContent: React.ReactNode;
+	itemClassName?: string;
+	sideOffset?: number;
 }
 
 export const Dropdown = <T,>({
@@ -30,7 +30,7 @@ export const Dropdown = <T,>({
 		<DropdownMenu.Root modal={false}>
 			<DropdownMenu.Trigger
 				asChild
-				className={`flex items-center justify-center rounded-md outline-none transition-all duration-200 ${currentThemeStyles.selectedColor}`}
+				className={`flex items-center justify-center rounded-md outline-none transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.dropdownBg}`}
 			>
 				{triggerContent}
 			</DropdownMenu.Trigger>

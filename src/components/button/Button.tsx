@@ -3,6 +3,8 @@ import { ImSpinner2 } from 'react-icons/im';
 import { IconType } from 'react-icons';
 
 import { cn } from '@/utils/cn';
+import { useTheme } from '@/context';
+import { themeStyles } from '@/const/themeStyles';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children: React.ReactNode;
@@ -25,14 +27,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 		},
 		ref,
 	) => {
+		const { theme } = useTheme();
+		const currentThemeStyles = themeStyles[theme];
+
 		return (
 			<button
 				ref={ref}
 				className={cn(
 					'flex items-center justify-center rounded-md px-4 py-2 font-medium transition-colors',
-					'bg-blue-500 text-white hover:bg-blue-600',
 					'disabled:cursor-not-allowed disabled:opacity-50',
 					isLoading && 'cursor-wait',
+					currentThemeStyles.buttonBg,
+					currentThemeStyles.buttonText,
 					className,
 				)}
 				disabled={isLoading || disabled}
