@@ -43,17 +43,25 @@ export const useWallet = () => {
 
 				return ethers.utils.formatEther(balanceResult.value);
 			} catch (primaryError) {
-				console.error('Error fetching balance with primary method:', primaryError);
-				
+				console.error(
+					'Error fetching balance with primary method:',
+					primaryError,
+				);
+
 				try {
 					const provider = new ethers.providers.JsonRpcProvider(
-						chain.rpcUrls?.default?.http?.[0]
+						chain.rpcUrls?.default?.http?.[0],
 					);
 					const rawBalance = await provider.getBalance(address);
 					return ethers.utils.formatEther(rawBalance);
 				} catch (fallbackError) {
-					console.error('Error fetching balance with fallback method:', fallbackError);
-					throw new Error(`Failed to fetch balance: ${primaryError instanceof Error ? primaryError.message : String(primaryError)}`);
+					console.error(
+						'Error fetching balance with fallback method:',
+						fallbackError,
+					);
+					throw new Error(
+						`Failed to fetch balance: ${primaryError instanceof Error ? primaryError.message : String(primaryError)}`,
+					);
 				}
 			}
 		},
@@ -118,8 +126,7 @@ export const useWallet = () => {
 
 	useEffect(() => {
 		if (isDisconnecting) {
-			const timeoutId = setTimeout(() => {
-			}, 300);
+			const timeoutId = setTimeout(() => {}, 300);
 
 			return () => clearTimeout(timeoutId);
 		}
