@@ -5,7 +5,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
 import { ThemeDropdown } from '@/components/common';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme, useToast } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useWallet } from '@/hooks/useWallet';
@@ -29,6 +29,8 @@ export const Header: React.FC<{
 
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
+
+	const { addToast } = useToast();
 
 	const { connect, isConnected, disconnect, connectors, address } = useWallet();
 
@@ -64,7 +66,7 @@ export const Header: React.FC<{
 	const handleCopyAddress = async () => {
 		if (address) {
 			await navigator.clipboard.writeText(address);
-			alert('Address copied to clipboard!');
+			addToast('success', 'Address copied to clipboard!', '');
 		}
 	};
 
@@ -235,15 +237,15 @@ export const Header: React.FC<{
 						</Button>
 
 						{isWalletMenuOpen && (
-							<div className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg">
+							<div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg">
 								<button
-									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={handleCopyAddress}
 								>
 									Copy Address
 								</button>
 								<button
-									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={async () => {
 										await disconnect();
 										setIsWalletMenuOpen(false);
