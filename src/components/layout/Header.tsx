@@ -207,7 +207,6 @@ export const Header: React.FC<{
 				</div>
 			</div>
 
-			{/* Action Buttons - Desktop only */}
 			<div className="hidden space-x-2 md:flex">
 				<Button
 					className={
@@ -247,8 +246,23 @@ export const Header: React.FC<{
 								<button
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={async () => {
-										await disconnect();
-										setIsWalletMenuOpen(false);
+										try {
+											await disconnect();
+											addToast(
+												'success',
+												'Wallet disconnected successfully',
+												'',
+											);
+											setIsWalletMenuOpen(false);
+										} catch (error) {
+											addToast(
+												'error',
+												'Failed to disconnect wallet',
+												error instanceof Error
+													? error.message
+													: 'Unknown error',
+											);
+										}
 									}}
 								>
 									Disconnect
@@ -259,7 +273,18 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
-						onClick={() => connect({ connector: connectors[0] })}
+						onClick={async () => {
+							try {
+								await connect({ connector: connectors[0] });
+								addToast('success', 'Wallet connected successfully', '');
+							} catch (error) {
+								addToast(
+									'error',
+									'Failed to connect wallet',
+									error instanceof Error ? error.message : 'Unknown error',
+								);
+							}
+						}}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -272,7 +297,6 @@ export const Header: React.FC<{
 				)}
 			</div>
 
-			{/* Wallet Button - Always visible on mobile */}
 			<div className="md:hidden">
 				{isConnected ? (
 					<Button
@@ -286,7 +310,18 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
-						onClick={() => connect({ connector: connectors[0] })}
+						onClick={async () => {
+							try {
+								await connect({ connector: connectors[0] });
+								addToast('success', 'Wallet connected successfully', '');
+							} catch (error) {
+								addToast(
+									'error',
+									'Failed to connect wallet',
+									error instanceof Error ? error.message : 'Unknown error',
+								);
+							}
+						}}
 					>
 						<Image
 							alt="MetaMask Icon"

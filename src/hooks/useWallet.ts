@@ -21,9 +21,14 @@ export const useWallet = () => {
 	const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
 
 	const [currencySymbol, setCurrencySymbol] = useState<string>('ETH');
-	const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false); // Add disconnect flag
+	const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false);
 
-	const { data: balance, isLoading: isBalanceLoading } = useQuery({
+	const {
+		data: balance,
+		isLoading: isBalanceLoading,
+		refetch: refetchBalance,
+		error: balanceError,
+	} = useQuery({
 		queryKey: ['balance', address, chain?.id],
 		queryFn: async () => {
 			if (!address || !chain) return null;
@@ -37,15 +42,39 @@ export const useWallet = () => {
 				setCurrencySymbol(chain.nativeCurrency?.symbol || 'ETH');
 
 				return ethers.utils.formatEther(balanceResult.value);
-			} catch (error) {
-				console.error('Error fetching balance:', error);
-
-				return null;
+			} catch (primaryError) {
+				console.error('Error fetching balance with primary method:', primaryError);
+				
+				try {
+					const provider = new ethers.providers.JsonRpcProvider(
+						chain.rpcUrls?.default?.http?.[0]
+					);
+					const rawBalance = await provider.getBalance(address);
+					return ethers.utils.formatEther(rawBalance);
+				} catch (fallbackError) {
+					console.error('Error fetching balance with fallback method:', fallbackError);
+					throw new Error(`Failed to fetch balance: ${primaryError instanceof Error ? primaryError.message : String(primaryError)}`);
+				}
 			}
 		},
 		enabled: !!address && !!chain,
 		refetchOnWindowFocus: false,
+		retry: 2,
+		staleTime: 30000,
 	});
+
+	const updateBalance = async () => {
+		if (address && chain) {
+			try {
+				await refetchBalance();
+				return true;
+			} catch (error) {
+				console.error('Failed to update balance:', error);
+				return false;
+			}
+		}
+		return false;
+	};
 
 	const networkIcon =
 		NETWORKS.find(
@@ -61,13 +90,10 @@ export const useWallet = () => {
 
 	const disconnect = async () => {
 		try {
-			// Set disconnect flag to prevent auto-connect modal
 			setIsDisconnecting(true);
 
-			// Clear Wagmi's autoConnect data
 			localStorage.removeItem('wagmi.connected');
 
-			// Clear wallet connections in Wagmi's state stored under 'wagmi.store'
 			const wagmiStore = localStorage.getItem('wagmi.store');
 
 			if (wagmiStore) {
@@ -80,7 +106,6 @@ export const useWallet = () => {
 				}
 			}
 
-			// Call Wagmi's disconnect function
 			await wagmiDisconnect();
 
 			console.log('Wallet disconnected successfully');
@@ -93,9 +118,7 @@ export const useWallet = () => {
 
 	useEffect(() => {
 		if (isDisconnecting) {
-			// If disconnecting, disable auto-connect for a brief moment
 			const timeoutId = setTimeout(() => {
-				// Optionally clear any persistent state here or add more logic
 			}, 300);
 
 			return () => clearTimeout(timeoutId);
@@ -106,6 +129,7 @@ export const useWallet = () => {
 		address,
 		balance,
 		isBalanceLoading,
+		balanceError,
 		isConnected,
 		chain: extendedChain,
 		currencySymbol,
@@ -115,5 +139,6 @@ export const useWallet = () => {
 		ensAvatar,
 		disconnect,
 		connect,
+		updateBalance,
 	};
 };
