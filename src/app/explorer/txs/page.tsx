@@ -9,6 +9,7 @@ import { Button, PageLoader, SearchBarComponent } from '@/components';
 import TxTypes from '@/components/tables/TxType';
 import { fetchTransactions } from '@/utils';
 import { ActionType } from '@/types';
+import { formatTransactionHash, formatTimestamp } from '@/utils/format';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
@@ -83,10 +84,16 @@ const TransactionsPage: React.FC = () => {
 							Type
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+							Timestamp
+						</th>
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							To
+						</th>
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+							Account Index
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Status
@@ -100,17 +107,23 @@ const TransactionsPage: React.FC = () => {
 							className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
 							onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
 						>
-							<td className="px-6 py-2">{transaction.L1Info.ethereumTxHash}</td>
+							<td className="px-6 py-2">
+								{formatTransactionHash(transaction.L1Info.ethereumTxHash)}
+							</td>
 							<td className="px-6 py-2">
 								<TxTypes txType={transaction.type as ActionType.DEPOSIT} />
+							</td>
+							<td className="px-6 py-2">
+								{transaction.timestamp
+									? formatTimestamp(transaction.timestamp)
+									: 'N/A'}
 							</td>
 							<td className="px-6 py-2">
 								{transaction.fromTonEthereumAddress}
 							</td>
 							<td className="px-6 py-2">{transaction.toTonEthereumAddress}</td>
-							{/* <td className="px-6 py-2">
-                    <TxStatus status={transaction.type} />
-                </td> */}
+							<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
+							<td className="px-6 py-2">{transaction.type}</td>
 						</tr>
 					))}
 				</tbody>

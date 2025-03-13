@@ -132,7 +132,7 @@ const ExplorerPage: React.FC = () => {
 					</div>
 				</div>
 
-				<div className="mt-8 w-full">
+				<div className="w-full">
 					<h2 className="py-1 text-xl font-bold">Active Accounts</h2>
 					<div className="mt-4">
 						{accountsError ? (
