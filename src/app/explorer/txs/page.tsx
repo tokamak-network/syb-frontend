@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 
-import { Button, PageLoader, SearchBarComponent } from '@/components';
+import { Button, PageLoader, SearchBarComponent, Dropdown } from '@/components';
 import TxTypes from '@/components/tables/TxType';
 import { fetchTransactions } from '@/utils';
 import { ActionType } from '@/types';
@@ -15,7 +15,7 @@ const TransactionsPage: React.FC = () => {
 	const router = useRouter();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [currentPage, setCurrentPage] = useState<number>(1);
-	const itemsPerPage = 10;
+	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
 	const {
 		data: transactionHistory,
@@ -57,6 +57,13 @@ const TransactionsPage: React.FC = () => {
 
 	const handlePreviousPage = () => {
 		if (currentPage > 1) setCurrentPage(currentPage - 1);
+	};
+
+	const pageSizeOptions = [5, 10, 20, 50];
+
+	const handleItemsPerPageChange = (value: number) => {
+		setItemsPerPage(value);
+		setCurrentPage(1); // Reset to first page when changing items per page
 	};
 
 	return (
@@ -136,9 +143,25 @@ const TransactionsPage: React.FC = () => {
 				>
 					Previous
 				</Button>
-				<span className="text-paginationText">
-					Page {currentPage} of {totalPages}
-				</span>
+				<div className="flex items-center gap-4">
+					<span className="text-paginationText">
+						Page {currentPage} of {totalPages}
+					</span>
+					<div className="flex items-center gap-2">
+						<span className="text-paginationText">Show:</span>
+						<Dropdown
+							items={pageSizeOptions}
+							renderItem={(item) => <span>{item}</span>}
+							onItemSelect={handleItemsPerPageChange}
+							triggerContent={
+								<div className="flex min-w-[60px] items-center justify-between gap-2 px-2 py-1">
+									<span>{itemsPerPage}</span>
+									<span>▼</span>
+								</div>
+							}
+						/>
+					</div>
+				</div>
 				<Button
 					className="rounded border border-paginationButtonBorder bg-paginationButton px-4 py-2 text-paginationButtonText disabled:opacity-50"
 					disabled={currentPage === totalPages || totalPages === 0}
