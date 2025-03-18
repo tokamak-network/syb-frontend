@@ -47,6 +47,9 @@ const config: Config = {
         txDefault: 'var(--tx-default)',
         txDefaultText: 'var(--tx-default-text)',
         buttonPrimary: '#1379FF',
+        'modal-primary': '#1B153F',
+        'blue-500': '#3B82F6',
+        'blue-600': '#2563EB',
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],

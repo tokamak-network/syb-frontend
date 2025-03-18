@@ -52,13 +52,7 @@ export const TransactionDropDown: React.FC<TransactionDropDownProps> = ({
 			triggerContent={
 				<Button
 					aria-label="Select Theme"
-					className={`flex items-center justify-center rounded-full ${
-						theme === 'light'
-							? 'bg-gray-200 text-black'
-							: theme === 'dark'
-								? 'bg-black text-white'
-								: 'bg-gray-600 text-gray-200'
-					}`}
+					className={'flex items-center justify-center rounded-full'}
 				>
 					{currentOption?.icon}
 					<span className="px-2 text-sm">{currentOption?.label}</span>

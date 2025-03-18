@@ -15,8 +15,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://sybmvp-seque-5dzhksrodmke-466448758.us-east-2.elb.amazonaws.com:5000/v1/:path*',
+        source: '/sequencer/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/:path*`,
       },
     ];
   },
