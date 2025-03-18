@@ -12,3 +12,4 @@ coverage
 build
 tailwind.config.ts
 next-env.d.ts
+.env.production
