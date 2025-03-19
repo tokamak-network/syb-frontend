@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useWaitForTransactionReceipt } from 'wagmi';
+import { useRouter } from 'next/navigation';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
@@ -27,6 +28,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	isConnected,
 	walletAddress,
 }) => {
+	const router = useRouter();
 	const { balance } = useWallet();
 	const { handleCreateAccount, handleDeposit } = useSepoliaTransactions();
 	const { addToast } = useToast();
@@ -40,6 +42,11 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const [pendingTxHash, setPendingTxHash] = useState<
 		`0x${string}` | undefined
 	>();
+	const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
+	const [successData, setSuccessData] = useState<{
+		type: string;
+		hash?: `0x${string}`;
+	} | null>(null);
 
 	const {
 		data,
@@ -59,6 +66,11 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				`${txType.charAt(0).toUpperCase() + txType.slice(1)} transaction successful! Hash: ${pendingTxHash}`,
 			);
 
+			setSuccessData({
+				type: txType,
+				hash: pendingTxHash,
+			});
+
 			onSubmit({
 				type: txType,
 				from: txFrom,
@@ -68,6 +80,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			});
 
 			onClose();
+			setIsSuccessModalOpen(true);
 			setTxAmount('');
 			setTxTo('');
 			setError(null);
@@ -182,6 +195,16 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		}
 	};
 
+	const handleSuccessModalClose = () => {
+		setIsSuccessModalOpen(false);
+		setSuccessData(null);
+	};
+
+	const navigateToTransactions = () => {
+		router.push('/explorer/txs');
+		handleSuccessModalClose();
+	};
+
 	useEffect(() => {
 		if (walletAddress) {
 			setTxFrom(walletAddress);
@@ -197,94 +220,156 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	}, [isConnected]);
 
 	return (
-		<Modal
-			className="max-w-md"
-			isOpen={isOpen}
-			title="Create Transaction"
-			onClose={onClose}
-		>
-			<div className="flex flex-col space-y-4">
-				<Select
-					label="Type"
-					options={[
-						{ value: 'create account', label: 'Create Account' },
-						{ value: 'deposit', label: 'Deposit' },
-						{ value: 'vouch', label: 'Vouch' },
-						{ value: 'unvouch', label: 'Unvouch' },
-						{ value: 'exit', label: 'Exit' },
-						{ value: 'explode', label: 'Explode' },
-					]}
-					value={txType}
-					onChange={setTxType}
-				/>
-
-				<Input
-					disabled={!!walletAddress || !isConnected}
-					label="From"
-					value={txFrom}
-					onChange={(e) => setTxFrom(e.target.value)}
-				/>
-
-				{isConnected && (
-					<div className="text-sm text-gray-500">
-						Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
-					</div>
-				)}
-
-				{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
-					txType,
-				) && (
-					<Input
-						disabled={!isConnected}
-						label="To"
-						placeholder={
-							['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
-								? 'Enter Index'
-								: 'Enter address'
-						}
-						value={txTo}
-						onChange={(e) => setTxTo(e.target.value)}
+		<>
+			<Modal
+				className="max-w-md"
+				isOpen={isOpen}
+				title="Create Transaction"
+				onClose={onClose}
+			>
+				<div className="flex flex-col space-y-4">
+					<Select
+						label="Type"
+						options={[
+							{ value: 'create account', label: 'Create Account' },
+							{ value: 'deposit', label: 'Deposit' },
+							{ value: 'vouch', label: 'Vouch' },
+							{ value: 'unvouch', label: 'Unvouch' },
+							{ value: 'exit', label: 'Exit' },
+							{ value: 'explode', label: 'Explode' },
+						]}
+						value={txType}
+						onChange={setTxType}
 					/>
-				)}
 
-				{['create account', 'deposit'].includes(txType) && (
-					<div className="flex space-x-2">
+					<Input
+						disabled={!!walletAddress || !isConnected}
+						label="From"
+						value={txFrom}
+						onChange={(e) => setTxFrom(e.target.value)}
+					/>
+
+					{isConnected && (
+						<div className="text-sm text-gray-500">
+							Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
+						</div>
+					)}
+
+					{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
+						txType,
+					) && (
 						<Input
 							disabled={!isConnected}
-							label="Amount (ETH)"
-							placeholder="Enter amount"
-							type="number"
-							value={txAmount}
-							onChange={(e) => setTxAmount(e.target.value)}
+							label="To"
+							placeholder={
+								['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
+									? 'Enter Index'
+									: 'Enter address'
+							}
+							value={txTo}
+							onChange={(e) => setTxTo(e.target.value)}
 						/>
+					)}
+
+					{['create account', 'deposit'].includes(txType) && (
+						<div className="flex space-x-2">
+							<Input
+								disabled={!isConnected}
+								label="Amount (ETH)"
+								placeholder="Enter amount"
+								type="number"
+								value={txAmount}
+								onChange={(e) => setTxAmount(e.target.value)}
+							/>
+							<Button
+								className="mt-6 px-2 py-1 text-sm"
+								disabled={!isConnected || !balance}
+								onClick={handleSetMaxAmount}
+							>
+								Max
+							</Button>
+						</div>
+					)}
+
+					{error && <p className="text-sm text-red-500">{error}</p>}
+
+					<div className="flex w-full justify-center">
 						<Button
-							className="mt-6 px-2 py-1 text-sm"
-							disabled={!isConnected || !balance}
-							onClick={handleSetMaxAmount}
+							className="mt-4 w-auto"
+							disabled={!isConnected || isTransactionProcessing}
+							onClick={handleSend}
 						>
-							Max
+							{!isConnected
+								? 'Please connect with MetaMask first'
+								: isTransactionProcessing
+									? isConfirming
+										? 'Confirming...'
+										: 'Processing...'
+									: txType.toLocaleUpperCase()}
 						</Button>
 					</div>
-				)}
-
-				{error && <p className="text-sm text-red-500">{error}</p>}
-
-				<div className="flex w-full justify-center">
-					<Button
-						className="mt-4 w-auto"
-						disabled={!isConnected || isTransactionProcessing}
-						onClick={handleSend}
-					>
-						{!isConnected
-							? 'Please connect with MetaMask first'
-							: isTransactionProcessing
-								? isConfirming
-									? 'Confirming...'
-									: 'Processing...'
-								: txType.toLocaleUpperCase()}
-					</Button>
 				</div>
-			</div>
-		</Modal>
+			</Modal>
+
+			<Modal
+				className="max-w-md"
+				isOpen={isSuccessModalOpen}
+				title="Transaction Successful"
+				onClose={handleSuccessModalClose}
+			>
+				<div className="flex flex-col space-y-4">
+					<div className="flex items-center justify-center space-x-2 text-green-500">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-12 w-12"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M5 13l4 4L19 7"
+							/>
+						</svg>
+					</div>
+
+					<div className="text-center">
+						<h3 className="text-lg font-bold text-gray-200">
+							{successData?.type
+								? successData.type.charAt(0).toUpperCase() +
+									successData.type.slice(1)
+								: 'Transaction'}
+							{` Completed`}
+						</h3>
+
+						<p className="mt-2 text-sm text-gray-300">
+							Your transaction has been successfully confirmed on the Mainnet.
+						</p>
+
+						{successData?.hash && (
+							<div className="mt-4 overflow-hidden text-ellipsis rounded-md bg-gray-100 p-2 text-xs text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+								<span className="font-medium">Transaction Hash:</span>
+								<br />
+								{successData.hash}
+							</div>
+						)}
+					</div>
+
+					<div className="flex flex-col space-y-2 pt-4">
+						<Button className="w-full" onClick={navigateToTransactions}>
+							Go To All Transactions
+						</Button>
+						<Button
+							className="w-full bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+							onClick={handleSuccessModalClose}
+						>
+							Close
+						</Button>
+					</div>
+				</div>
+			</Modal>
+		</>
 	);
 };

@@ -22,7 +22,7 @@ export const Modal: React.FC<ModalProps> = ({
 	return (
 		<Dialog.Root modal={true} open={isOpen}>
 			<Dialog.Portal>
-				<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
+				<Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
 
 				<Dialog.Content
 					className={cn(
