@@ -5,7 +5,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
 import { ThemeDropdown } from '@/components/common';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme, useToast } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useWallet } from '@/hooks/useWallet';
@@ -29,6 +29,8 @@ export const Header: React.FC<{
 
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
+
+	const { addToast } = useToast();
 
 	const { connect, isConnected, disconnect, connectors, address } = useWallet();
 
@@ -64,7 +66,7 @@ export const Header: React.FC<{
 	const handleCopyAddress = async () => {
 		if (address) {
 			await navigator.clipboard.writeText(address);
-			alert('Address copied to clipboard!');
+			addToast('success', 'Address copied to clipboard!', '');
 		}
 	};
 
@@ -94,7 +96,7 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-6 md:px-8 md:py-8 lg:px-16 xl:px-40">
+		<header className="border-gray fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-2 md:px-4 md:py-8 lg:px-16 xl:px-40">
 			<Image
 				alt="logo"
 				height={50}
@@ -205,7 +207,6 @@ export const Header: React.FC<{
 				</div>
 			</div>
 
-			{/* Action Buttons - Desktop only */}
 			<div className="hidden space-x-2 md:flex">
 				<Button
 					className={
@@ -235,18 +236,33 @@ export const Header: React.FC<{
 						</Button>
 
 						{isWalletMenuOpen && (
-							<div className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg">
+							<div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg">
 								<button
-									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={handleCopyAddress}
 								>
 									Copy Address
 								</button>
 								<button
-									className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={async () => {
-										await disconnect();
-										setIsWalletMenuOpen(false);
+										try {
+											await disconnect();
+											addToast(
+												'success',
+												'Wallet disconnected successfully',
+												'',
+											);
+											setIsWalletMenuOpen(false);
+										} catch (error) {
+											addToast(
+												'error',
+												'Failed to disconnect wallet',
+												error instanceof Error
+													? error.message
+													: 'Unknown error',
+											);
+										}
 									}}
 								>
 									Disconnect
@@ -257,7 +273,18 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
-						onClick={() => connect({ connector: connectors[0] })}
+						onClick={async () => {
+							try {
+								await connect({ connector: connectors[0] });
+								addToast('success', 'Wallet connected successfully', '');
+							} catch (error) {
+								addToast(
+									'error',
+									'Failed to connect wallet',
+									error instanceof Error ? error.message : 'Unknown error',
+								);
+							}
+						}}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -270,7 +297,6 @@ export const Header: React.FC<{
 				)}
 			</div>
 
-			{/* Wallet Button - Always visible on mobile */}
 			<div className="md:hidden">
 				{isConnected ? (
 					<Button
@@ -284,7 +310,18 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
-						onClick={() => connect({ connector: connectors[0] })}
+						onClick={async () => {
+							try {
+								await connect({ connector: connectors[0] });
+								addToast('success', 'Wallet connected successfully', '');
+							} catch (error) {
+								addToast(
+									'error',
+									'Failed to connect wallet',
+									error instanceof Error ? error.message : 'Unknown error',
+								);
+							}
+						}}
 					>
 						<Image
 							alt="MetaMask Icon"

@@ -24,8 +24,14 @@ export const Label: React.FC<LabelProps> = ({
 	const router = useRouter();
 
 	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
-	const explorerPath = isTransaction ? `txs/${value}` : `accounts/${value}`;
+	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
 	const displayValue = shortenAddress(value, shorten);
+
+	console.log(value, 'value');
+
+	const formattedDisplayValue = displayValue.startsWith('0x')
+		? `0x${displayValue.slice(2).toUpperCase()}`
+		: displayValue.toUpperCase();
 
 	const handleClick = () => {
 		if (navigateToAccount) {
@@ -53,7 +59,7 @@ export const Label: React.FC<LabelProps> = ({
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							{displayValue.toLocaleUpperCase()}
+							{formattedDisplayValue}
 						</a>
 					) : navigateToAccount ? (
 						<span
@@ -63,13 +69,13 @@ export const Label: React.FC<LabelProps> = ({
 							onClick={handleClick}
 							onKeyDown={handleKeyDown}
 						>
-							{displayValue.toLocaleUpperCase()}
+							{formattedDisplayValue}
 						</span>
 					) : (
 						<span
 							className={`inline-block w-fit cursor-pointer text-gray-700 ${className}`}
 						>
-							{displayValue.toLocaleUpperCase()}
+							{formattedDisplayValue}
 						</span>
 					)}
 				</Tooltip.Trigger>
@@ -79,7 +85,9 @@ export const Label: React.FC<LabelProps> = ({
 						className="rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-md"
 						side="top"
 					>
-						{value.toLocaleUpperCase()}
+						{value.startsWith('0x')
+							? `0x${value.slice(2).toUpperCase()}`
+							: value.toUpperCase()}
 						<Tooltip.Arrow className="fill-gray-800" />
 					</Tooltip.Content>
 				</Tooltip.Portal>
