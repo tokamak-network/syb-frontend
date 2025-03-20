@@ -28,17 +28,34 @@ const HomePage: React.FC = () => {
 						if (latestTx.timestamp) {
 							const txTime = new Date(latestTx.timestamp);
 							const now = new Date();
-							const diffInMinutes = Math.floor(
-								(now.getTime() - txTime.getTime()) / (1000 * 60),
-							);
+							const diffInMs = now.getTime() - txTime.getTime();
 
-							setLastBlockTime(
-								diffInMinutes < 1
-									? 'just now'
-									: diffInMinutes === 1
-										? '1 min ago'
-										: `${diffInMinutes} mins ago`,
-							);
+							// Calculate days, hours, minutes
+							const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+							const days = Math.floor(diffInMinutes / (60 * 24));
+							const hours = Math.floor((diffInMinutes % (60 * 24)) / 60);
+							const minutes = diffInMinutes % 60;
+
+							// Format the time string
+							if (diffInMinutes < 1) {
+								setLastBlockTime('just now');
+							} else {
+								let timeString = '';
+
+								if (days > 0) {
+									timeString += `${days} ${days === 1 ? 'day' : 'days'} `;
+								}
+
+								if (hours > 0 || days > 0) {
+									timeString += `${hours} ${hours === 1 ? 'hour' : 'hours'} `;
+								}
+
+								if (minutes > 0 || (days === 0 && hours === 0)) {
+									timeString += `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+								}
+
+								setLastBlockTime(`${timeString.trim()} ago`);
+							}
 						}
 					}
 				}

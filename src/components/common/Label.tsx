@@ -27,8 +27,6 @@ export const Label: React.FC<LabelProps> = ({
 	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
 	const displayValue = shortenAddress(value, shorten);
 
-	console.log(value, 'value');
-
 	const formattedDisplayValue = displayValue.startsWith('0x')
 		? `0x${displayValue.slice(2).toUpperCase()}`
 		: displayValue.toUpperCase();
