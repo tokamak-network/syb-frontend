@@ -20,7 +20,6 @@ const HomePage: React.FC = () => {
 
 				if (response.transactions && response.transactions.length > 0) {
 					const latestTx = response.transactions[0];
-					console.log(latestTx, 'latestTx');
 					setLastTransaction(latestTx.L1Info.ethereumTxHash);
 					if (latestTx.L1Info.ethereumBlockNum) {
 						setLastBlock(latestTx.L1Info.ethereumBlockNum);
