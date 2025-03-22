@@ -3,3 +3,4 @@ export * from './TransactionActivity';
 export * from './TxStatus';
 export * from './TxType';
 export * from './UserAddress';
+export * from './Transactions'
