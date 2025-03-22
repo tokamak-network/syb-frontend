@@ -16,7 +16,7 @@ import { NETWORKS } from '@/const';
 export const useWallet = () => {
 	const { address, isConnected, chain, chainId } = useAccount();
 	const { disconnect: wagmiDisconnect } = useDisconnect();
-	const { connectors, connect } = useConnect();
+	const { connectors, connectAsync } = useConnect();
 	const { data: ensName } = useEnsName({ address });
 	const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
 
@@ -145,7 +145,7 @@ export const useWallet = () => {
 		ensName,
 		ensAvatar,
 		disconnect,
-		connect,
+		connectAsync,
 		updateBalance,
 	};
 };

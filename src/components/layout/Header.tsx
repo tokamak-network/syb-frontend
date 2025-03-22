@@ -32,7 +32,8 @@ export const Header: React.FC<{
 
 	const { addToast } = useToast();
 
-	const { connect, isConnected, disconnect, connectors, address } = useWallet();
+	const { connectAsync, isConnected, disconnect, connectors, address } =
+		useWallet();
 
 	const handleButtonHover = (button: string) => {
 		setActiveButton(button);
@@ -250,7 +251,7 @@ export const Header: React.FC<{
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
 						onClick={async () => {
 							try {
-								await connect({ connector: connectors[0] });
+								await connectAsync({ connector: connectors[0] });
 								addToast('success', 'Wallet connected successfully', '');
 							} catch (error) {
 								addToast(
@@ -291,7 +292,7 @@ export const Header: React.FC<{
 						className="flex items-center rounded-lg px-2 py-1"
 						onClick={async () => {
 							try {
-								await connect({ connector: connectors[0] });
+								await connectAsync({ connector: connectors[0] });
 								addToast('success', 'Wallet connected successfully', '');
 							} catch (error) {
 								addToast(
