@@ -9,7 +9,11 @@ import { Button, PageLoader, SearchBarComponent, Dropdown } from '@/components';
 import TxTypes from '@/components/tables/TxType';
 import { fetchTransactions } from '@/utils';
 import { ActionType } from '@/types';
-import { formatTransactionHash, formatTimestamp } from '@/utils/format';
+import {
+	formatTransactionHash,
+	formatTimestamp,
+	formatTonAddress,
+} from '@/utils/format';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
@@ -17,11 +21,7 @@ const TransactionsPage: React.FC = () => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
-	const {
-		data: transactionHistory,
-		isLoading: isLoadingTx,
-		error: txError,
-	} = useQuery({
+	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
 		queryKey: ['transactions'],
 		queryFn: fetchTransactions,
 		staleTime: 30000,
@@ -34,11 +34,11 @@ const TransactionsPage: React.FC = () => {
 
 	const filteredTransactions = transactions.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
-
 		return (
 			transaction.id.toLowerCase().includes(query) ||
 			transaction.fromTonEthereumAddress.toLowerCase().includes(query) ||
-			transaction.fromAccountIndex.toLowerCase().includes(query)
+			(transaction.fromAccountIndex &&
+				transaction.fromAccountIndex.toString().toLowerCase().includes(query))
 		);
 	});
 
@@ -126,9 +126,28 @@ const TransactionsPage: React.FC = () => {
 									: 'N/A'}
 							</td>
 							<td className="px-6 py-2">
-								{transaction.fromTonEthereumAddress}
+								<div className="group relative">
+									{formatTonAddress(transaction.fromTonEthereumAddress, true)}
+									<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+										{transaction.fromTonEthereumAddress
+											? formatTonAddress(transaction.fromTonEthereumAddress)
+											: 'N/A'}
+									</div>
+								</div>
 							</td>
-							<td className="px-6 py-2">{transaction.toTonEthereumAddress}</td>
+							<td className="px-6 py-2">
+								<div className="group relative">
+									{formatTonAddress(
+										transaction.toTonEthereumAddress ?? '',
+										true,
+									)}
+									<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+										{transaction.toTonEthereumAddress
+											? formatTonAddress(transaction.toTonEthereumAddress)
+											: 'N/A'}
+									</div>
+								</div>
+							</td>
 							<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
 							<td className="px-6 py-2">{transaction.type}</td>
 						</tr>
