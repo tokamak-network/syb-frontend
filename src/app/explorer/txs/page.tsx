@@ -57,15 +57,15 @@ const TransactionsPage: React.FC = () => {
 			/>
 
 			<Tabs defaultValue="all" className="shadow-blackA2 flex w-full flex-col">
-				<TabsList className="border-tabBorder flex w-[400px] shrink-0 border-b">
+				<TabsList className="flex w-[400px] shrink-0 border-b border-tabBorder">
 					<TabsTrigger
-						className="text-mauve11 data-[state=active]:border-tabActive flex h-[45px] flex-1 cursor-pointer select-none items-center justify-center px-5 data-[state=active]:border-b-2"
+						className="text-mauve11 flex h-[45px] flex-1 cursor-pointer select-none items-center justify-center px-5 data-[state=active]:border-b-2 data-[state=active]:border-tabActive"
 						value="all"
 					>
 						All
 					</TabsTrigger>
 					<TabsTrigger
-						className="text-mauve11 data-[state=active]:border-tabActive flex h-[45px] flex-1 cursor-pointer select-none items-center justify-center px-5 data-[state=active]:border-b-2"
+						className="text-mauve11 flex h-[45px] flex-1 cursor-pointer select-none items-center justify-center px-5 data-[state=active]:border-b-2 data-[state=active]:border-tabActive"
 						value="me"
 					>
 						My Transactions
