@@ -358,6 +358,9 @@ body {
 	--secondary-text: #6c757d;
 	--background: #ffffff;
 	--foreground: #f8f9fa;
+	--tab-border: #e5e7eb;
+	--tab-active: #000000;
+	--tab-hover: #e5e7eb;
 }
 
 /* Dark Theme */
@@ -402,6 +405,9 @@ body {
 	--secondary-text: #adb5bd;
 	--background: #101112;
 	--foreground: #232425;
+	--tab-border: #23323e;
+	--tab-active: #6290b6;
+	--tab-hover: #23323e;
 }
 
 /* Dim Theme */
@@ -446,6 +452,9 @@ body {
 	--secondary-text: #b0b0b0;
 	--background: #121212;
 	--foreground: #1e1e1e;
+	--tab-border: #2a2a2a;
+	--tab-active: #bb86fc;
+	--tab-hover: #2a2a2a;
 }
 html {
 	overflow-y: scroll;
