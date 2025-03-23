@@ -8,7 +8,11 @@ import { useQuery } from '@tanstack/react-query';
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
 import { Button, PageLoader } from '@/components';
-import { fetchTransactionByHash, formatTimestamp } from '@/utils';
+import {
+	convertWeiToGweiAndEther,
+	fetchTransactionByHash,
+	formatTimestamp,
+} from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
 import { formatTonAddress } from '@/utils';
 
@@ -41,6 +45,8 @@ const TransactionDetailsPage: React.FC = () => {
 	if (!transaction) {
 		return <div className="p-8">Transaction not found.</div>;
 	}
+
+	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.L1Info.l1Fee);
 
 	return (
 		<div className="p-8">
@@ -92,7 +98,7 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Value:</strong> {transaction.amount} ETH
 				</div>
 				<div>
-					<strong>Fee:</strong> {transaction.L1Info.l1Fee} Gwei
+					<strong>Fee:</strong> {gwei} Gwei ({ether} Ether)
 				</div>
 				<div>
 					<strong>Timestamp:</strong> {formatTimestamp(transaction.timestamp)}

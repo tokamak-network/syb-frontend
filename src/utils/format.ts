@@ -178,3 +178,15 @@ export const formatTonAddress = (
 
 	return newAddress;
 };
+
+/**
+ * Converts wei value to both gwei and ether.
+ * @param wei - The amount in wei to convert.
+ * @returns {Object} - Object containing the converted gwei and ether values.
+ */
+export const convertWeiToGweiAndEther = (wei: number): { gwei: number; ether: number } => {
+	const gwei = wei / 1e9;
+	const ether = wei / 1e18;
+	
+	return { gwei, ether };
+};
