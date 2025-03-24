@@ -10,6 +10,7 @@ import TxStatus from '@/components/tables/TxStatus';
 import { Button, PageLoader } from '@/components';
 import { fetchTransactionByHash, formatTimestamp } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
+import { formatTonAddress } from '@/utils';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();
@@ -77,10 +78,12 @@ const TransactionDetailsPage: React.FC = () => {
 					/>
 				</div>
 				<div>
-					<strong>From:</strong> {transaction.fromTonEthereumAddress}
+					<strong>From:</strong>{' '}
+					{formatTonAddress(transaction.fromTonEthereumAddress)}
 				</div>
 				<div>
-					<strong>To:</strong> {transaction.toTonEthereumAddress as string}
+					<strong>To:</strong>{' '}
+					{formatTonAddress(transaction.toTonEthereumAddress ?? '')}
 				</div>
 				<div>
 					<strong>Block Number:</strong> {transaction.L1Info.ethereumBlockNum}
@@ -89,7 +92,7 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Value:</strong> {transaction.amount} ETH
 				</div>
 				<div>
-					<strong>Fee:</strong> {transaction.L1Info.l1Fee} wETH
+					<strong>Fee:</strong> {transaction.L1Info.l1Fee} Gwei
 				</div>
 				<div>
 					<strong>Timestamp:</strong> {formatTimestamp(transaction.timestamp)}

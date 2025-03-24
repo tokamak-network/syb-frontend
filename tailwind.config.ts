@@ -50,6 +50,9 @@ const config: Config = {
         'modal-primary': '#1B153F',
         'blue-500': '#3B82F6',
         'blue-600': '#2563EB',
+        tabBorder: 'var(--tab-border)',
+        tabActive: 'var(--tab-active)',
+        tabHover: 'var(--tab-hover)',
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],

@@ -31,7 +31,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 						src={'/images/partnership-primary-dark-logo.png'}
 						width={300}
 					/>
-					<span>SYB © – All rights reserved. 2024</span>
+					<span>SYB © – All rights reserved. 2025</span>
 					<div className="flex space-x-10">
 						{FooterSocialMedia.map((item) => (
 							<LinkButton key={item.label} href={item.link} icon={item.icon} />
