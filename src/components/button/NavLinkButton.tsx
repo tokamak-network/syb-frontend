@@ -11,7 +11,7 @@ export const navButtonStyles = (
 	className?: string,
 ) =>
 	cn(
-		`relative flex flex-col items-center rounded px-8 py-1 transition-colors duration-200`,
+		`relative flex flex-col items-center py-1 px-2 transition-colors duration-200 md:text-sm`,
 		currentThemeStyles.text,
 		currentThemeStyles.hoverText,
 		className,
