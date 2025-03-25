@@ -29,7 +29,7 @@ const ExplorerPage: React.FC = () => {
 		error: txError,
 	} = useQuery({
 		queryKey: ['transactions'],
-		queryFn: fetchTransactions,
+		queryFn: () => fetchTransactions(),
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});

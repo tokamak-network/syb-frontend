@@ -158,3 +158,8 @@ export interface AccountsResponse {
 	accounts: Account[];
 	pendingItems: number;
 }
+
+export enum Order {
+	ASC = 'ASC',
+	DESC = 'DESC',
+}

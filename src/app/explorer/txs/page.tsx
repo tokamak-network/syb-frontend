@@ -15,13 +15,16 @@ import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
 import { formatTonAddress } from '@/utils/format';
+import { Order } from '@/types';
+
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
 	const { address } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [order, setOrder] = useState<Order>(Order.DESC);
 	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
-		queryKey: ['transactions'],
-		queryFn: fetchTransactions,
+		queryKey: ['transactions', order],
+		queryFn: () => fetchTransactions(order),
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});
@@ -73,7 +76,11 @@ const TransactionsPage: React.FC = () => {
 				</TabsList>
 				<TabsContent value="all">
 					{filteredTransactions && (
-						<TransactionsTable filteredTransactions={filteredTransactions} />
+						<TransactionsTable
+							filteredTransactions={filteredTransactions}
+							setOrder={setOrder}
+							order={order}
+						/>
 					)}
 				</TabsContent>
 				<TabsContent value="me">
@@ -84,6 +91,8 @@ const TransactionsPage: React.FC = () => {
 									formatTonAddress(transaction.fromTonEthereumAddress) ===
 									address,
 							)}
+							setOrder={setOrder}
+							order={order}
 						/>
 					)}
 				</TabsContent>
