@@ -6,7 +6,7 @@ import { shortenAddress } from '@/utils';
 
 interface LabelProps {
 	value: string;
-	shorten?: 'middle' | 'end';
+	shorten?: 'middle' | 'end' | 'full';
 	explore?: boolean;
 	isTransaction: boolean;
 	navigateToAccount?: boolean;
@@ -26,8 +26,6 @@ export const Label: React.FC<LabelProps> = ({
 	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
 	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
 	const displayValue = shortenAddress(value, shorten);
-
-	console.log(value, 'value');
 
 	const formattedDisplayValue = displayValue.startsWith('0x')
 		? `0x${displayValue.slice(2).toUpperCase()}`
@@ -54,7 +52,7 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Trigger asChild>
 					{explore ? (
 						<a
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							href={`${explorerUrl}/${explorerPath}`}
 							rel="noopener noreferrer"
 							target="_blank"
@@ -63,7 +61,7 @@ export const Label: React.FC<LabelProps> = ({
 						</a>
 					) : navigateToAccount ? (
 						<span
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							role="button"
 							tabIndex={0}
 							onClick={handleClick}
@@ -73,7 +71,7 @@ export const Label: React.FC<LabelProps> = ({
 						</span>
 					) : (
 						<span
-							className={`inline-block w-fit cursor-pointer text-gray-700 ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 ${className}`}
 						>
 							{formattedDisplayValue}
 						</span>

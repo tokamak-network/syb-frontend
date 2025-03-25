@@ -97,7 +97,7 @@ export const Header: React.FC<{
 	}, []);
 
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-2 md:px-4 md:py-8 lg:px-16 xl:px-20">
+		<header className="border-gray fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md md:px-8 lg:px-16 xl:px-20">
 			<Image
 				alt="logo"
 				height={50}
