@@ -80,7 +80,7 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Portal>
 					<Tooltip.Content
 						align="center"
-						className="rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-md"
+						className="w-[300px] break-words rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-lg"
 						side="top"
 					>
 						{value.startsWith('0x')
