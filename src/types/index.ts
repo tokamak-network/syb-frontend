@@ -147,6 +147,7 @@ export interface Transaction {
 	toAccountIndex: string;
 	toTonEthereumAddress: string | null;
 	type: string;
+	status?: string;
 }
 
 export interface TransactionResponse {

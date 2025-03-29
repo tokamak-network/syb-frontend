@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import TxTypes from '@/components/tables/TxType';
-import { ActionType, Order, Transaction } from '@/types';
+import { ActionType, ActionStatus, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
 	formatTimestamp,
@@ -131,7 +131,23 @@ export const TransactionsTable: React.FC<Props> = ({
 									</div>
 								</td>
 								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
-								<td className="px-6 py-2">{transaction.type}</td>
+								<td className="px-6 py-2">
+									{transaction.batchNum === 0 ? (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-yellow-400" />
+											<span className="text-yellow-400">
+												{ActionStatus.PENDING}
+											</span>
+										</div>
+									) : (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-green-400" />
+											<span className="text-green-400">
+												{ActionStatus.FORGED}
+											</span>
+										</div>
+									)}
+								</td>
 							</tr>
 						))
 					) : (
