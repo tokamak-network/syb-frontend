@@ -64,14 +64,16 @@ export const TransactionsTable: React.FC<Props> = ({
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Type
 						</th>
-						<th className="flex items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+						<th
+							onClick={() =>
+								setOrder(order === Order.ASC ? Order.DESC : Order.ASC)
+							}
+							className="flex cursor-pointer items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary"
+						>
 							Timestamp
 							<IoMdArrowDropdown
 								size={16}
 								className={`cursor-pointer ${order === Order.ASC ? 'rotate-180' : ''}`}
-								onClick={() =>
-									setOrder(order === Order.ASC ? Order.DESC : Order.ASC)
-								}
 							/>
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
