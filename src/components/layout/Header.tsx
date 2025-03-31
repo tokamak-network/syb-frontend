@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 
@@ -17,11 +17,13 @@ export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
 	isMegaMenuOpen: boolean;
 }> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
-	const [activeButton, setActiveButton] = useState<string | null>(null);
-	const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
-	const [isCreateTxModalOpen, setIsCreateTxModalOpen] =
-		useState<boolean>(false);
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+	const [menuStates, setMenuStates] = useState({
+		activeButton: null as string | null,
+		isWalletMenuOpen: false,
+		isCreateTxModalOpen: false,
+		isMobileMenuOpen: false,
+	});
+
 	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
 	const menuRef = useRef<HTMLDivElement>(null);
@@ -35,19 +37,22 @@ export const Header: React.FC<{
 	const { connectAsync, isConnected, disconnect, connectors, address } =
 		useWallet();
 
-	const handleButtonHover = (button: string) => {
-		setActiveButton(button);
-	};
+	const handleButtonHover = useCallback((button: string) => {
+		setMenuStates((prev) => ({ ...prev, activeButton: button }));
+	}, []);
 
-	const handleMouseLeave = (event: React.MouseEvent) => {
-		const relatedTarget = event.relatedTarget as Node;
+	const handleMouseLeave = useCallback(
+		(event: React.MouseEvent) => {
+			const relatedTarget = event.relatedTarget as Node;
 
-		if (menuRef.current && menuRef.current.contains(relatedTarget)) {
-			return;
-		}
+			if (menuRef.current && menuRef.current.contains(relatedTarget)) {
+				return;
+			}
 
-		onMegaMenuToggle(false);
-	};
+			onMegaMenuToggle(false);
+		},
+		[onMegaMenuToggle],
+	);
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
@@ -61,19 +66,25 @@ export const Header: React.FC<{
 	};
 
 	const handleWalletMenuToggle = () => {
-		setIsWalletMenuOpen((prev) => !prev);
+		setMenuStates((prev) => ({
+			...prev,
+			isWalletMenuOpen: !prev.isWalletMenuOpen,
+		}));
 	};
 
-	const handleCopyAddress = async () => {
+	const handleCopyAddress = useCallback(async () => {
 		if (address) {
 			await navigator.clipboard.writeText(address);
 			addToast('success', 'Address copied to clipboard!', '');
 		}
-	};
+	}, [address, addToast]);
 
-	const handleCreateTxModalToggle = () => {
-		setIsCreateTxModalOpen((prev) => !prev);
-	};
+	const handleCreateTxModalToggle = useCallback(() => {
+		setMenuStates((prev) => ({
+			...prev,
+			isCreateTxModalOpen: !prev.isCreateTxModalOpen,
+		}));
+	}, []);
 
 	const handleTransactionSubmit = (data: {
 		type: string;
@@ -84,9 +95,39 @@ export const Header: React.FC<{
 		console.log('Transaction Data:', data);
 	};
 
-	const toggleMobileMenu = () => {
-		setIsMobileMenuOpen((prev) => !prev);
-	};
+	const toggleMobileMenu = useCallback(() => {
+		setMenuStates((prev) => ({
+			...prev,
+			isMobileMenuOpen: !prev.isMobileMenuOpen,
+		}));
+	}, []);
+
+	const connectWallet = useCallback(async () => {
+		try {
+			await connectAsync({ connector: connectors[0] });
+			addToast('success', 'Wallet connected successfully', '');
+		} catch (error) {
+			addToast(
+				'error',
+				'Failed to connect wallet',
+				error instanceof Error ? error.message : 'Unknown error',
+			);
+		}
+	}, [connectAsync, connectors, addToast]);
+
+	const disconnectWallet = useCallback(async () => {
+		try {
+			await disconnect();
+			addToast('success', 'Wallet disconnected successfully', '');
+			setMenuStates((prev) => ({ ...prev, isWalletMenuOpen: false }));
+		} catch (error) {
+			addToast(
+				'error',
+				'Failed to disconnect wallet',
+				error instanceof Error ? error.message : 'Unknown error',
+			);
+		}
+	}, [disconnect, addToast]);
 
 	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside);
@@ -96,8 +137,15 @@ export const Header: React.FC<{
 		};
 	}, []);
 
+	const {
+		activeButton,
+		isWalletMenuOpen,
+		isCreateTxModalOpen,
+		isMobileMenuOpen,
+	} = menuStates;
+
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md md:px-8 lg:px-16 xl:px-20">
+		<header className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md md:px-8 lg:px-16 xl:px-20">
 			<Image
 				alt="logo"
 				height={50}
@@ -221,25 +269,7 @@ export const Header: React.FC<{
 								</button>
 								<button
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-									onClick={async () => {
-										try {
-											await disconnect();
-											addToast(
-												'success',
-												'Wallet disconnected successfully',
-												'',
-											);
-											setIsWalletMenuOpen(false);
-										} catch (error) {
-											addToast(
-												'error',
-												'Failed to disconnect wallet',
-												error instanceof Error
-													? error.message
-													: 'Unknown error',
-											);
-										}
-									}}
+									onClick={disconnectWallet}
 								>
 									Disconnect
 								</button>
@@ -249,18 +279,7 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
-						onClick={async () => {
-							try {
-								await connectAsync({ connector: connectors[0] });
-								addToast('success', 'Wallet connected successfully', '');
-							} catch (error) {
-								addToast(
-									'error',
-									'Failed to connect wallet',
-									error instanceof Error ? error.message : 'Unknown error',
-								);
-							}
-						}}
+						onClick={connectWallet}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -290,18 +309,7 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
-						onClick={async () => {
-							try {
-								await connectAsync({ connector: connectors[0] });
-								addToast('success', 'Wallet connected successfully', '');
-							} catch (error) {
-								addToast(
-									'error',
-									'Failed to connect wallet',
-									error instanceof Error ? error.message : 'Unknown error',
-								);
-							}
-						}}
+						onClick={connectWallet}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -321,19 +329,7 @@ export const Header: React.FC<{
 						</button>
 						<button
 							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-							onClick={async () => {
-								try {
-									await disconnect();
-									addToast('success', 'Wallet disconnected successfully', '');
-									setIsWalletMenuOpen(false);
-								} catch (error) {
-									addToast(
-										'error',
-										'Failed to disconnect wallet',
-										error instanceof Error ? error.message : 'Unknown error',
-									);
-								}
-							}}
+							onClick={disconnectWallet}
 						>
 							Disconnect
 						</button>
