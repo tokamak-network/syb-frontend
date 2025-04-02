@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import { FaPlus } from 'react-icons/fa6';
 import Image from 'next/image';
 
 import { ThemeDropdown } from '@/components/common';
@@ -23,6 +24,13 @@ export const Header: React.FC<{
 		isCreateTxModalOpen: false,
 		isMobileMenuOpen: false,
 	});
+
+	const {
+		activeButton,
+		isWalletMenuOpen,
+		isCreateTxModalOpen,
+		isMobileMenuOpen,
+	} = menuStates;
 
 	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
@@ -137,15 +145,14 @@ export const Header: React.FC<{
 		};
 	}, []);
 
-	const {
-		activeButton,
-		isWalletMenuOpen,
-		isCreateTxModalOpen,
-		isMobileMenuOpen,
-	} = menuStates;
+	useEffect(() => {
+		document.documentElement.style.overflow = isCreateTxModalOpen
+			? 'hidden'
+			: 'auto';
+	}, [isCreateTxModalOpen]);
 
 	return (
-		<header className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md md:px-8 lg:px-16 xl:px-20">
+		<header className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-background px-4 py-4 md:px-8 lg:px-16 xl:px-20">
 			<Image
 				alt="logo"
 				height={50}
@@ -182,13 +189,6 @@ export const Header: React.FC<{
 						className="block w-full py-2 text-left"
 					/>
 					<hr className="my-2" />
-					<Button
-						className="w-full py-2 text-left font-bold"
-						onClick={handleCreateTxModalToggle}
-					>
-						CreateTx
-					</Button>
-					<ThemeDropdown className="my-2 w-full" />
 				</div>
 			</div>
 
@@ -240,7 +240,7 @@ export const Header: React.FC<{
 				>
 					CreateTx
 				</Button>
-				<ThemeDropdown />
+				<ThemeDropdown className="fixed bottom-60 right-0" />
 				{isConnected ? (
 					<div className="relative">
 						<Button
@@ -293,6 +293,12 @@ export const Header: React.FC<{
 			</div>
 
 			<div className="relative flex items-center space-x-2 md:hidden">
+				<Button
+					className="flex items-center justify-center rounded-lg px-2 py-2"
+					onClick={handleCreateTxModalToggle}
+				>
+					<FaPlus />
+				</Button>
 				{isConnected ? (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
