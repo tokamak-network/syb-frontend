@@ -6,7 +6,7 @@ import { shortenAddress } from '@/utils';
 
 interface LabelProps {
 	value: string;
-	shorten?: 'middle' | 'end';
+	shorten?: 'middle' | 'end' | 'full';
 	explore?: boolean;
 	isTransaction: boolean;
 	navigateToAccount?: boolean;
@@ -52,7 +52,7 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Trigger asChild>
 					{explore ? (
 						<a
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							href={`${explorerUrl}/${explorerPath}`}
 							rel="noopener noreferrer"
 							target="_blank"
@@ -61,7 +61,7 @@ export const Label: React.FC<LabelProps> = ({
 						</a>
 					) : navigateToAccount ? (
 						<span
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							role="button"
 							tabIndex={0}
 							onClick={handleClick}
@@ -71,7 +71,7 @@ export const Label: React.FC<LabelProps> = ({
 						</span>
 					) : (
 						<span
-							className={`inline-block w-fit cursor-pointer text-gray-700 ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 ${className}`}
 						>
 							{formattedDisplayValue}
 						</span>
@@ -80,7 +80,7 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Portal>
 					<Tooltip.Content
 						align="center"
-						className="rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-md"
+						className="w-[300px] break-words rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-lg"
 						side="top"
 					>
 						{value.startsWith('0x')

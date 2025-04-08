@@ -39,16 +39,14 @@ export const ThemeDropdown: React.FC<ThemeDropdownProps> = ({ className }) => {
 		<div className={cn(className)}>
 			<Dropdown
 				items={themeOptions}
+				side="left"
 				renderItem={(item) => (
-					<div className="flex items-center space-x-2">
-						{item.icon}
-						<span className="text-sm">{item.label}</span>
-					</div>
+					<div className="flex items-center space-x-2">{item.icon}</div>
 				)}
 				triggerContent={
 					<button
 						aria-label="Select Theme"
-						className={`flex h-10 w-10 items-center justify-center rounded-full ${
+						className={`flex h-10 w-10 items-center justify-center rounded-lg ${
 							theme === 'light'
 								? 'bg-gray-200 text-black'
 								: theme === 'dark'

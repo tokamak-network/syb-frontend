@@ -161,7 +161,7 @@ export const UserActivityLineChart: React.FC = () => {
 	};
 
 	return (
-		<div className="h-[400px] w-full p-4">
+		<div className="h-[350px] w-full">
 			<div className="relative h-full">
 				<Line ref={chartRef} data={data} options={options} />
 			</div>

@@ -158,3 +158,37 @@ export const formatTransactionHash = (
 
 	return `${hash.slice(0, chars + 2)}...${hash.slice(-chars)}`;
 };
+
+/**
+ * Remove a ton prefix from address and format it for display.
+ * @param address - The ton address to format.
+ * @returns {string} - The formatted ton address.
+ */
+export const formatTonAddress = (
+	address?: string,
+	shorten: boolean = false,
+): string => {
+	if (!address) return '-';
+
+	const newAddress = address.replace('ton:', '');
+
+	if (shorten) {
+		return `${newAddress.slice(0, 6)}...${newAddress.slice(-4)}`;
+	}
+
+	return newAddress;
+};
+
+/**
+ * Converts wei value to both gwei and ether.
+ * @param wei - The amount in wei to convert.
+ * @returns {Object} - Object containing the converted gwei and ether values.
+ */
+export const convertWeiToGweiAndEther = (
+	wei: number,
+): { gwei: number; ether: number } => {
+	const gwei = wei / 1e9;
+	const ether = wei / 1e18;
+
+	return { gwei, ether };
+};

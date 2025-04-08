@@ -20,7 +20,6 @@ const HomePage: React.FC = () => {
 
 				if (response.transactions && response.transactions.length > 0) {
 					const latestTx = response.transactions[0];
-					console.log(latestTx, 'latestTx');
 					setLastTransaction(latestTx.L1Info.ethereumTxHash);
 					if (latestTx.L1Info.ethereumBlockNum) {
 						setLastBlock(latestTx.L1Info.ethereumBlockNum);
@@ -71,45 +70,43 @@ const HomePage: React.FC = () => {
 	}, []);
 
 	return (
-		<div className="flex flex-col items-center px-20">
-			<div className="flex w-full justify-between space-x-5">
-				<div className="flex w-full flex-col space-y-14 font-narnoor">
-					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-3xl text-primaryText">Last Block</p>
-						{isLoading ? (
-							<p className="text-xl text-secondaryText">Loading...</p>
-						) : error ? (
-							<p className="text-xl text-red-500">{error}</p>
-						) : (
-							<p className="text-xl text-secondaryText">
-								<span className="text-3xl">
-									#{lastBlock?.toLocaleString() || 'N/A'}
-								</span>
-								{lastBlockTime && ` (${lastBlockTime})`}
-							</p>
-						)}
-					</div>
-					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-3xl text-primaryText">Last Transaction</p>
-						{isLoading ? (
-							<p className="text-xl text-secondaryText">Loading...</p>
-						) : error ? (
-							<p className="text-xl text-red-500">{error}</p>
-						) : (
-							<Label
-								className="text-3xl text-secondaryText"
-								explore={true}
-								isTransaction={true}
-								navigateToAccount={true}
-								shorten="end"
-								value={lastTransaction || 'N/A'}
-							/>
-						)}
-					</div>
+		<div className="flex w-full flex-col justify-between space-x-5 space-y-10 md:flex-row md:space-y-0">
+			<div className="flex flex-col space-y-14 font-narnoor md:w-[500px]">
+				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
+					<p className="text-3xl text-primaryText">Last Block</p>
+					{isLoading ? (
+						<p className="text-xl text-secondaryText">Loading...</p>
+					) : error ? (
+						<p className="text-xl text-red-500">{error}</p>
+					) : (
+						<p className="text-xl text-secondaryText">
+							<span className="text-3xl">
+								#{lastBlock?.toLocaleString() || 'N/A'}
+							</span>
+							{lastBlockTime && ` (${lastBlockTime})`}
+						</p>
+					)}
 				</div>
-				<div className="w-full">
-					<UserActivityLineChart />
+				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5 md:w-[500px]">
+					<p className="text-3xl text-primaryText">Last Transaction</p>
+					{isLoading ? (
+						<p className="text-xl text-secondaryText">Loading...</p>
+					) : error ? (
+						<p className="text-xl text-red-500">{error}</p>
+					) : (
+						<Label
+							className="text-3xl text-secondaryText"
+							explore={true}
+							isTransaction={true}
+							navigateToAccount={true}
+							shorten="full"
+							value={lastTransaction || 'N/A'}
+						/>
+					)}
 				</div>
+			</div>
+			<div className="w-full">
+				<UserActivityLineChart />
 			</div>
 		</div>
 	);

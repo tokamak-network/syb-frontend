@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import { FaPlus } from 'react-icons/fa6';
 import Image from 'next/image';
 
 import { ThemeDropdown } from '@/components/common';
@@ -17,11 +18,20 @@ export const Header: React.FC<{
 	onMegaMenuToggle: (isOpen: boolean) => void;
 	isMegaMenuOpen: boolean;
 }> = ({ onMegaMenuToggle, isMegaMenuOpen }) => {
-	const [activeButton, setActiveButton] = useState<string | null>(null);
-	const [isWalletMenuOpen, setIsWalletMenuOpen] = useState<boolean>(false);
-	const [isCreateTxModalOpen, setIsCreateTxModalOpen] =
-		useState<boolean>(false);
-	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+	const [menuStates, setMenuStates] = useState({
+		activeButton: null as string | null,
+		isWalletMenuOpen: false,
+		isCreateTxModalOpen: false,
+		isMobileMenuOpen: false,
+	});
+
+	const {
+		activeButton,
+		isWalletMenuOpen,
+		isCreateTxModalOpen,
+		isMobileMenuOpen,
+	} = menuStates;
+
 	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
 	const menuRef = useRef<HTMLDivElement>(null);
@@ -32,21 +42,25 @@ export const Header: React.FC<{
 
 	const { addToast } = useToast();
 
-	const { connect, isConnected, disconnect, connectors, address } = useWallet();
+	const { connectAsync, isConnected, disconnect, connectors, address } =
+		useWallet();
 
-	const handleButtonHover = (button: string) => {
-		setActiveButton(button);
-	};
+	const handleButtonHover = useCallback((button: string) => {
+		setMenuStates((prev) => ({ ...prev, activeButton: button }));
+	}, []);
 
-	const handleMouseLeave = (event: React.MouseEvent) => {
-		const relatedTarget = event.relatedTarget as Node;
+	const handleMouseLeave = useCallback(
+		(event: React.MouseEvent) => {
+			const relatedTarget = event.relatedTarget as Node;
 
-		if (menuRef.current && menuRef.current.contains(relatedTarget)) {
-			return;
-		}
+			if (menuRef.current && menuRef.current.contains(relatedTarget)) {
+				return;
+			}
 
-		onMegaMenuToggle(false);
-	};
+			onMegaMenuToggle(false);
+		},
+		[onMegaMenuToggle],
+	);
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (
@@ -60,19 +74,25 @@ export const Header: React.FC<{
 	};
 
 	const handleWalletMenuToggle = () => {
-		setIsWalletMenuOpen((prev) => !prev);
+		setMenuStates((prev) => ({
+			...prev,
+			isWalletMenuOpen: !prev.isWalletMenuOpen,
+		}));
 	};
 
-	const handleCopyAddress = async () => {
+	const handleCopyAddress = useCallback(async () => {
 		if (address) {
 			await navigator.clipboard.writeText(address);
 			addToast('success', 'Address copied to clipboard!', '');
 		}
-	};
+	}, [address, addToast]);
 
-	const handleCreateTxModalToggle = () => {
-		setIsCreateTxModalOpen((prev) => !prev);
-	};
+	const handleCreateTxModalToggle = useCallback(() => {
+		setMenuStates((prev) => ({
+			...prev,
+			isCreateTxModalOpen: !prev.isCreateTxModalOpen,
+		}));
+	}, []);
 
 	const handleTransactionSubmit = (data: {
 		type: string;
@@ -83,9 +103,39 @@ export const Header: React.FC<{
 		console.log('Transaction Data:', data);
 	};
 
-	const toggleMobileMenu = () => {
-		setIsMobileMenuOpen((prev) => !prev);
-	};
+	const toggleMobileMenu = useCallback(() => {
+		setMenuStates((prev) => ({
+			...prev,
+			isMobileMenuOpen: !prev.isMobileMenuOpen,
+		}));
+	}, []);
+
+	const connectWallet = useCallback(async () => {
+		try {
+			await connectAsync({ connector: connectors[0] });
+			addToast('success', 'Wallet connected successfully', '');
+		} catch (error) {
+			addToast(
+				'error',
+				'Failed to connect wallet',
+				error instanceof Error ? error.message : 'Unknown error',
+			);
+		}
+	}, [connectAsync, connectors, addToast]);
+
+	const disconnectWallet = useCallback(async () => {
+		try {
+			await disconnect();
+			addToast('success', 'Wallet disconnected successfully', '');
+			setMenuStates((prev) => ({ ...prev, isWalletMenuOpen: false }));
+		} catch (error) {
+			addToast(
+				'error',
+				'Failed to disconnect wallet',
+				error instanceof Error ? error.message : 'Unknown error',
+			);
+		}
+	}, [disconnect, addToast]);
 
 	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside);
@@ -95,8 +145,14 @@ export const Header: React.FC<{
 		};
 	}, []);
 
+	useEffect(() => {
+		document.documentElement.style.overflow = isCreateTxModalOpen
+			? 'hidden'
+			: 'auto';
+	}, [isCreateTxModalOpen]);
+
 	return (
-		<header className="border-gray fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-opacity-70 px-4 py-4 backdrop-blur-md sm:px-2 md:px-4 md:py-8 lg:px-16 xl:px-40">
+		<header className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-background px-4 py-4 md:px-8 lg:px-16 xl:px-20">
 			<Image
 				alt="logo"
 				height={50}
@@ -105,32 +161,7 @@ export const Header: React.FC<{
 				className="h-8 w-auto md:h-10 lg:h-12"
 			/>
 
-			<button
-				className="rounded-md p-2 md:hidden"
-				onClick={toggleMobileMenu}
-				aria-label="Toggle mobile menu"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					className="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth={2}
-						d={
-							isMobileMenuOpen
-								? 'M6 18L18 6M6 6l12 12'
-								: 'M4 6h16M4 12h16M4 18h16'
-						}
-					/>
-				</svg>
-			</button>
-
-			<nav className="hidden flex-col space-y-2 text-xl font-bold md:mb-0 md:flex md:flex-row md:space-x-2 md:space-y-0">
+			<nav className="max-w-300 mb-0 hidden flex-col justify-around space-y-2 text-xl font-bold md:flex md:flex-row md:space-x-5 md:space-y-0">
 				<NavLinkButton href="/home" label="Home" />
 				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
@@ -158,13 +189,6 @@ export const Header: React.FC<{
 						className="block w-full py-2 text-left"
 					/>
 					<hr className="my-2" />
-					<Button
-						className="w-full py-2 text-left font-bold"
-						onClick={handleCreateTxModalToggle}
-					>
-						CreateTx
-					</Button>
-					<ThemeDropdown className="my-2 w-full" />
 				</div>
 			</div>
 
@@ -216,7 +240,7 @@ export const Header: React.FC<{
 				>
 					CreateTx
 				</Button>
-				<ThemeDropdown />
+				<ThemeDropdown className="fixed bottom-60 right-0" />
 				{isConnected ? (
 					<div className="relative">
 						<Button
@@ -245,25 +269,7 @@ export const Header: React.FC<{
 								</button>
 								<button
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-									onClick={async () => {
-										try {
-											await disconnect();
-											addToast(
-												'success',
-												'Wallet disconnected successfully',
-												'',
-											);
-											setIsWalletMenuOpen(false);
-										} catch (error) {
-											addToast(
-												'error',
-												'Failed to disconnect wallet',
-												error instanceof Error
-													? error.message
-													: 'Unknown error',
-											);
-										}
-									}}
+									onClick={disconnectWallet}
 								>
 									Disconnect
 								</button>
@@ -273,18 +279,7 @@ export const Header: React.FC<{
 				) : (
 					<Button
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
-						onClick={async () => {
-							try {
-								await connect({ connector: connectors[0] });
-								addToast('success', 'Wallet connected successfully', '');
-							} catch (error) {
-								addToast(
-									'error',
-									'Failed to connect wallet',
-									error instanceof Error ? error.message : 'Unknown error',
-								);
-							}
-						}}
+						onClick={connectWallet}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -297,7 +292,13 @@ export const Header: React.FC<{
 				)}
 			</div>
 
-			<div className="md:hidden">
+			<div className="relative flex items-center space-x-2 md:hidden">
+				<Button
+					className="flex items-center justify-center rounded-lg px-2 py-2"
+					onClick={handleCreateTxModalToggle}
+				>
+					<FaPlus />
+				</Button>
 				{isConnected ? (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
@@ -306,22 +307,15 @@ export const Header: React.FC<{
 						<span>
 							{address?.slice(0, 4)}...{address?.slice(-2)}
 						</span>
+						<FiChevronDown
+							className={`ml-2 h-4 w-4 transition-transform ${isWalletMenuOpen ? 'rotate-180' : ''}`}
+							strokeWidth={2.5}
+						/>
 					</Button>
 				) : (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
-						onClick={async () => {
-							try {
-								await connect({ connector: connectors[0] });
-								addToast('success', 'Wallet connected successfully', '');
-							} catch (error) {
-								addToast(
-									'error',
-									'Failed to connect wallet',
-									error instanceof Error ? error.message : 'Unknown error',
-								);
-							}
-						}}
+						onClick={connectWallet}
 					>
 						<Image
 							alt="MetaMask Icon"
@@ -331,6 +325,46 @@ export const Header: React.FC<{
 						/>
 					</Button>
 				)}
+				{isWalletMenuOpen && (
+					<div className="absolute right-12 top-8 mt-2 w-48 rounded-md bg-white shadow-lg">
+						<button
+							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+							onClick={handleCopyAddress}
+						>
+							Copy Address
+						</button>
+						<button
+							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+							onClick={disconnectWallet}
+						>
+							Disconnect
+						</button>
+					</div>
+				)}
+				<button
+					className="rounded-md p-2 md:hidden"
+					onClick={toggleMobileMenu}
+					aria-label="Toggle mobile menu"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d={
+								isMobileMenuOpen
+									? 'M6 18L18 6M6 6l12 12'
+									: 'M4 6h16M4 12h16M4 18h16'
+							}
+						/>
+					</svg>
+				</button>
 			</div>
 
 			<CreateTxModal

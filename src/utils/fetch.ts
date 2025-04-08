@@ -1,11 +1,13 @@
-import { Account, Transaction, TransactionResponse } from '@/types';
+import { Account, Order, Transaction, TransactionResponse } from '@/types';
 
 import { apiRequest } from './api';
 
-export const fetchTransactions = async (): Promise<TransactionResponse> => {
+export const fetchTransactions = async (
+	order: Order = Order.DESC,
+): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
-		url: '/transactions-history?includePendingL1s=true&order=ASC',
+		url: `/transactions-history?includePendingL1s=true&order=${order}`,
 	});
 };
 
