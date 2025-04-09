@@ -240,7 +240,7 @@ export const Header: React.FC<{
 				>
 					CreateTx
 				</Button>
-				<ThemeDropdown className="fixed bottom-60 right-0" />
+				<ThemeDropdown className="fixed right-0 top-60" />
 				{isConnected ? (
 					<div className="relative">
 						<Button

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 
 import {
 	Button,
@@ -19,7 +20,7 @@ import { Order } from '@/types';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
-	const { address } = useWallet();
+	const { address, isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [order, setOrder] = useState<Order>(Order.DESC);
 	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
@@ -84,16 +85,35 @@ const TransactionsPage: React.FC = () => {
 					)}
 				</TabsContent>
 				<TabsContent value="me">
-					{filteredTransactions && (
-						<TransactionsTable
-							filteredTransactions={filteredTransactions.filter(
-								(transaction) =>
-									formatTonAddress(transaction.fromTonEthereumAddress) ===
-									address,
-							)}
-							setOrder={setOrder}
-							order={order}
-						/>
+					{!isConnected ? (
+						<div className="flex flex-col items-center justify-center rounded-lg p-10 text-center">
+							<div className="mb-4 rounded-full bg-purple-600 p-3">
+								<Image
+									src="/images/wallets/metamask.svg"
+									alt="MetaMask"
+									width={24}
+									height={24}
+								/>
+							</div>
+							<p className="text-xl font-semibold text-purple-900">
+								Please connect your MetaMask wallet
+							</p>
+							<p className="mt-2 text-purple-950">
+								Connect your wallet to view your transaction history
+							</p>
+						</div>
+					) : (
+						filteredTransactions && (
+							<TransactionsTable
+								filteredTransactions={filteredTransactions.filter(
+									(transaction) =>
+										formatTonAddress(transaction.fromTonEthereumAddress) ===
+										address,
+								)}
+								setOrder={setOrder}
+								order={order}
+							/>
+						)
 					)}
 				</TabsContent>
 			</Tabs>
