@@ -19,11 +19,8 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 				<div className="flex w-full flex-col items-start space-y-10 lg:w-1/3">
 					<h2 className="text-4xl font-bold">Sybil Guard</h2>
 					<p className="max-w-full text-left">
-						SYB Real Estate describes itself as an asset-backed real estate
-						marketplace. The team&apos;s approach in the real estate marketplace
-						is to partner with a team of experienced developers and construction
-						companies to help bring our project and vision from concept to
-						completion.
+						Creating an identity-proving algorithm and zk-rollup network for
+						user identification.
 					</p>
 					<Image
 						alt="partnership-primary-dark-logo"
@@ -39,7 +36,7 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							{FooterSocialMedia.map((item) => (
 								<LinkButton
 									key={item.label}
-									href={item.link}
+									href={item.link || ''}
 									icon={item.icon}
 								/>
 							))}
