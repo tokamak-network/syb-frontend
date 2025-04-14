@@ -16,6 +16,7 @@ import {
 	ScriptableContext,
 	ChartData,
 } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import 'chartjs-adapter-date-fns';
 import { format } from 'date-fns';
 
@@ -31,6 +32,7 @@ ChartJS.register(
 	Tooltip,
 	Legend,
 	TimeScale,
+	zoomPlugin,
 );
 
 export const UserActivityLineChart: React.FC = () => {
@@ -61,7 +63,6 @@ export const UserActivityLineChart: React.FC = () => {
 
 	const activityCounts = transactions.reduce(
 		(acc, transaction) => {
-			// Parse timestamp to Date object
 			const date = new Date(transaction.timestamp);
 			const yearMonth = format(date, 'yyyy-MM');
 
@@ -187,6 +188,24 @@ export const UserActivityLineChart: React.FC = () => {
 					},
 				},
 			},
+			zoom: {
+				zoom: {
+					wheel: {
+						enabled: true,
+					},
+					pinch: {
+						enabled: true,
+					},
+					mode: 'xy',
+				},
+				pan: {
+					enabled: true,
+					mode: 'xy',
+				},
+				limits: {
+					y: { min: 0 },
+				},
+			},
 		},
 		scales: {
 			x: {
@@ -208,6 +227,13 @@ export const UserActivityLineChart: React.FC = () => {
 				},
 			},
 		},
+	};
+
+	const handleResetZoom = () => {
+		if (chartRef && chartRef.current) {
+			// @ts-ignore - Chart.js zoom plugin types are not fully available
+			chartRef.current.resetZoom();
+		}
 	};
 
 	if (isLoading) {
@@ -236,6 +262,14 @@ export const UserActivityLineChart: React.FC = () => {
 
 	return (
 		<div className="h-[350px] w-full">
+			<div className="mb-2 flex justify-end">
+				<button
+					onClick={handleResetZoom}
+					className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+				>
+					Reset Zoom
+				</button>
+			</div>
 			<div className="relative h-full">
 				<Line ref={chartRef} data={data} options={options} />
 			</div>
