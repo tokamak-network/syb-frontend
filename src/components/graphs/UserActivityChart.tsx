@@ -1,29 +1,17 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
-import {
-	Chart as ChartJS,
-	CategoryScale,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Title,
-	Tooltip,
-	Legend,
-	TimeScale,
-	ChartOptions,
-	ScriptableContext,
-	ChartData,
-} from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import 'chartjs-adapter-date-fns';
+import dynamic from 'next/dynamic';
 import { format } from 'date-fns';
-
 import { fetchTransactions } from '@/utils/fetch';
 import { Transaction, TransactionResponse } from '@/types';
-
-ChartJS.register(
+import {
+	Chart as ChartJS,
+	ChartOptions,
+	ChartData,
+	ScriptableContext,
+	TooltipItem,
+	Scale,
 	CategoryScale,
 	LinearScale,
 	PointElement,
@@ -32,14 +20,51 @@ ChartJS.register(
 	Tooltip,
 	Legend,
 	TimeScale,
-	zoomPlugin,
+} from 'chart.js';
+import { ZoomPluginOptions } from '@/types/chart';
+
+interface ChartProps {
+	data: ChartData<'line'>;
+	options: ChartOptions<'line'>;
+	chartRef: React.RefObject<any>;
+}
+
+const ChartComponent = dynamic(
+	async () => {
+		const { Chart } = await import('chart.js');
+		const { default: Zoom } = await import('chartjs-plugin-zoom');
+		const { Line: LineComponent } = await import('react-chartjs-2');
+
+		await import('chartjs-adapter-date-fns');
+
+		Chart.register(
+			CategoryScale,
+			LinearScale,
+			PointElement,
+			LineElement,
+			Title,
+			Tooltip,
+			Legend,
+			TimeScale,
+			Zoom,
+		);
+
+		return function Chart({ data, options, chartRef }: ChartProps) {
+			return <LineComponent ref={chartRef} data={data} options={options} />;
+		};
+	},
+	{ ssr: false },
 );
 
 export const UserActivityLineChart: React.FC = () => {
-	const chartRef = useRef(null);
+	const chartRef = useRef<ChartJS<'line'> | null>(null);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [chartData, setChartData] = useState<ChartData<'line'> | null>(null);
+	const [chartOptions, setChartOptions] = useState<ChartOptions<'line'> | null>(
+		null,
+	);
 
 	useEffect(() => {
 		const getTransactionData = async () => {
@@ -61,178 +86,181 @@ export const UserActivityLineChart: React.FC = () => {
 		getTransactionData();
 	}, []);
 
-	const activityCounts = transactions.reduce(
-		(acc, transaction) => {
-			const date = new Date(transaction.timestamp);
-			const yearMonth = format(date, 'yyyy-MM');
+	useEffect(() => {
+		if (transactions.length === 0) return;
 
-			acc[yearMonth] = (acc[yearMonth] || 0) + 1;
+		const activityCounts = transactions.reduce(
+			(acc, transaction) => {
+				const date = new Date(transaction.timestamp);
+				const yearMonth = format(date, 'yyyy-MM');
+				acc[yearMonth] = (acc[yearMonth] || 0) + 1;
+				return acc;
+			},
+			{} as Record<string, number>,
+		);
 
-			return acc;
-		},
-		{} as Record<string, number>,
-	);
+		const userCounts = transactions.reduce(
+			(acc, transaction) => {
+				const date = new Date(transaction.timestamp);
+				const yearMonth = format(date, 'yyyy-MM');
 
-	// Count unique users per month
-	const userCounts = transactions.reduce(
-		(acc, transaction) => {
-			const date = new Date(transaction.timestamp);
-			const yearMonth = format(date, 'yyyy-MM');
+				if (!acc.uniqueUsers[yearMonth]) {
+					acc.uniqueUsers[yearMonth] = new Set();
+				}
 
-			// Track unique addresses for each month
-			if (!acc.uniqueUsers[yearMonth]) {
-				acc.uniqueUsers[yearMonth] = new Set();
-			}
+				acc.uniqueUsers[yearMonth].add(transaction.fromTonEthereumAddress);
+				if (transaction.toTonEthereumAddress) {
+					acc.uniqueUsers[yearMonth].add(transaction.toTonEthereumAddress);
+				}
 
-			acc.uniqueUsers[yearMonth].add(transaction.fromTonEthereumAddress);
-			if (transaction.toTonEthereumAddress) {
-				acc.uniqueUsers[yearMonth].add(transaction.toTonEthereumAddress);
-			}
-
-			// Set the count
-			acc.counts[yearMonth] = acc.uniqueUsers[yearMonth].size;
-
-			return acc;
-		},
-		{
-			uniqueUsers: {} as Record<string, Set<string>>,
-			counts: {} as Record<string, number>,
-		},
-	).counts;
-
-	const labels = Object.keys(activityCounts)
-		.sort()
-		.map((yearMonth) => format(new Date(yearMonth + '-01'), 'MMM yyyy'));
-
-	const data: ChartData<'line'> = {
-		labels,
-		datasets: [
-			{
-				label: 'Number of Activities',
-				data: labels.map((label) => {
-					const yearMonth = format(new Date(label), 'yyyy-MM');
-					return activityCounts[yearMonth] || 0;
-				}),
-				borderColor: '#36A2EB',
-				backgroundColor: (context: ScriptableContext<'line'>) => {
-					const chart = context.chart;
-					const { ctx, chartArea } = chart;
-
-					if (!chartArea) {
-						return undefined;
-					}
-
-					const gradient = ctx.createLinearGradient(
-						0,
-						chartArea.top,
-						0,
-						chartArea.bottom,
-					);
-
-					gradient.addColorStop(0, 'rgba(54, 162, 235, 0.4)');
-					gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
-
-					return gradient;
-				},
-				tension: 0.4,
-				fill: true,
+				acc.counts[yearMonth] = acc.uniqueUsers[yearMonth].size;
+				return acc;
 			},
 			{
-				label: 'Number of Users',
-				data: labels.map((label) => {
-					const yearMonth = format(new Date(label), 'yyyy-MM');
-					return userCounts[yearMonth] || 0;
-				}),
-				borderColor: '#FF6384',
-				backgroundColor: '#FF6384',
-				tension: 0.1,
-				fill: false,
+				uniqueUsers: {} as Record<string, Set<string>>,
+				counts: {} as Record<string, number>,
 			},
-		],
-	};
+		).counts;
 
-	const options: ChartOptions<'line'> = {
-		responsive: true,
-		maintainAspectRatio: false,
-		plugins: {
-			legend: {
-				position: 'top' as const,
-			},
-			title: {
-				display: true,
-				text: 'User Activities and User Counts Over Months',
-			},
-			tooltip: {
-				callbacks: {
-					label: (tooltipItem) => {
-						const datasetLabel = tooltipItem.dataset.label || '';
-						const currentValue = tooltipItem.raw as number;
-						let percentageChange = '';
+		const labels = Object.keys(activityCounts)
+			.sort()
+			.map((yearMonth) => format(new Date(yearMonth + '-01'), 'MMM yyyy'));
 
-						if (tooltipItem.datasetIndex === 0) {
-							// Activity dataset
-							const previousValue =
-								tooltipItem.dataIndex > 0
-									? (data.datasets[0].data[tooltipItem.dataIndex - 1] as number)
-									: 0;
+		const data: ChartData<'line'> = {
+			labels,
+			datasets: [
+				{
+					label: 'Number of Activities',
+					data: labels.map((label) => {
+						const yearMonth = format(new Date(label), 'yyyy-MM');
+						return activityCounts[yearMonth] || 0;
+					}),
+					borderColor: '#36A2EB',
+					backgroundColor: (context: ScriptableContext<'line'>) => {
+						const chart = context.chart;
+						const { ctx, chartArea } = chart;
 
-							percentageChange = previousValue
-								? ` (${(
-										((currentValue - previousValue) / previousValue) *
-										100
-									).toFixed(2)}%)`
-								: '';
+						if (!chartArea) {
+							return undefined;
 						}
 
-						return `${datasetLabel}: ${currentValue}${percentageChange}`;
+						const gradient = ctx.createLinearGradient(
+							0,
+							chartArea.top,
+							0,
+							chartArea.bottom,
+						);
+
+						gradient.addColorStop(0, 'rgba(54, 162, 235, 0.4)');
+						gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
+
+						return gradient;
+					},
+					tension: 0.4,
+					fill: true,
+				},
+				{
+					label: 'Number of Users',
+					data: labels.map((label) => {
+						const yearMonth = format(new Date(label), 'yyyy-MM');
+						return userCounts[yearMonth] || 0;
+					}),
+					borderColor: '#FF6384',
+					backgroundColor: '#FF6384',
+					tension: 0.1,
+					fill: false,
+				},
+			],
+		};
+
+		const options: ChartOptions<'line'> = {
+			responsive: true,
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					position: 'top' as const,
+				},
+				title: {
+					display: true,
+					text: 'User Activities and User Counts Over Months',
+				},
+				tooltip: {
+					callbacks: {
+						label: (tooltipItem: TooltipItem<'line'>) => {
+							const datasetLabel = tooltipItem.dataset.label || '';
+							const currentValue = tooltipItem.raw as number;
+							let percentageChange = '';
+
+							if (tooltipItem.datasetIndex === 0) {
+								const previousValue =
+									tooltipItem.dataIndex > 0
+										? (data.datasets[0].data[
+												tooltipItem.dataIndex - 1
+											] as number)
+										: 0;
+
+								percentageChange = previousValue
+									? ` (${(
+											((currentValue - previousValue) / previousValue) *
+											100
+										).toFixed(2)}%)`
+									: '';
+							}
+
+							return `${datasetLabel}: ${currentValue}${percentageChange}`;
+						},
 					},
 				},
-			},
-			zoom: {
 				zoom: {
-					wheel: {
-						enabled: true,
+					zoom: {
+						wheel: {
+							enabled: true,
+						},
+						pinch: {
+							enabled: true,
+						},
+						mode: 'xy',
 					},
-					pinch: {
+					pan: {
 						enabled: true,
+						mode: 'xy',
 					},
-					mode: 'xy',
+					limits: {
+						y: { min: 0 },
+					},
+				} as ZoomPluginOptions,
+			},
+			scales: {
+				x: {
+					type: 'category',
+					title: {
+						display: true,
+						text: 'Month',
+					},
 				},
-				pan: {
-					enabled: true,
-					mode: 'xy',
-				},
-				limits: {
-					y: { min: 0 },
+				y: {
+					title: {
+						display: true,
+						text: 'Count',
+					},
+					beginAtZero: true,
+					ticks: {
+						stepSize: 1,
+						callback: function (this: Scale, tickValue: string | number) {
+							return tickValue.toString();
+						},
+					},
 				},
 			},
-		},
-		scales: {
-			x: {
-				type: 'category',
-				title: {
-					display: true,
-					text: 'Month',
-				},
-			},
-			y: {
-				title: {
-					display: true,
-					text: 'Count',
-				},
-				beginAtZero: true,
-				ticks: {
-					stepSize: 1,
-					callback: (value) => value as string,
-				},
-			},
-		},
-	};
+		};
+
+		setChartData(data);
+		setChartOptions(options);
+	}, [transactions]);
 
 	const handleResetZoom = () => {
 		if (chartRef && chartRef.current) {
-			// @ts-ignore - Chart.js zoom plugin types are not fully available
-			chartRef.current.resetZoom();
+			(chartRef.current as any).resetZoom();
 		}
 	};
 
@@ -260,6 +288,10 @@ export const UserActivityLineChart: React.FC = () => {
 		);
 	}
 
+	if (!chartData || !chartOptions) {
+		return null;
+	}
+
 	return (
 		<div className="h-[350px] w-full">
 			<div className="mb-2 flex justify-end">
@@ -271,7 +303,11 @@ export const UserActivityLineChart: React.FC = () => {
 				</button>
 			</div>
 			<div className="relative h-full">
-				<Line ref={chartRef} data={data} options={options} />
+				<ChartComponent
+					data={chartData}
+					options={chartOptions}
+					chartRef={chartRef}
+				/>
 			</div>
 		</div>
 	);
