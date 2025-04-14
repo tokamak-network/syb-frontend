@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
 	Chart as ChartJS,
@@ -19,7 +19,8 @@ import {
 import 'chartjs-adapter-date-fns';
 import { format } from 'date-fns';
 
-import { explorerData } from '@/const';
+import { fetchTransactions } from '@/utils/fetch';
+import { Transaction, TransactionResponse } from '@/types';
 
 ChartJS.register(
 	CategoryScale,
@@ -34,10 +35,35 @@ ChartJS.register(
 
 export const UserActivityLineChart: React.FC = () => {
 	const chartRef = useRef(null);
+	const [transactions, setTransactions] = useState<Transaction[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string | null>(null);
 
-	const activityCounts = explorerData.reduce(
+	useEffect(() => {
+		const getTransactionData = async () => {
+			try {
+				setIsLoading(true);
+				const response: TransactionResponse = await fetchTransactions();
+
+				if (response.transactions && response.transactions.length > 0) {
+					setTransactions(response.transactions);
+				}
+			} catch (err) {
+				console.error('Failed to fetch transaction data:', err);
+				setError('Failed to load transaction data');
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		getTransactionData();
+	}, []);
+
+	const activityCounts = transactions.reduce(
 		(acc, transaction) => {
-			const yearMonth = format(transaction.timestamp, 'yyyy-MM');
+			// Parse timestamp to Date object
+			const date = new Date(transaction.timestamp);
+			const yearMonth = format(date, 'yyyy-MM');
 
 			acc[yearMonth] = (acc[yearMonth] || 0) + 1;
 
@@ -46,25 +72,46 @@ export const UserActivityLineChart: React.FC = () => {
 		{} as Record<string, number>,
 	);
 
-	const userCounts: Record<string, number> = {
-		'2024-01': 1,
-		'2024-02': 2,
-		'2024-03': 3,
-		'2024-04': 2,
-		'2024-05': 5,
-		'2024-06': 2,
-	};
+	// Count unique users per month
+	const userCounts = transactions.reduce(
+		(acc, transaction) => {
+			const date = new Date(transaction.timestamp);
+			const yearMonth = format(date, 'yyyy-MM');
 
-	const labels = Object.keys(activityCounts).map((yearMonth) =>
-		format(new Date(yearMonth + '-01'), 'MMM'),
-	);
+			// Track unique addresses for each month
+			if (!acc.uniqueUsers[yearMonth]) {
+				acc.uniqueUsers[yearMonth] = new Set();
+			}
+
+			acc.uniqueUsers[yearMonth].add(transaction.fromTonEthereumAddress);
+			if (transaction.toTonEthereumAddress) {
+				acc.uniqueUsers[yearMonth].add(transaction.toTonEthereumAddress);
+			}
+
+			// Set the count
+			acc.counts[yearMonth] = acc.uniqueUsers[yearMonth].size;
+
+			return acc;
+		},
+		{
+			uniqueUsers: {} as Record<string, Set<string>>,
+			counts: {} as Record<string, number>,
+		},
+	).counts;
+
+	const labels = Object.keys(activityCounts)
+		.sort()
+		.map((yearMonth) => format(new Date(yearMonth + '-01'), 'MMM yyyy'));
 
 	const data: ChartData<'line'> = {
 		labels,
 		datasets: [
 			{
 				label: 'Number of Activities',
-				data: Object.values(activityCounts),
+				data: labels.map((label) => {
+					const yearMonth = format(new Date(label), 'yyyy-MM');
+					return activityCounts[yearMonth] || 0;
+				}),
 				borderColor: '#36A2EB',
 				backgroundColor: (context: ScriptableContext<'line'>) => {
 					const chart = context.chart;
@@ -91,7 +138,10 @@ export const UserActivityLineChart: React.FC = () => {
 			},
 			{
 				label: 'Number of Users',
-				data: labels.map((label) => userCounts[label] || 0),
+				data: labels.map((label) => {
+					const yearMonth = format(new Date(label), 'yyyy-MM');
+					return userCounts[yearMonth] || 0;
+				}),
 				borderColor: '#FF6384',
 				backgroundColor: '#FF6384',
 				tension: 0.1,
@@ -159,6 +209,30 @@ export const UserActivityLineChart: React.FC = () => {
 			},
 		},
 	};
+
+	if (isLoading) {
+		return (
+			<div className="flex h-[350px] w-full items-center justify-center">
+				<p className="text-xl">Loading chart data...</p>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex h-[350px] w-full items-center justify-center">
+				<p className="text-xl text-red-500">{error}</p>
+			</div>
+		);
+	}
+
+	if (transactions.length === 0) {
+		return (
+			<div className="flex h-[350px] w-full items-center justify-center">
+				<p className="text-xl">No transaction data available</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="h-[350px] w-full">
