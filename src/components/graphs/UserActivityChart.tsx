@@ -246,8 +246,9 @@ export const UserActivityLineChart: React.FC = () => {
 					beginAtZero: true,
 					ticks: {
 						stepSize: 1,
+						precision: 0,
 						callback: function (this: Scale, tickValue: string | number) {
-							return tickValue.toString();
+							return Math.floor(Number(tickValue)).toString();
 						},
 					},
 				},
