@@ -30,10 +30,16 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 }) => {
 	const router = useRouter();
 	const { balance } = useWallet();
-	const { handleCreateAccount, handleDeposit } = useSepoliaTransactions();
+	const {
+		handleDeposit,
+		handleVouch,
+		handleUnvouch,
+		handleExplodeMultiple,
+		handleWithdraw,
+	} = useSepoliaTransactions();
 	const { addToast } = useToast();
 
-	const [txType, setTxType] = useState<string>('create account');
+	const [txType, setTxType] = useState<string>('deposit');
 	const [txFrom, setTxFrom] = useState<string>(walletAddress || '');
 	const [txTo, setTxTo] = useState<string>('');
 	const [txAmount, setTxAmount] = useState<string>('');
@@ -131,38 +137,34 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			let hash: `0x${string}`;
 
 			switch (txType) {
-				case 'create account':
-					hash = await handleCreateAccount(txAmount);
-					break;
-
 				case 'deposit': {
-					if (!txTo) throw new Error('From index (txTo) is required');
-					const fromIdx = parseInt(txTo, 10);
-
-					if (isNaN(fromIdx)) throw new Error('Invalid from index');
-					hash = await handleDeposit(fromIdx, txAmount);
+					hash = await handleDeposit(txAmount);
 					break;
 				}
 
-				// case 'vouch':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleVouch(txTo, txAmount);
-				//   break;
+				case 'withdraw': {
+					hash = await handleWithdraw(txAmount);
+					break;
+				}
 
-				// case 'unvouch':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleUnvouch(txTo);
-				//   break;
+				case 'vouch': {
+					if (!txTo) throw new Error('Recipient address required');
+					hash = await handleVouch(txTo);
+					break;
+				}
 
-				// case 'exit':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleExit(txTo);
-				//   break;
+				case 'unvouch': {
+					if (!txTo) throw new Error('Recipient address required');
+					hash = await handleUnvouch(txTo);
+					break;
+				}
 
-				// case 'explode':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleExplode(txTo);
-				//   break;
+				case 'explode': {
+					if (!txTo) throw new Error('Recipient address required');
+					// Using single address for explodeMultiple
+					hash = await handleExplodeMultiple([txTo]);
+					break;
+				}
 
 				default:
 					throw new Error('Unknown transaction type');
@@ -231,11 +233,10 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					<Select
 						label="Type"
 						options={[
-							{ value: 'create account', label: 'Create Account' },
 							{ value: 'deposit', label: 'Deposit' },
+							{ value: 'withdraw', label: 'Withdraw' },
 							{ value: 'vouch', label: 'Vouch' },
 							{ value: 'unvouch', label: 'Unvouch' },
-							{ value: 'exit', label: 'Exit' },
 							{ value: 'explode', label: 'Explode' },
 						]}
 						value={txType}
@@ -255,9 +256,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 						</div>
 					)}
 
-					{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
-						txType,
-					) && (
+					{['vouch', 'unvouch', 'explode'].includes(txType) && (
 						<Input
 							disabled={!isConnected}
 							label="To"
@@ -271,7 +270,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 						/>
 					)}
 
-					{['create account', 'deposit'].includes(txType) && (
+					{['deposit', 'withdraw'].includes(txType) && (
 						<div className="flex space-x-2">
 							<Input
 								disabled={!isConnected}
