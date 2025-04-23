@@ -1,7 +1,7 @@
 import { readContract } from '@wagmi/core';
 import { useState, useEffect } from 'react';
 import { useWallet } from './useWallet';
-import { SepoliaABI, contracts } from '@/contracts';
+import { SybilSepoliaABI, VerifierSepoliaABI, contracts } from '@/contracts';
 import { formatEthAddress } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { config } from '@/config';
@@ -29,27 +29,13 @@ export const useSmartContractData = (accountIdx?: string) => {
 	);
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-	const { data: lastIdx, isLoading: isLoadingLastIdx } = useQuery({
-		queryKey: ['lastIdx', address],
-		queryFn: async () => {
-			if (!address) return null;
-			return readContract(config, {
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
-				functionName: 'lastIdx',
-			});
-		},
-		enabled: !!address,
-		staleTime: 30000,
-	});
-
 	const { data: queueLength, isLoading: isLoadingQueueLength } = useQuery({
 		queryKey: ['queueLength', address],
 		queryFn: async () => {
 			if (!address) return null;
 			return readContract(config, {
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
 				functionName: 'getQueueLength',
 			});
 		},
@@ -62,8 +48,8 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryFn: async () => {
 			if (!address) return null;
 			return readContract(config, {
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
 				functionName: 'getLastForgedBatch',
 			});
 		},
@@ -83,8 +69,8 @@ export const useSmartContractData = (accountIdx?: string) => {
 
 				const queuePromises = indices.map((index) =>
 					readContract(config, {
-						address: formatEthAddress(contracts.sepolia.address),
-						abi: SepoliaABI,
+						address: formatEthAddress(contracts.sybilSepolia.address),
+						abi: SybilSepoliaABI,
 						functionName: 'getL1TransactionQueue',
 						args: [index],
 					}),
@@ -136,8 +122,8 @@ export const useSmartContractData = (accountIdx?: string) => {
 
 			try {
 				const scoreRoot = await readContract(config, {
-					address: formatEthAddress(contracts.sepolia.address),
-					abi: SepoliaABI,
+					address: formatEthAddress(contracts.sybilSepolia.address),
+					abi: SybilSepoliaABI,
 					functionName: 'scoreRootMap',
 					args: [Number(lastForgedBatch)],
 				});
@@ -176,8 +162,6 @@ export const useSmartContractData = (accountIdx?: string) => {
 	}, [txHistory]);
 
 	return {
-		lastIdx,
-		isLoadingLastIdx,
 		vouchesData,
 		isLoadingVouchEvents,
 		queueLength,

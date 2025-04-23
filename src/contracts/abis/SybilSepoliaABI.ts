@@ -1,4 +1,4 @@
-export const SepoliaABI = [
+export const SybilSepoliaABI = [
 	{ inputs: [], name: 'AccessControlBadConfirmation', type: 'error' },
 	{
 		inputs: [
@@ -8,9 +8,9 @@ export const SepoliaABI = [
 		name: 'AccessControlUnauthorizedAccount',
 		type: 'error',
 	},
-	{ inputs: [], name: 'AmountExceedsLimit', type: 'error' },
 	{ inputs: [], name: 'EthTransferFailed', type: 'error' },
-	{ inputs: [], name: 'InvalidFromIdx', type: 'error' },
+	{ inputs: [], name: 'InsufficientBalance', type: 'error' },
+	{ inputs: [], name: 'InsufficientETH', type: 'error' },
 	{ inputs: [], name: 'InvalidInitialization', type: 'error' },
 	{
 		inputs: [{ internalType: 'string', name: 'elementType', type: 'string' }],
@@ -18,13 +18,20 @@ export const SepoliaABI = [
 		type: 'error',
 	},
 	{ inputs: [], name: 'InvalidProof', type: 'error' },
-	{ inputs: [], name: 'InvalidToIdx', type: 'error' },
 	{ inputs: [], name: 'InvalidVerifierAddress', type: 'error' },
-	{ inputs: [], name: 'LoadAmountDoesNotMatch', type: 'error' },
-	{ inputs: [], name: 'LoadAmountExceedsLimit', type: 'error' },
+	{ inputs: [], name: 'LimitAmountExceeded', type: 'error' },
 	{ inputs: [], name: 'NotInitializing', type: 'error' },
+	{
+		inputs: [
+			{ internalType: 'address', name: 'from', type: 'address' },
+			{ internalType: 'address', name: 'to', type: 'address' },
+		],
+		name: 'NotVouched',
+		type: 'error',
+	},
+	{ inputs: [], name: 'ReceiverHasZeroBalance', type: 'error' },
+	{ inputs: [], name: 'SenderHasZeroBalance', type: 'error' },
 	{ inputs: [], name: 'SmtProofInvalid', type: 'error' },
-	{ inputs: [], name: 'WithdrawAlreadyDone', type: 'error' },
 	{
 		anonymous: false,
 		inputs: [
@@ -193,19 +200,6 @@ export const SepoliaABI = [
 	},
 	{
 		inputs: [
-			{ internalType: 'address', name: 'ethAddress', type: 'address' },
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint40', name: 'loadAmountF', type: 'uint40' },
-			{ internalType: 'uint40', name: 'amountF', type: 'uint40' },
-			{ internalType: 'uint48', name: 'toIdx', type: 'uint48' },
-		],
-		name: '_addTx',
-		outputs: [],
-		stateMutability: 'nonpayable',
-		type: 'function',
-	},
-	{
-		inputs: [
 			{ internalType: 'uint256', name: 'key', type: 'uint256' },
 			{ internalType: 'uint256', name: 'value', type: 'uint256' },
 		],
@@ -232,10 +226,10 @@ export const SepoliaABI = [
 		type: 'function',
 	},
 	{
-		inputs: [{ internalType: 'uint40', name: 'loadAmountF', type: 'uint40' }],
-		name: 'createAccountDeposit',
-		outputs: [],
-		stateMutability: 'payable',
+		inputs: [{ internalType: 'address', name: '', type: 'address' }],
+		name: 'balances',
+		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+		stateMutability: 'view',
 		type: 'function',
 	},
 	{
@@ -246,23 +240,10 @@ export const SepoliaABI = [
 		type: 'function',
 	},
 	{
-		inputs: [
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint40', name: 'loadAmountF', type: 'uint40' },
-		],
+		inputs: [],
 		name: 'deposit',
 		outputs: [],
 		stateMutability: 'payable',
-		type: 'function',
-	},
-	{
-		inputs: [
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint40', name: 'amountF', type: 'uint40' },
-		],
-		name: 'exit',
-		outputs: [],
-		stateMutability: 'nonpayable',
 		type: 'function',
 	},
 	{
@@ -291,8 +272,7 @@ export const SepoliaABI = [
 	},
 	{
 		inputs: [
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint48[]', name: 'toIdxs', type: 'uint48[]' },
+			{ internalType: 'address[]', name: 'toEthAddrs', type: 'address[]' },
 		],
 		name: 'explodeMultiple',
 		outputs: [],
@@ -301,11 +281,9 @@ export const SepoliaABI = [
 	},
 	{
 		inputs: [
-			{ internalType: 'uint48', name: 'newLastIdx', type: 'uint48' },
 			{ internalType: 'uint256', name: 'newAccountRoot', type: 'uint256' },
 			{ internalType: 'uint256', name: 'newVouchRoot', type: 'uint256' },
 			{ internalType: 'uint256', name: 'newScoreRoot', type: 'uint256' },
-			{ internalType: 'uint256', name: 'newExitRoot', type: 'uint256' },
 			{ internalType: 'uint256[2]', name: 'proofA', type: 'uint256[2]' },
 			{ internalType: 'uint256[2][2]', name: 'proofB', type: 'uint256[2][2]' },
 			{ internalType: 'uint256[2]', name: 'proofC', type: 'uint256[2]' },
@@ -393,16 +371,21 @@ export const SepoliaABI = [
 	},
 	{
 		inputs: [],
-		name: 'lastIdx',
-		outputs: [{ internalType: 'uint48', name: '', type: 'uint48' }],
+		name: 'minBalance',
+		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
 		stateMutability: 'view',
 		type: 'function',
 	},
 	{
-		inputs: [],
-		name: 'minBalance',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
+		inputs: [
+			{ internalType: 'uint32', name: 'numScoreRoot', type: 'uint32' },
+			{ internalType: 'uint24', name: 'idx', type: 'uint24' },
+			{ internalType: 'uint32', name: 'score', type: 'uint32' },
+			{ internalType: 'uint256[]', name: 'siblings', type: 'uint256[]' },
+		],
+		name: 'proveScoreMerkleProof',
+		outputs: [],
+		stateMutability: 'nonpayable',
 		type: 'function',
 	},
 	{
@@ -433,9 +416,26 @@ export const SepoliaABI = [
 		type: 'function',
 	},
 	{
+		inputs: [{ internalType: 'address', name: '', type: 'address' }],
+		name: 'scoreSnapshots',
+		outputs: [
+			{ internalType: 'uint32', name: 'score', type: 'uint32' },
+			{ internalType: 'uint32', name: 'batchNum', type: 'uint32' },
+		],
+		stateMutability: 'view',
+		type: 'function',
+	},
+	{
 		inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
 		name: 'supportsInterface',
 		outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+		stateMutability: 'view',
+		type: 'function',
+	},
+	{
+		inputs: [{ internalType: 'uint32', name: '', type: 'uint32' }],
+		name: 'txsDataHashMap',
+		outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
 		stateMutability: 'view',
 		type: 'function',
 	},
@@ -447,10 +447,7 @@ export const SepoliaABI = [
 		type: 'function',
 	},
 	{
-		inputs: [
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint48', name: 'toIdx', type: 'uint48' },
-		],
+		inputs: [{ internalType: 'address', name: 'toEthAddr', type: 'address' }],
 		name: 'unvouch',
 		outputs: [],
 		stateMutability: 'nonpayable',
@@ -488,10 +485,7 @@ export const SepoliaABI = [
 		type: 'function',
 	},
 	{
-		inputs: [
-			{ internalType: 'uint48', name: 'fromIdx', type: 'uint48' },
-			{ internalType: 'uint48', name: 'toIdx', type: 'uint48' },
-		],
+		inputs: [{ internalType: 'address', name: 'toEthAddr', type: 'address' }],
 		name: 'vouch',
 		outputs: [],
 		stateMutability: 'nonpayable',
@@ -506,12 +500,17 @@ export const SepoliaABI = [
 	},
 	{
 		inputs: [
-			{ internalType: 'uint192', name: 'amount', type: 'uint192' },
-			{ internalType: 'uint32', name: 'numExitRoot', type: 'uint32' },
-			{ internalType: 'uint256[]', name: 'siblings', type: 'uint256[]' },
-			{ internalType: 'uint48', name: 'idx', type: 'uint48' },
+			{ internalType: 'address', name: '', type: 'address' },
+			{ internalType: 'address', name: '', type: 'address' },
 		],
-		name: 'withdrawMerkleProof',
+		name: 'vouches',
+		outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+		stateMutability: 'view',
+		type: 'function',
+	},
+	{
+		inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
+		name: 'withdraw',
 		outputs: [],
 		stateMutability: 'nonpayable',
 		type: 'function',
