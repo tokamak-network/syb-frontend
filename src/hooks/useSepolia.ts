@@ -1,12 +1,16 @@
 import { useWriteContract } from 'wagmi';
 
-import { SepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress, convertToUint40Format } from '@/utils';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import {
+	formatEthAddress,
+	convertToUint40Format,
+	validateAddress,
+} from '@/utils';
 
 export const useSepoliaTransactions = () => {
 	const { writeContractAsync } = useWriteContract();
 
-	const handleCreateAccount = async (amount: string) => {
+	const handleDeposit = async (amount: string) => {
 		try {
 			const loadAmountF = convertToUint40Format(amount);
 			const a = loadAmountF & BigInt(0x7ffffffff);
@@ -14,38 +18,9 @@ export const useSepoliaTransactions = () => {
 			const amountValue = BigInt(10) ** b * a;
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
-				functionName: 'createAccountDeposit',
-				args: [Number(loadAmountF)],
-				value: amountValue,
-			});
-
-			return hash;
-		} catch (error) {
-			console.error('Error creating account:', error);
-			throw error;
-		}
-	};
-
-	const handleDeposit = async (fromIdx: number, amount: string) => {
-		try {
-			if (fromIdx <= 255) {
-				throw new Error('Invalid fromIdx: must be greater than 255');
-			}
-
-			const loadAmountF = convertToUint40Format(amount);
-			const a = loadAmountF & BigInt(0x7ffffffff);
-			const b = loadAmountF >> BigInt(35);
-			const amountValue = BigInt(10) ** b * a;
-
-			const fromIdxUint48 = BigInt(fromIdx);
-
-			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
 				functionName: 'deposit',
-				args: [Number(fromIdxUint48), Number(loadAmountF)],
 				value: amountValue,
 			});
 
@@ -56,94 +31,88 @@ export const useSepoliaTransactions = () => {
 		}
 	};
 
-	// const handleVouch = async (fromIdx: number, toIdx: number) => {
-	// 	try {
-	// 		if (fromIdx <= 255) {
-	// 			throw new Error('Invalid fromIdx: must be greater than 255');
-	// 		}
-	// 		if (toIdx <= 255) {
-	// 			throw new Error('Invalid toIdx: must be greater than 255');
-	// 		}
+	const handleVouch = async (toEthAddr: string) => {
+		try {
+			const validatedAddress = validateAddress(toEthAddr);
 
-	// 		const fromIdxBigInt = BigInt(fromIdx);
-	// 		const toIdxBigInt = BigInt(toIdx);
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'vouch',
+				args: [validatedAddress],
+			});
 
-	// 		const hash = await writeContractAsync({
-	// 			address: formatEthAddress(contracts.sepolia.address),
-	// 			abi: SepoliaABI,
-	// 			functionName: 'vouch',
-	// 			args: [fromIdxBigInt, toIdxBigInt],
-	// 		});
-	// 		return hash;
-	// 	} catch (error) {
-	// 		console.error('Error vouching:', error);
-	// 		throw error;
-	// 	}
-	// };
+			return hash;
+		} catch (error) {
+			console.error('Error vouching:', error);
+			throw error;
+		}
+	};
 
-	// const handleUnvouch = async (to: string) => {
-	//   try {
-	//     // Convert to uint48 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const toIdx = BigInt(to); // Convert address to index
+	const handleUnvouch = async (toEthAddr: string) => {
+		try {
+			const validatedAddress = validateAddress(toEthAddr);
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'unvouch',
-	//       args: [fromIdx, toIdx]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error unvouching:', error);
-	//     throw error;
-	//   }
-	// };
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'unvouch',
+				args: [validatedAddress],
+			});
 
-	// const handleExit = async () => {
-	//   try {
-	//     // Convert to uint48 and uint40 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const amountF = BigInt(0); // Amount to exit
+			return hash;
+		} catch (error) {
+			console.error('Error unvouching:', error);
+			throw error;
+		}
+	};
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'exit',
-	//       args: [fromIdx, amountF]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error exiting:', error);
-	//     throw error;
-	//   }
-	// };
+	const handleWithdraw = async (amount: string) => {
+		try {
+			const loadAmountF = convertToUint40Format(amount);
+			const a = loadAmountF & BigInt(0x7ffffffff);
+			const b = loadAmountF >> BigInt(35);
+			const amountValue = BigInt(10) ** b * a;
 
-	// const handleExplode = async (to: string) => {
-	//   try {
-	//     // Convert to uint48 and array of uint48 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const toIdxs = [BigInt(to)]; // Array of recipient indices
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'withdraw',
+				args: [amountValue],
+			});
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'explodeMultiple',
-	//       args: [fromIdx, toIdxs]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error exploding:', error);
-	//     throw error;
-	//   }
-	// };
+			return hash;
+		} catch (error) {
+			console.error('Error withdrawing:', error);
+			throw error;
+		}
+	};
+
+	const handleExplodeMultiple = async (toEthAddrs: string[]) => {
+		try {
+			const validatedAddresses = toEthAddrs.map((addr) =>
+				validateAddress(addr),
+			);
+
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'explodeMultiple',
+				args: [validatedAddresses],
+			});
+
+			return hash;
+		} catch (error) {
+			console.error('Error exploding multiple:', error);
+			throw error;
+		}
+	};
 
 	return {
-		handleCreateAccount,
 		handleDeposit,
-		// handleVouch,
-		// handleUnvouch,
-		// handleExit,
-		// handleExplode,
+		handleVouch,
+		handleUnvouch,
+		handleWithdraw,
+		handleExplodeMultiple,
 	};
 };
