@@ -12,10 +12,17 @@ export const useSepoliaTransactions = () => {
 
 	const handleDeposit = async (amount: string) => {
 		try {
+			// Parse the amount as ETH value
 			const loadAmountF = convertToUint40Format(amount);
 			const a = loadAmountF & BigInt(0x7ffffffff);
 			const b = loadAmountF >> BigInt(35);
 			const amountValue = BigInt(10) ** b * a;
+
+			// Check that amount doesn't exceed the limit according to the contract
+			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+			if (amountValue >= LIMIT_AMOUNT) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
 
 			const hash = await writeContractAsync({
 				address: formatEthAddress(contracts.sybilSepolia.address),
@@ -25,7 +32,15 @@ export const useSepoliaTransactions = () => {
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('InsufficientETH')) {
+				throw new Error('Amount is below the minimum balance requirement');
+			}
+			if (error.message && error.message.includes('LimitAmountExceeded')) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+
 			console.error('Error depositing:', error);
 			throw error;
 		}
@@ -43,7 +58,15 @@ export const useSepoliaTransactions = () => {
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('SenderHasZeroBalance')) {
+				throw new Error('Your account has zero balance, deposit first');
+			}
+			if (error.message && error.message.includes('ReceiverHasZeroBalance')) {
+				throw new Error('Recipient has zero balance');
+			}
+
 			console.error('Error vouching:', error);
 			throw error;
 		}
@@ -61,7 +84,12 @@ export const useSepoliaTransactions = () => {
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('NotVouched')) {
+				throw new Error('You have not vouched for this address');
+			}
+
 			console.error('Error unvouching:', error);
 			throw error;
 		}
@@ -74,6 +102,12 @@ export const useSepoliaTransactions = () => {
 			const b = loadAmountF >> BigInt(35);
 			const amountValue = BigInt(10) ** b * a;
 
+			// Check that amount doesn't exceed the limit according to the contract
+			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+			if (amountValue >= LIMIT_AMOUNT) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+
 			const hash = await writeContractAsync({
 				address: formatEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
@@ -82,7 +116,18 @@ export const useSepoliaTransactions = () => {
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('InsufficientBalance')) {
+				throw new Error('Insufficient balance for withdrawal');
+			}
+			if (error.message && error.message.includes('LimitAmountExceeded')) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+			if (error.message && error.message.includes('EthTransferFailed')) {
+				throw new Error('ETH transfer failed. Please try again.');
+			}
+
 			console.error('Error withdrawing:', error);
 			throw error;
 		}
@@ -90,6 +135,7 @@ export const useSepoliaTransactions = () => {
 
 	const handleExplodeMultiple = async (toEthAddrs: string[]) => {
 		try {
+			// Validate all addresses to ensure they're in correct format
 			const validatedAddresses = toEthAddrs.map((addr) =>
 				validateAddress(addr),
 			);
@@ -102,7 +148,11 @@ export const useSepoliaTransactions = () => {
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			if (error.message && error.message.includes('NotVouched')) {
+				throw new Error('One or more addresses have not vouched for you');
+			}
+
 			console.error('Error exploding multiple:', error);
 			throw error;
 		}

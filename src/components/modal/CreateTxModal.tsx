@@ -124,7 +124,10 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			return;
 		}
 
-		if (!txAmount || parseFloat(txAmount) <= 0) {
+		if (
+			['deposit', 'withdraw'].includes(txType) &&
+			(!txAmount || parseFloat(txAmount) <= 0)
+		) {
 			setError('Amount must be greater than 0');
 
 			return;
@@ -161,8 +164,18 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 				case 'explode': {
 					if (!txTo) throw new Error('Recipient address required');
-					// Using single address for explodeMultiple
-					hash = await handleExplodeMultiple([txTo]);
+
+					// Parse multiple addresses if provided
+					const addresses = txTo.includes(',')
+						? txTo.split(',').map((addr) => addr.trim())
+						: [txTo.trim()];
+
+					// Validate that we have at least one valid address
+					if (addresses.length === 0 || addresses.some((addr) => !addr)) {
+						throw new Error('At least one valid address is required');
+					}
+
+					hash = await handleExplodeMultiple(addresses);
 					break;
 				}
 
@@ -221,6 +234,48 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		}
 	}, [isConnected]);
 
+	const renderTransactionGuidance = () => {
+		switch (txType) {
+			case 'deposit':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Deposit ETH into the Sybil contract. Minimum balance requirement
+						applies.
+					</div>
+				);
+			case 'withdraw':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Withdraw ETH from the Sybil contract. You must maintain minimum
+						balance.
+					</div>
+				);
+			case 'vouch':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Vouch for another account. Both accounts must have non-zero
+						balances.
+					</div>
+				);
+			case 'unvouch':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Remove your vouch for another account. You must have previously
+						vouched for them.
+					</div>
+				);
+			case 'explode':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Explode accounts that have vouched for you. They'll lose funds up to
+						the explode amount.
+					</div>
+				);
+			default:
+				return null;
+		}
+	};
+
 	return (
 		<>
 			<Modal
@@ -240,8 +295,13 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 							{ value: 'explode', label: 'Explode' },
 						]}
 						value={txType}
-						onChange={setTxType}
+						onChange={(e) => {
+							setTxType(e);
+							setError(null);
+						}}
 					/>
+
+					{renderTransactionGuidance()}
 
 					<Input
 						disabled={!!walletAddress || !isConnected}
@@ -257,17 +317,25 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					)}
 
 					{['vouch', 'unvouch', 'explode'].includes(txType) && (
-						<Input
-							disabled={!isConnected}
-							label="To"
-							placeholder={
-								['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
-									? 'Enter Index'
-									: 'Enter address'
-							}
-							value={txTo}
-							onChange={(e) => setTxTo(e.target.value)}
-						/>
+						<>
+							<Input
+								disabled={!isConnected}
+								label={
+									txType === 'explode' ? 'To (comma-separated addresses)' : 'To'
+								}
+								placeholder={
+									txType === 'explode' ? 'Enter Address(es)' : 'Enter Address'
+								}
+								value={txTo}
+								onChange={(e) => setTxTo(e.target.value)}
+							/>
+
+							{txType === 'explode' && (
+								<div className="text-xs text-gray-400">
+									For multiple addresses, separate them with commas
+								</div>
+							)}
+						</>
 					)}
 
 					{['deposit', 'withdraw'].includes(txType) && (
@@ -290,7 +358,11 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 						</div>
 					)}
 
-					{error && <p className="text-sm text-red-500">{error}</p>}
+					{error && (
+						<div className="rounded-md bg-red-500/20 p-3">
+							<p className="text-sm text-red-500">{error}</p>
+						</div>
+					)}
 
 					<div className="flex w-full justify-center">
 						<Button
