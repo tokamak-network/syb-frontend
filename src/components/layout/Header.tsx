@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa6';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { ThemeDropdown } from '@/components/common';
 import { useTheme, useToast } from '@/context';
@@ -261,6 +262,12 @@ export const Header: React.FC<{
 
 						{isWalletMenuOpen && (
 							<div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg">
+								<Link
+									href="/explorer/my-account"
+									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+								>
+									My Account
+								</Link>
 								<button
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									onClick={handleCopyAddress}
@@ -327,6 +334,12 @@ export const Header: React.FC<{
 				)}
 				{isWalletMenuOpen && (
 					<div className="absolute right-12 top-8 mt-2 w-48 rounded-md bg-white shadow-lg">
+						<Link
+							href="/explorer/my-account"
+							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+						>
+							My Account
+						</Link>
 						<button
 							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 							onClick={handleCopyAddress}
