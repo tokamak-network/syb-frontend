@@ -267,8 +267,8 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			case 'explode':
 				return (
 					<div className="mt-1 text-xs text-gray-400">
-						Explode accounts that have vouched for you. They'll lose funds up to
-						the explode amount.
+						Explode accounts that have vouched for you. They&apos;ll lose funds
+						up to the explode amount.
 					</div>
 				);
 			default:

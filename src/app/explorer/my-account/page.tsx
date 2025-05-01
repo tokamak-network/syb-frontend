@@ -198,7 +198,7 @@ const MyAccountPage: React.FC = () => {
 							</div>
 						) : (
 							<p className="text-gray-500">
-								You haven't vouched for any users yet.
+								You haven&apos;t vouched for any users yet.
 							</p>
 						)}
 					</div>
