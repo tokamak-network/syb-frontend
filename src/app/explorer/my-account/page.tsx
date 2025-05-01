@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
+import { useVouchData } from '@/hooks/useVouchData';
 
 type Voucher = {
 	address: string;
@@ -23,31 +24,56 @@ const MyAccountPage: React.FC = () => {
 	} = useWallet();
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
+	const { useVouchersFor, useAddressesVouchedFor } = useVouchData();
 
 	const [isLoading, setIsLoading] = useState(true);
-	const [usersVouched, setUsersVouched] = useState<Voucher[]>([]);
-	const [vouchedByMe, setVouchedByMe] = useState<Voucher[]>([]);
+	const [allAccounts, setAllAccounts] = useState<string[]>([]);
 	const [proofs, setProofs] = useState<string[]>([]);
+
+	useEffect(() => {
+		setAllAccounts([
+			'0xC0dFB22a00F12123B257d97033a93C0580a7f5a1',
+			'0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+			'0x9876543210987654321098765432109876543210',
+			'0xfedcbafedcbafedcbafedcbafedcbafedcbafeed',
+		]);
+		setIsLoading(false);
+	}, []);
+
+	const {
+		vouchers,
+		isLoading: isVouchersLoading,
+		error: vouchersError,
+	} = useVouchersFor(address || '', allAccounts);
+
+	const {
+		vouchedAddresses,
+		isLoading: isVouchedLoading,
+		error: vouchedError,
+	} = useAddressesVouchedFor(address || '', allAccounts);
+
+	// Convert to the Voucher format with timestamps
+	// Note: Since blockchain doesn't give us timestamps directly,
+	// we're using the current time. In a real app, you might
+	// want to fetch these from the blockchain events
+	const usersVouched = vouchers.map((address) => ({
+		address,
+		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+	}));
+
+	const vouchedByMe = vouchedAddresses.map((address) => ({
+		address,
+		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
+	}));
 
 	useEffect(() => {
 		const fetchAccountData = async () => {
 			setIsLoading(true);
 			try {
-				setTimeout(() => {
-					setUsersVouched([
-						{ address: '0x1234...5678', timestamp: '2023-07-15 14:30:22' },
-						{ address: '0xabcd...efgh', timestamp: '2023-08-22 09:15:43' },
-					]);
-
-					setVouchedByMe([
-						{ address: '0x9876...5432', timestamp: '2023-06-30 11:45:18' },
-						{ address: '0xijkl...mnop', timestamp: '2023-09-05 16:20:37' },
-					]);
-
-					setProofs(['Proof1: 0x8f4e2c1a...', 'Proof2: 0x3b7d9e6f...']);
-
-					setIsLoading(false);
-				}, 1000);
+				// Here we would fetch any additional data like proofs
+				// For now, we'll just use sample data
+				setProofs(['Proof1: 0x8f4e2c1a...', 'Proof2: 0x3b7d9e6f...']);
+				setIsLoading(false);
 			} catch (error) {
 				console.error('Error fetching account data:', error);
 				setIsLoading(false);
@@ -135,7 +161,15 @@ const MyAccountPage: React.FC = () => {
 
 					<div className="mb-8 rounded-lg border p-6 shadow-md">
 						<h2 className="mb-4 text-xl font-semibold">Users Vouched</h2>
-						{usersVouched.length > 0 ? (
+						{isVouchersLoading ? (
+							<div className="flex justify-center p-4">
+								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
+							</div>
+						) : vouchersError ? (
+							<p className="text-red-500">
+								Error loading vouch data: {vouchersError.message}
+							</p>
+						) : usersVouched.length > 0 ? (
 							<div className="overflow-x-auto">
 								<table className="min-w-full divide-y divide-gray-200">
 									<thead>
@@ -163,13 +197,23 @@ const MyAccountPage: React.FC = () => {
 								</table>
 							</div>
 						) : (
-							<p className="text-gray-500">No users vouched yet.</p>
+							<p className="text-gray-500">
+								No users have vouched for you yet.
+							</p>
 						)}
 					</div>
 
 					<div className="mb-8 rounded-lg border p-6 shadow-md">
 						<h2 className="mb-4 text-xl font-semibold">Users Vouched By Me</h2>
-						{vouchedByMe.length > 0 ? (
+						{isVouchedLoading ? (
+							<div className="flex justify-center p-4">
+								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
+							</div>
+						) : vouchedError ? (
+							<p className="text-red-500">
+								Error loading vouch data: {vouchedError.message}
+							</p>
+						) : vouchedByMe.length > 0 ? (
 							<div className="overflow-x-auto">
 								<table className="min-w-full divide-y divide-gray-200">
 									<thead>
