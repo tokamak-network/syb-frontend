@@ -7,10 +7,12 @@ import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useVouchData } from '@/hooks/useVouchData';
+import { FiExternalLink } from 'react-icons/fi';
 
 type Voucher = {
 	address: string;
 	timestamp: string;
+	txHash: string;
 };
 
 const MyAccountPage: React.FC = () => {
@@ -42,36 +44,30 @@ const MyAccountPage: React.FC = () => {
 
 	const {
 		vouchers,
+		vouchersWithTx,
 		isLoading: isVouchersLoading,
 		error: vouchersError,
 	} = useVouchersFor(address || '', allAccounts);
 
 	const {
 		vouchedAddresses,
+		vouchedWithTx,
 		isLoading: isVouchedLoading,
 		error: vouchedError,
 	} = useAddressesVouchedFor(address || '', allAccounts);
 
-	// Convert to the Voucher format with timestamps
-	// Note: Since blockchain doesn't give us timestamps directly,
-	// we're using the current time. In a real app, you might
-	// want to fetch these from the blockchain events
-	const usersVouchedForMe = vouchers.map((address) => ({
-		address,
-		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-	}));
+	const getExplorerUrl = (txHash: string) => {
+		const explorerBaseUrl = 'https://sepolia.etherscan.io/tx/';
+		return `${explorerBaseUrl}${txHash}`;
+	};
 
-	const usersIVouchedFor = vouchedAddresses.map((address) => ({
-		address,
-		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-	}));
+	const usersVouchedForMe = vouchersWithTx;
+	const usersIVouchedFor = vouchedWithTx;
 
 	useEffect(() => {
 		const fetchAccountData = async () => {
 			setIsLoading(true);
 			try {
-				// Here we would fetch any additional data like proofs
-				// For now, we'll just use sample data
 				setProofs(['Proof1: 0x8f4e2c1a...', 'Proof2: 0x3b7d9e6f...']);
 				setIsLoading(false);
 			} catch (error) {
@@ -180,6 +176,9 @@ const MyAccountPage: React.FC = () => {
 											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
 												Timestamp
 											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+												Transaction
+											</th>
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200">
@@ -190,6 +189,23 @@ const MyAccountPage: React.FC = () => {
 												</td>
 												<td className="whitespace-nowrap px-6 py-4">
 													{user.timestamp}
+												</td>
+												<td className="whitespace-nowrap px-6 py-4 font-mono">
+													{user.txHash ? (
+														<a
+															href={getExplorerUrl(user.txHash)}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+														>
+															{user.txHash.substring(0, 10)}...
+															<FiExternalLink className="ml-1" />
+														</a>
+													) : (
+														<span className="text-gray-400">
+															No transaction data
+														</span>
+													)}
 												</td>
 											</tr>
 										))}
@@ -226,6 +242,9 @@ const MyAccountPage: React.FC = () => {
 											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
 												Timestamp
 											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+												Transaction
+											</th>
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200">
@@ -236,6 +255,23 @@ const MyAccountPage: React.FC = () => {
 												</td>
 												<td className="whitespace-nowrap px-6 py-4">
 													{user.timestamp}
+												</td>
+												<td className="whitespace-nowrap px-6 py-4 font-mono">
+													{user.txHash ? (
+														<a
+															href={getExplorerUrl(user.txHash)}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+														>
+															{user.txHash.substring(0, 10)}...
+															<FiExternalLink className="ml-1" />
+														</a>
+													) : (
+														<span className="text-gray-400">
+															No transaction data
+														</span>
+													)}
 												</td>
 											</tr>
 										))}
