@@ -33,7 +33,7 @@ const MyAccountPage: React.FC = () => {
 	useEffect(() => {
 		setAllAccounts([
 			'0xC0dFB22a00F12123B257d97033a93C0580a7f5a1',
-			'0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+			'0x83D6C639AC4CB3833d60b3CB4dbCd234baBD501D',
 			'0x9876543210987654321098765432109876543210',
 			'0xfedcbafedcbafedcbafedcbafedcbafedcbafeed',
 		]);
@@ -56,12 +56,12 @@ const MyAccountPage: React.FC = () => {
 	// Note: Since blockchain doesn't give us timestamps directly,
 	// we're using the current time. In a real app, you might
 	// want to fetch these from the blockchain events
-	const usersVouched = vouchers.map((address) => ({
+	const usersVouchedForMe = vouchers.map((address) => ({
 		address,
 		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
 	}));
 
-	const vouchedByMe = vouchedAddresses.map((address) => ({
+	const usersIVouchedFor = vouchedAddresses.map((address) => ({
 		address,
 		timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
 	}));
@@ -160,51 +160,7 @@ const MyAccountPage: React.FC = () => {
 					</div>
 
 					<div className="mb-8 rounded-lg border p-6 shadow-md">
-						<h2 className="mb-4 text-xl font-semibold">Users Vouched</h2>
-						{isVouchersLoading ? (
-							<div className="flex justify-center p-4">
-								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
-							</div>
-						) : vouchersError ? (
-							<p className="text-red-500">
-								Error loading vouch data: {vouchersError.message}
-							</p>
-						) : usersVouched.length > 0 ? (
-							<div className="overflow-x-auto">
-								<table className="min-w-full divide-y divide-gray-200">
-									<thead>
-										<tr>
-											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-												Address
-											</th>
-											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-												Timestamp
-											</th>
-										</tr>
-									</thead>
-									<tbody className="divide-y divide-gray-200">
-										{usersVouched.map((user, index) => (
-											<tr key={index}>
-												<td className="whitespace-nowrap px-6 py-4 font-mono">
-													{user.address}
-												</td>
-												<td className="whitespace-nowrap px-6 py-4">
-													{user.timestamp}
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						) : (
-							<p className="text-gray-500">
-								No users have vouched for you yet.
-							</p>
-						)}
-					</div>
-
-					<div className="mb-8 rounded-lg border p-6 shadow-md">
-						<h2 className="mb-4 text-xl font-semibold">Users Vouched By Me</h2>
+						<h2 className="mb-4 text-xl font-semibold">Users I Vouched For</h2>
 						{isVouchedLoading ? (
 							<div className="flex justify-center p-4">
 								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
@@ -213,7 +169,7 @@ const MyAccountPage: React.FC = () => {
 							<p className="text-red-500">
 								Error loading vouch data: {vouchedError.message}
 							</p>
-						) : vouchedByMe.length > 0 ? (
+						) : usersIVouchedFor.length > 0 ? (
 							<div className="overflow-x-auto">
 								<table className="min-w-full divide-y divide-gray-200">
 									<thead>
@@ -227,7 +183,7 @@ const MyAccountPage: React.FC = () => {
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200">
-										{vouchedByMe.map((user, index) => (
+										{usersIVouchedFor.map((user, index) => (
 											<tr key={index}>
 												<td className="whitespace-nowrap px-6 py-4 font-mono">
 													{user.address}
@@ -243,6 +199,52 @@ const MyAccountPage: React.FC = () => {
 						) : (
 							<p className="text-gray-500">
 								You haven&apos;t vouched for any users yet.
+							</p>
+						)}
+					</div>
+
+					<div className="mb-8 rounded-lg border p-6 shadow-md">
+						<h2 className="mb-4 text-xl font-semibold">
+							Users Who Vouched For Me
+						</h2>
+						{isVouchersLoading ? (
+							<div className="flex justify-center p-4">
+								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
+							</div>
+						) : vouchersError ? (
+							<p className="text-red-500">
+								Error loading vouch data: {vouchersError.message}
+							</p>
+						) : usersVouchedForMe.length > 0 ? (
+							<div className="overflow-x-auto">
+								<table className="min-w-full divide-y divide-gray-200">
+									<thead>
+										<tr>
+											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+												Address
+											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+												Timestamp
+											</th>
+										</tr>
+									</thead>
+									<tbody className="divide-y divide-gray-200">
+										{usersVouchedForMe.map((user, index) => (
+											<tr key={index}>
+												<td className="whitespace-nowrap px-6 py-4 font-mono">
+													{user.address}
+												</td>
+												<td className="whitespace-nowrap px-6 py-4">
+													{user.timestamp}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						) : (
+							<p className="text-gray-500">
+								No users have vouched for you yet.
 							</p>
 						)}
 					</div>
