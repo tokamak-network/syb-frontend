@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useWaitForTransactionReceipt } from 'wagmi';
+import { useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { useRouter } from 'next/navigation';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
 import { useToast } from '@/context';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import { formatEthAddress } from '@/utils';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -18,7 +20,7 @@ interface CreateTxModalProps {
 		hash?: `0x${string}`;
 	}) => void;
 	isConnected: boolean;
-	walletAddress?: string;
+	walletAddress?: `0x${string}`;
 }
 
 export const CreateTxModal: React.FC<CreateTxModalProps> = ({
@@ -53,6 +55,25 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		type: string;
 		hash?: `0x${string}`;
 	} | null>(null);
+	const [hasContractBalance, setHasContractBalance] = useState<boolean>(false);
+
+	// Read the user's contract balance
+	const { data: contractBalance } = useReadContract({
+		address: formatEthAddress(contracts.sybilSepolia.address) as `0x${string}`,
+		abi: SybilSepoliaABI,
+		functionName: 'balances',
+		args: walletAddress ? [walletAddress] : undefined,
+	});
+
+	// Check if user has contract balance
+	useEffect(() => {
+		if (contractBalance) {
+			// If contract balance is greater than 0, user has deposited
+			setHasContractBalance(BigInt(contractBalance.toString()) > BigInt(0));
+		} else {
+			setHasContractBalance(false);
+		}
+	}, [contractBalance]);
 
 	const {
 		data,
@@ -130,6 +151,12 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		) {
 			setError('Amount must be greater than 0');
 
+			return;
+		}
+
+		// Check if the user has contract balance when attempting non-deposit transactions
+		if (!hasContractBalance && txType !== 'deposit') {
+			setError('You need to make a deposit first to use this functionality');
 			return;
 		}
 
@@ -246,35 +273,75 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			case 'withdraw':
 				return (
 					<div className="mt-1 text-xs text-gray-400">
-						Withdraw ETH from the Sybil contract. You must maintain minimum
-						balance.
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Withdraw ETH from the Sybil contract. You must maintain minimum
+								balance.
+							</span>
+						)}
 					</div>
 				);
 			case 'vouch':
 				return (
 					<div className="mt-1 text-xs text-gray-400">
-						Vouch for another account. Both accounts must have non-zero
-						balances.
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Vouch for another account. Both accounts must have non-zero
+								balances.
+							</span>
+						)}
 					</div>
 				);
 			case 'unvouch':
 				return (
 					<div className="mt-1 text-xs text-gray-400">
-						Remove your vouch for another account. You must have previously
-						vouched for them.
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Remove your vouch for another account. You must have previously
+								vouched for them.
+							</span>
+						)}
 					</div>
 				);
 			case 'explode':
 				return (
 					<div className="mt-1 text-xs text-gray-400">
-						Explode accounts that have vouched for you. They&apos;ll lose funds
-						up to the explode amount.
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Explode accounts that have vouched for you. They&apos;ll lose
+								funds up to the explode amount.
+							</span>
+						)}
 					</div>
 				);
 			default:
 				return null;
 		}
 	};
+
+	const txTypeOptions = [
+		{ value: 'deposit', label: 'Deposit' },
+		{ value: 'withdraw', label: 'Withdraw' },
+		{ value: 'vouch', label: 'Vouch' },
+		{ value: 'unvouch', label: 'Unvouch' },
+		{ value: 'explode', label: 'Explode' },
+	];
 
 	return (
 		<>
@@ -287,15 +354,16 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				<div className="flex flex-col space-y-4">
 					<Select
 						label="Type"
-						options={[
-							{ value: 'deposit', label: 'Deposit' },
-							{ value: 'withdraw', label: 'Withdraw' },
-							{ value: 'vouch', label: 'Vouch' },
-							{ value: 'unvouch', label: 'Unvouch' },
-							{ value: 'explode', label: 'Explode' },
-						]}
+						options={txTypeOptions}
 						value={txType}
 						onChange={(e) => {
+							// Only allow changing to non-deposit types if user has a contract balance
+							if (!hasContractBalance && e !== 'deposit') {
+								setError(
+									'You need to make a deposit first to use this functionality',
+								);
+								return;
+							}
 							setTxType(e);
 							setError(null);
 						}}
@@ -319,7 +387,9 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					{['vouch', 'unvouch', 'explode'].includes(txType) && (
 						<>
 							<Input
-								disabled={!isConnected}
+								disabled={
+									!isConnected || (txType !== 'deposit' && !hasContractBalance)
+								}
 								label={
 									txType === 'explode' ? 'To (comma-separated addresses)' : 'To'
 								}
@@ -341,7 +411,9 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					{['deposit', 'withdraw'].includes(txType) && (
 						<div className="flex space-x-2">
 							<Input
-								disabled={!isConnected}
+								disabled={
+									!isConnected || (txType !== 'deposit' && !hasContractBalance)
+								}
 								label="Amount (ETH)"
 								placeholder="Enter amount"
 								type="number"
@@ -350,7 +422,11 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 							/>
 							<Button
 								className="mt-6 px-2 py-1 text-sm"
-								disabled={!isConnected || !balance}
+								disabled={
+									!isConnected ||
+									!balance ||
+									(txType !== 'deposit' && !hasContractBalance)
+								}
 								onClick={handleSetMaxAmount}
 							>
 								Max
@@ -367,7 +443,11 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					<div className="flex w-full justify-center">
 						<Button
 							className="mt-4 w-auto"
-							disabled={!isConnected || isTransactionProcessing}
+							disabled={
+								!isConnected ||
+								isTransactionProcessing ||
+								(txType !== 'deposit' && !hasContractBalance)
+							}
 							onClick={handleSend}
 						>
 							{!isConnected
