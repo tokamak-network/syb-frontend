@@ -413,8 +413,8 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 									</span>
 								) : (
 									<span className="text-yellow-500">
-										You haven't deposited any funds yet. Deposit to unlock all
-										features.
+										You haven&apos;t deposited any funds yet. Deposit to unlock
+										all features.
 									</span>
 								)}
 							</div>

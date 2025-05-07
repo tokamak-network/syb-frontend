@@ -44,13 +44,17 @@ const VouchedUsers: React.FC<VouchedUsersProps> = ({
 
 	if (vouchedAddresses.length === 0) {
 		return (
-			<div className={className}>You haven't vouched for any users yet.</div>
+			<div className={className}>
+				You haven&apos;t vouched for any users yet.
+			</div>
 		);
 	}
 
 	return (
 		<div className={className}>
-			<h3 className="mb-2 text-lg font-semibold">Users You've Vouched For</h3>
+			<h3 className="mb-2 text-lg font-semibold">
+				Users You&apos;ve Vouched For
+			</h3>
 			<ul className="space-y-2">
 				{vouchedAddresses.map((address) => (
 					<li key={address} className="rounded-md border p-2">
