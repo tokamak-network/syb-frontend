@@ -8,6 +8,10 @@ import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useVouchData } from '@/hooks/useVouchData';
 import { FiExternalLink } from 'react-icons/fi';
+import { useReadContract } from 'wagmi';
+import { ethers } from 'ethers';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import { formatEthAddress } from '@/utils';
 
 type Voucher = {
 	address: string;
@@ -31,6 +35,22 @@ const MyAccountPage: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [allAccounts, setAllAccounts] = useState<string[]>([]);
 	const [proofs, setProofs] = useState<string[]>([]);
+
+	// Read the user's contract balance (deposited amount)
+	const { data: contractBalance, isLoading: isContractBalanceLoading } =
+		useReadContract({
+			address: formatEthAddress(
+				contracts.sybilSepolia.address,
+			) as `0x${string}`,
+			abi: SybilSepoliaABI,
+			functionName: 'balances',
+			args: address ? [address] : undefined,
+		});
+
+	// Format the deposited amount to ETH
+	const formattedDepositAmount = contractBalance
+		? ethers.utils.formatEther(contractBalance.toString())
+		: '0';
 
 	useEffect(() => {
 		setAllAccounts([
@@ -148,6 +168,37 @@ const MyAccountPage: React.FC = () => {
 									{chain && (
 										<div className="mt-2 text-sm text-gray-500">
 											Network: {chain.name}
+										</div>
+									)}
+								</>
+							)}
+						</div>
+					</div>
+
+					<div className="mb-8 rounded-lg border p-6 shadow-md">
+						<h2 className="mb-4 text-xl font-semibold">Deposited Amount</h2>
+						<div
+							className={cn(
+								'rounded p-4 font-mono',
+								currentThemeStyles.background,
+								currentThemeStyles.text,
+								currentThemeStyles.borderColor,
+							)}
+						>
+							{isContractBalanceLoading ? (
+								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2"></div>
+							) : (
+								<>
+									{formattedDepositAmount}{' '}
+									{currencySymbol || chain?.nativeCurrency?.symbol || 'ETH'}
+									{contractBalance &&
+									BigInt(contractBalance.toString()) > BigInt(0) ? (
+										<div className="mt-2 text-sm text-green-500">
+											You have funds deposited in the contract
+										</div>
+									) : (
+										<div className="mt-2 text-sm text-yellow-500">
+											You haven&apos;t deposited any funds yet
 										</div>
 									)}
 								</>
