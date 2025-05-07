@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { useRouter } from 'next/navigation';
+import { ethers } from 'ethers';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
@@ -141,7 +142,6 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const handleSend = async () => {
 		if (!isConnected) {
 			setError('Please connect your wallet first');
-
 			return;
 		}
 
@@ -150,8 +150,28 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			(!txAmount || parseFloat(txAmount) <= 0)
 		) {
 			setError('Amount must be greater than 0');
-
 			return;
+		}
+
+		// Check if deposit amount exceeds wallet balance
+		if (
+			txType === 'deposit' &&
+			balance &&
+			parseFloat(txAmount) > parseFloat(balance)
+		) {
+			setError('Deposit amount cannot exceed wallet balance');
+			return;
+		}
+
+		// Check if withdraw amount exceeds contract balance
+		if (txType === 'withdraw' && contractBalance) {
+			const contractBalanceEth = ethers.utils.formatEther(
+				contractBalance.toString(),
+			);
+			if (parseFloat(txAmount) > parseFloat(contractBalanceEth)) {
+				setError('Withdraw amount cannot exceed contract balance');
+				return;
+			}
 		}
 
 		// Check if the user has contract balance when attempting non-deposit transactions
@@ -409,28 +429,76 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					)}
 
 					{['deposit', 'withdraw'].includes(txType) && (
-						<div className="flex space-x-2">
-							<Input
-								disabled={
-									!isConnected || (txType !== 'deposit' && !hasContractBalance)
-								}
-								label="Amount (ETH)"
-								placeholder="Enter amount"
-								type="number"
-								value={txAmount}
-								onChange={(e) => setTxAmount(e.target.value)}
-							/>
-							<Button
-								className="mt-6 px-2 py-1 text-sm"
-								disabled={
-									!isConnected ||
-									!balance ||
-									(txType !== 'deposit' && !hasContractBalance)
-								}
-								onClick={handleSetMaxAmount}
-							>
-								Max
-							</Button>
+						<div className="flex flex-col space-y-2">
+							<div className="flex space-x-2">
+								<Input
+									disabled={
+										!isConnected ||
+										(txType !== 'deposit' && !hasContractBalance)
+									}
+									label="Amount (ETH)"
+									placeholder="Enter amount"
+									type="number"
+									value={txAmount}
+									onChange={(e) => setTxAmount(e.target.value)}
+								/>
+								<Button
+									className="mt-6 px-2 py-1 text-sm"
+									disabled={
+										!isConnected ||
+										!balance ||
+										(txType !== 'deposit' && !hasContractBalance)
+									}
+									onClick={handleSetMaxAmount}
+								>
+									Max
+								</Button>
+							</div>
+							{txType === 'deposit' && balance && (
+								<div className="text-xs text-gray-400">
+									Available wallet balance: {balance} ETH
+									{txAmount && parseFloat(txAmount) > 0 && (
+										<span
+											className={
+												parseFloat(txAmount) > parseFloat(balance)
+													? 'text-red-400'
+													: 'text-green-400'
+											}
+										>
+											{' • '}
+											{parseFloat(txAmount) > parseFloat(balance)
+												? 'Exceeds available balance'
+												: 'Valid amount'}
+										</span>
+									)}
+								</div>
+							)}
+							{txType === 'withdraw' && contractBalance && (
+								<div className="text-xs text-gray-400">
+									Available contract balance:{' '}
+									{ethers.utils.formatEther(contractBalance.toString())} ETH
+									{txAmount && parseFloat(txAmount) > 0 && (
+										<span
+											className={
+												parseFloat(txAmount) >
+												parseFloat(
+													ethers.utils.formatEther(contractBalance.toString()),
+												)
+													? 'text-red-400'
+													: 'text-green-400'
+											}
+										>
+											{' • '}
+											{parseFloat(txAmount) >
+											parseFloat(
+												ethers.utils.formatEther(contractBalance.toString()),
+											)
+												? 'Exceeds contract balance'
+												: 'Valid amount'}
+										</span>
+									)}
+								</div>
+							)}
 						</div>
 					)}
 
