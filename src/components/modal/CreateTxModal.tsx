@@ -456,46 +456,46 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 							</div>
 							{txType === 'deposit' && balance && (
 								<div className="text-xs text-gray-400">
-									Available wallet balance: {balance} ETH
+									<div>Available wallet balance: {balance} ETH</div>
 									{txAmount && parseFloat(txAmount) > 0 && (
-										<span
+										<div
 											className={
 												parseFloat(txAmount) > parseFloat(balance)
-													? 'text-red-400'
-													: 'text-green-400'
+													? 'mt-1 text-red-400'
+													: 'mt-1 text-green-400'
 											}
 										>
-											{' • '}
 											{parseFloat(txAmount) > parseFloat(balance)
-												? 'Exceeds available balance'
+												? 'Amount exceeds available balance'
 												: 'Valid amount'}
-										</span>
+										</div>
 									)}
 								</div>
 							)}
 							{txType === 'withdraw' && contractBalance && (
 								<div className="text-xs text-gray-400">
-									Available contract balance:{' '}
-									{ethers.utils.formatEther(contractBalance.toString())} ETH
+									<div>
+										Available contract balance:{' '}
+										{ethers.utils.formatEther(contractBalance.toString())} ETH
+									</div>
 									{txAmount && parseFloat(txAmount) > 0 && (
-										<span
+										<div
 											className={
 												parseFloat(txAmount) >
 												parseFloat(
 													ethers.utils.formatEther(contractBalance.toString()),
 												)
-													? 'text-red-400'
-													: 'text-green-400'
+													? 'mt-1 text-red-400'
+													: 'mt-1 text-green-400'
 											}
 										>
-											{' • '}
 											{parseFloat(txAmount) >
 											parseFloat(
 												ethers.utils.formatEther(contractBalance.toString()),
 											)
-												? 'Exceeds contract balance'
+												? 'Amount exceeds contract balance'
 												: 'Valid amount'}
-										</span>
+										</div>
 									)}
 								</div>
 							)}
