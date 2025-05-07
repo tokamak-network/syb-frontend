@@ -399,8 +399,25 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					/>
 
 					{isConnected && (
-						<div className="text-sm text-gray-500">
-							Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
+						<div className="space-y-2">
+							<div className="text-sm text-gray-500">
+								Current Wallet Balance:{' '}
+								{balance ? `${balance} ETH` : 'Loading...'}
+							</div>
+
+							<div className="text-sm">
+								{hasContractBalance && contractBalance ? (
+									<span className="text-green-500">
+										Deposited Amount:{' '}
+										{ethers.utils.formatEther(contractBalance.toString())} ETH
+									</span>
+								) : (
+									<span className="text-yellow-500">
+										You haven't deposited any funds yet. Deposit to unlock all
+										features.
+									</span>
+								)}
+							</div>
 						</div>
 					)}
 
