@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import TxTypes from '@/components/tables/TxType';
-import { ActionType, Transaction } from '@/types';
+import { ActionType, ActionStatus, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
 	formatTimestamp,
@@ -11,12 +11,18 @@ import {
 import { Button, Dropdown } from '@/components';
 import { useRouter } from 'next/navigation';
 
+import { IoMdArrowDropdown } from 'react-icons/io';
+
 interface Props {
 	filteredTransactions: Transaction[];
+	setOrder: (order: Order) => void;
+	order: Order;
 }
 
 export const TransactionsTable: React.FC<Props> = ({
 	filteredTransactions,
+	setOrder,
+	order,
 }) => {
 	const router = useRouter();
 
@@ -58,8 +64,17 @@ export const TransactionsTable: React.FC<Props> = ({
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Type
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+						<th
+							onClick={() =>
+								setOrder(order === Order.ASC ? Order.DESC : Order.ASC)
+							}
+							className="flex cursor-pointer items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary"
+						>
 							Timestamp
+							<IoMdArrowDropdown
+								size={16}
+								className={`cursor-pointer ${order === Order.ASC ? 'rotate-180' : ''}`}
+							/>
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
@@ -118,7 +133,23 @@ export const TransactionsTable: React.FC<Props> = ({
 									</div>
 								</td>
 								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
-								<td className="px-6 py-2">{transaction.type}</td>
+								<td className="px-6 py-2">
+									{transaction.batchNum === 0 ? (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-yellow-400" />
+											<span className="text-yellow-400">
+												{ActionStatus.PENDING}
+											</span>
+										</div>
+									) : (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-green-400" />
+											<span className="text-green-400">
+												{ActionStatus.FORGED}
+											</span>
+										</div>
+									)}
+								</td>
 							</tr>
 						))
 					) : (

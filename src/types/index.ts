@@ -147,6 +147,7 @@ export interface Transaction {
 	toAccountIndex: string;
 	toTonEthereumAddress: string | null;
 	type: string;
+	status?: string;
 }
 
 export interface TransactionResponse {
@@ -157,4 +158,9 @@ export interface TransactionResponse {
 export interface AccountsResponse {
 	accounts: Account[];
 	pendingItems: number;
+}
+
+export enum Order {
+	ASC = 'ASC',
+	DESC = 'DESC',
 }

@@ -1,149 +1,168 @@
 import { useWriteContract } from 'wagmi';
 
-import { SepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress, convertToUint40Format } from '@/utils';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import {
+	formatEthAddress,
+	convertToUint40Format,
+	validateAddress,
+} from '@/utils';
 
 export const useSepoliaTransactions = () => {
 	const { writeContractAsync } = useWriteContract();
 
-	const handleCreateAccount = async (amount: string) => {
+	const handleDeposit = async (amount: string) => {
 		try {
+			// Parse the amount as ETH value
 			const loadAmountF = convertToUint40Format(amount);
 			const a = loadAmountF & BigInt(0x7ffffffff);
 			const b = loadAmountF >> BigInt(35);
 			const amountValue = BigInt(10) ** b * a;
 
-			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
-				functionName: 'createAccountDeposit',
-				args: [Number(loadAmountF)],
-				value: amountValue,
-			});
-
-			return hash;
-		} catch (error) {
-			console.error('Error creating account:', error);
-			throw error;
-		}
-	};
-
-	const handleDeposit = async (fromIdx: number, amount: string) => {
-		try {
-			if (fromIdx <= 255) {
-				throw new Error('Invalid fromIdx: must be greater than 255');
+			// Check that amount doesn't exceed the limit according to the contract
+			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+			if (amountValue >= LIMIT_AMOUNT) {
+				throw new Error('Amount exceeds the maximum limit');
 			}
 
-			const loadAmountF = convertToUint40Format(amount);
-			const a = loadAmountF & BigInt(0x7ffffffff);
-			const b = loadAmountF >> BigInt(35);
-			const amountValue = BigInt(10) ** b * a;
-
-			const fromIdxUint48 = BigInt(fromIdx);
-
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sepolia.address),
-				abi: SepoliaABI,
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
 				functionName: 'deposit',
-				args: [Number(fromIdxUint48), Number(loadAmountF)],
 				value: amountValue,
 			});
 
 			return hash;
-		} catch (error) {
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('InsufficientETH')) {
+				throw new Error('Amount is below the minimum balance requirement');
+			}
+			if (error.message && error.message.includes('LimitAmountExceeded')) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+
 			console.error('Error depositing:', error);
 			throw error;
 		}
 	};
 
-	// const handleVouch = async (fromIdx: number, toIdx: number) => {
-	// 	try {
-	// 		if (fromIdx <= 255) {
-	// 			throw new Error('Invalid fromIdx: must be greater than 255');
-	// 		}
-	// 		if (toIdx <= 255) {
-	// 			throw new Error('Invalid toIdx: must be greater than 255');
-	// 		}
+	const handleVouch = async (toEthAddr: string) => {
+		try {
+			const validatedAddress = validateAddress(toEthAddr);
 
-	// 		const fromIdxBigInt = BigInt(fromIdx);
-	// 		const toIdxBigInt = BigInt(toIdx);
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'vouch',
+				args: [validatedAddress],
+			});
 
-	// 		const hash = await writeContractAsync({
-	// 			address: formatEthAddress(contracts.sepolia.address),
-	// 			abi: SepoliaABI,
-	// 			functionName: 'vouch',
-	// 			args: [fromIdxBigInt, toIdxBigInt],
-	// 		});
-	// 		return hash;
-	// 	} catch (error) {
-	// 		console.error('Error vouching:', error);
-	// 		throw error;
-	// 	}
-	// };
+			return hash;
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('SenderHasZeroBalance')) {
+				throw new Error('Your account has zero balance, deposit first');
+			}
+			if (error.message && error.message.includes('ReceiverHasZeroBalance')) {
+				throw new Error('Recipient has zero balance');
+			}
 
-	// const handleUnvouch = async (to: string) => {
-	//   try {
-	//     // Convert to uint48 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const toIdx = BigInt(to); // Convert address to index
+			console.error('Error vouching:', error);
+			throw error;
+		}
+	};
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'unvouch',
-	//       args: [fromIdx, toIdx]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error unvouching:', error);
-	//     throw error;
-	//   }
-	// };
+	const handleUnvouch = async (toEthAddr: string) => {
+		try {
+			const validatedAddress = validateAddress(toEthAddr);
 
-	// const handleExit = async () => {
-	//   try {
-	//     // Convert to uint48 and uint40 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const amountF = BigInt(0); // Amount to exit
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'unvouch',
+				args: [validatedAddress],
+			});
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'exit',
-	//       args: [fromIdx, amountF]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error exiting:', error);
-	//     throw error;
-	//   }
-	// };
+			return hash;
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('NotVouched')) {
+				throw new Error('You have not vouched for this address');
+			}
 
-	// const handleExplode = async (to: string) => {
-	//   try {
-	//     // Convert to uint48 and array of uint48 as required by the contract
-	//     const fromIdx = BigInt(0); // This should be the user's index
-	//     const toIdxs = [BigInt(to)]; // Array of recipient indices
+			console.error('Error unvouching:', error);
+			throw error;
+		}
+	};
 
-	//     const hash = await writeContractAsync({
-	//       address: CONTRACT_ADDRESS,
-	//       abi: SepoliaABI,
-	//       functionName: 'explodeMultiple',
-	//       args: [fromIdx, toIdxs]
-	//     });
-	//     return hash;
-	//   } catch (error) {
-	//     console.error('Error exploding:', error);
-	//     throw error;
-	//   }
-	// };
+	const handleWithdraw = async (amount: string) => {
+		try {
+			const loadAmountF = convertToUint40Format(amount);
+			const a = loadAmountF & BigInt(0x7ffffffff);
+			const b = loadAmountF >> BigInt(35);
+			const amountValue = BigInt(10) ** b * a;
+
+			// Check that amount doesn't exceed the limit according to the contract
+			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+			if (amountValue >= LIMIT_AMOUNT) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'withdraw',
+				args: [amountValue],
+			});
+
+			return hash;
+		} catch (error: any) {
+			// Handle contract-specific errors
+			if (error.message && error.message.includes('InsufficientBalance')) {
+				throw new Error('Insufficient balance for withdrawal');
+			}
+			if (error.message && error.message.includes('LimitAmountExceeded')) {
+				throw new Error('Amount exceeds the maximum limit');
+			}
+			if (error.message && error.message.includes('EthTransferFailed')) {
+				throw new Error('ETH transfer failed. Please try again.');
+			}
+
+			console.error('Error withdrawing:', error);
+			throw error;
+		}
+	};
+
+	const handleExplodeMultiple = async (toEthAddrs: string[]) => {
+		try {
+			// Validate all addresses to ensure they're in correct format
+			const validatedAddresses = toEthAddrs.map((addr) =>
+				validateAddress(addr),
+			);
+
+			const hash = await writeContractAsync({
+				address: formatEthAddress(contracts.sybilSepolia.address),
+				abi: SybilSepoliaABI,
+				functionName: 'explodeMultiple',
+				args: [validatedAddresses],
+			});
+
+			return hash;
+		} catch (error: any) {
+			if (error.message && error.message.includes('NotVouched')) {
+				throw new Error('One or more addresses have not vouched for you');
+			}
+
+			console.error('Error exploding multiple:', error);
+			throw error;
+		}
+	};
 
 	return {
-		handleCreateAccount,
 		handleDeposit,
-		// handleVouch,
-		// handleUnvouch,
-		// handleExit,
-		// handleExplode,
+		handleVouch,
+		handleUnvouch,
+		handleWithdraw,
+		handleExplodeMultiple,
 	};
 };

@@ -11,6 +11,7 @@ interface DropdownProps<T> {
 	triggerContent: React.ReactNode;
 	itemClassName?: string;
 	sideOffset?: number;
+	side?: 'left' | 'right' | 'top' | 'bottom';
 }
 
 export const Dropdown = <T,>({
@@ -20,6 +21,7 @@ export const Dropdown = <T,>({
 	triggerContent,
 	itemClassName = '',
 	sideOffset = 5,
+	side = 'bottom',
 }: DropdownProps<T>) => {
 	const { theme } = useTheme();
 
@@ -30,15 +32,16 @@ export const Dropdown = <T,>({
 		<DropdownMenu.Root modal={false}>
 			<DropdownMenu.Trigger
 				asChild
-				className={`flex items-center justify-center rounded-md outline-none transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.dropdownBg}`}
+				className={`flex items-center justify-center rounded-full outline-none transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.dropdownBg} will-change-[opacity,transform]`}
 			>
 				{triggerContent}
 			</DropdownMenu.Trigger>
 
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content
-					className={`z-50 rounded-md p-2 shadow-lg transition-all duration-200 ${currentThemeStyles.text} ${currentThemeStyles.background}`}
+					className={`z-50 rounded-md p-2 shadow-lg transition-all duration-300 ${currentThemeStyles.text} ${currentThemeStyles.background} data-[side=left]:animate-slideRightAndFade`}
 					sideOffset={sideOffset}
+					side={side}
 				>
 					{items.map((item, index) => (
 						<DropdownMenu.Item

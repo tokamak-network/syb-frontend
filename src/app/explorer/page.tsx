@@ -29,7 +29,7 @@ const ExplorerPage: React.FC = () => {
 		error: txError,
 	} = useQuery({
 		queryKey: ['transactions'],
-		queryFn: fetchTransactions,
+		queryFn: () => fetchTransactions(),
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});
@@ -61,7 +61,7 @@ const ExplorerPage: React.FC = () => {
 	};
 
 	return (
-		<div className="max-w-full overflow-hidden p-4 md:p-8">
+		<div className="max-w-full overflow-hidden">
 			<div className="flex gap-8 md:flex-col md:gap-10 lg:flex-row">
 				<div className="w-full">
 					<TransactionDropDown value={txOption} onChange={setTxOption} />
@@ -92,7 +92,8 @@ const ExplorerPage: React.FC = () => {
 														index % 2 === 0
 															? 'bg-tableRowBackground'
 															: 'bg-tableBackground'
-													} hover:bg-tableHover`}
+													} cursor-pointer hover:bg-tableHover`}
+													onClick={() => router.push(`/explorer/txs/${tx.id}`)}
 												>
 													<td className="px-6 py-4 font-medium">
 														{tx.L1Info.ethereumTxHash
@@ -124,7 +125,7 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						)}
 						<Button
-							className="mt-4 rounded-full"
+							className="w-full"
 							onClick={() => handleNavigation('/explorer/txs')}
 						>
 							Show All Transactions

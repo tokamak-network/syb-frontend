@@ -3,9 +3,11 @@ import { HttpStatusCode } from 'axios';
 
 import prisma from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
 	try {
-		// Parse the query parameters from the request URL
+		// Get query parameters using Next.js searchParams helper
 		const { searchParams } = new URL(req.url);
 		const id = searchParams.get('id');
 

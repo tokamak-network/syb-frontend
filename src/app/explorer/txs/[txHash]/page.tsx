@@ -15,10 +15,13 @@ import {
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
 import { formatTonAddress } from '@/utils';
+import { useWallet } from '@/hooks/useWallet';
+import { FiExternalLink } from 'react-icons/fi';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();
 	const router = useRouter();
+	const { chain } = useWallet();
 
 	const {
 		data: transaction,
@@ -48,6 +51,19 @@ const TransactionDetailsPage: React.FC = () => {
 
 	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.L1Info.l1Fee);
 
+	const txHashToDisplay = transaction.L1Info.ethereumTxHash
+		? transaction.L1Info.ethereumTxHash
+		: transaction.id;
+
+	const getExplorerUrl = () => {
+		if (!chain || !chain.blockExplorers) return null;
+
+		const explorerUrl = chain.blockExplorers.default.url;
+		return `${explorerUrl}/tx/${txHashToDisplay}`;
+	};
+
+	const explorerUrl = getExplorerUrl();
+
 	return (
 		<div className="p-8">
 			<div className="mb-4">
@@ -65,9 +81,19 @@ const TransactionDetailsPage: React.FC = () => {
 			<div className="space-y-4">
 				<div>
 					<strong>Transaction Hash:</strong>{' '}
-					{transaction.L1Info.ethereumTxHash
-						? transaction.L1Info.ethereumTxHash
-						: transaction.id}
+					{explorerUrl ? (
+						<a
+							href={explorerUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+						>
+							{txHashToDisplay}
+							<FiExternalLink className="ml-1" />
+						</a>
+					) : (
+						txHashToDisplay
+					)}
 				</div>
 				<div className="flex items-center space-x-2">
 					<strong>Type:</strong>

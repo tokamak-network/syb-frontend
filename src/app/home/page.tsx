@@ -27,17 +27,34 @@ const HomePage: React.FC = () => {
 						if (latestTx.timestamp) {
 							const txTime = new Date(latestTx.timestamp);
 							const now = new Date();
-							const diffInMinutes = Math.floor(
-								(now.getTime() - txTime.getTime()) / (1000 * 60),
-							);
+							const diffInMs = now.getTime() - txTime.getTime();
 
-							setLastBlockTime(
-								diffInMinutes < 1
-									? 'just now'
-									: diffInMinutes === 1
-										? '1 min ago'
-										: `${diffInMinutes} mins ago`,
-							);
+							// Calculate days, hours, minutes
+							const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+							const days = Math.floor(diffInMinutes / (60 * 24));
+							const hours = Math.floor((diffInMinutes % (60 * 24)) / 60);
+							const minutes = diffInMinutes % 60;
+
+							// Format the time string
+							if (diffInMinutes < 1) {
+								setLastBlockTime('just now');
+							} else {
+								let timeString = '';
+
+								if (days > 0) {
+									timeString += `${days} ${days === 1 ? 'day' : 'days'} `;
+								}
+
+								if (hours > 0 || days > 0) {
+									timeString += `${hours} ${hours === 1 ? 'hour' : 'hours'} `;
+								}
+
+								if (minutes > 0 || (days === 0 && hours === 0)) {
+									timeString += `${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+								}
+
+								setLastBlockTime(`${timeString.trim()} ago`);
+							}
 						}
 					}
 				}
@@ -53,45 +70,43 @@ const HomePage: React.FC = () => {
 	}, []);
 
 	return (
-		<div className="flex flex-col items-center px-20">
-			<div className="flex w-full justify-between space-x-5">
-				<div className="flex w-full flex-col space-y-14 font-narnoor">
-					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-3xl text-primaryText">Last Block</p>
-						{isLoading ? (
-							<p className="text-xl text-secondaryText">Loading...</p>
-						) : error ? (
-							<p className="text-xl text-red-500">{error}</p>
-						) : (
-							<p className="text-xl text-secondaryText">
-								<span className="text-3xl">
-									#{lastBlock?.toLocaleString() || 'N/A'}
-								</span>
-								{lastBlockTime && ` (${lastBlockTime})`}
-							</p>
-						)}
-					</div>
-					<div className="flex flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-						<p className="text-3xl text-primaryText">Last Transaction</p>
-						{isLoading ? (
-							<p className="text-xl text-secondaryText">Loading...</p>
-						) : error ? (
-							<p className="text-xl text-red-500">{error}</p>
-						) : (
-							<Label
-								className="text-3xl text-secondaryText"
-								explore={true}
-								isTransaction={true}
-								navigateToAccount={true}
-								shorten="end"
-								value={lastTransaction || 'N/A'}
-							/>
-						)}
-					</div>
+		<div className="flex w-full flex-col justify-between space-x-5 space-y-10 md:flex-row md:space-y-0">
+			<div className="flex flex-col space-y-14 font-narnoor md:w-[500px]">
+				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
+					<p className="text-3xl text-primaryText">Last Block</p>
+					{isLoading ? (
+						<p className="text-xl text-secondaryText">Loading...</p>
+					) : error ? (
+						<p className="text-xl text-red-500">{error}</p>
+					) : (
+						<p className="text-xl text-secondaryText">
+							<span className="text-3xl">
+								#{lastBlock?.toLocaleString() || 'N/A'}
+							</span>
+							{lastBlockTime && ` (${lastBlockTime})`}
+						</p>
+					)}
 				</div>
-				<div className="w-full">
-					<UserActivityLineChart />
+				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5 md:w-[500px]">
+					<p className="text-3xl text-primaryText">Last Transaction</p>
+					{isLoading ? (
+						<p className="text-xl text-secondaryText">Loading...</p>
+					) : error ? (
+						<p className="text-xl text-red-500">{error}</p>
+					) : (
+						<Label
+							className="text-3xl text-secondaryText"
+							explore={true}
+							isTransaction={true}
+							navigateToAccount={true}
+							shorten="full"
+							value={lastTransaction || 'N/A'}
+						/>
+					)}
 				</div>
+			</div>
+			<div className="w-full">
+				<UserActivityLineChart />
 			</div>
 		</div>
 	);

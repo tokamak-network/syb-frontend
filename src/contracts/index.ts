@@ -1,13 +1,21 @@
-import { SepoliaABI } from './abis/SepoliaABI';
+import { ABIS } from './abis';
 
-export const SEPOLIA_CONTRACT_ADDRESS =
-	process.env.NEXT_PUBLIC_SEPOLIA_CONTRACT_ADDRESS || '';
+export const SYBIL_SEPOLIA_CONTRACT_ADDRESS =
+	process.env.NEXT_PUBLIC_SYBIL_SEPOLIA_CONTRACT_ADDRESS || '';
+
+export const VERIFIER_SEPOLIA_CONTRACT_ADDRESS =
+	process.env.NEXT_PUBLIC_VERIFIER_SEPOLIA_CONTRACT_ADDRESS || '';
 
 export const contracts = {
-	sepolia: {
-		address: SEPOLIA_CONTRACT_ADDRESS,
-		abi: SepoliaABI,
+	sybilSepolia: {
+		address: SYBIL_SEPOLIA_CONTRACT_ADDRESS,
+		abi: ABIS.SybilSepoliaABI,
+	},
+	verifierSepolia: {
+		address: VERIFIER_SEPOLIA_CONTRACT_ADDRESS,
+		abi: ABIS.VerifierSepoliaABI,
 	},
 } as const;
 
-export * from './abis/SepoliaABI';
+export * from './abis/SybilSepoliaABI';
+export * from './abis/VerifierSepoliaABI';
