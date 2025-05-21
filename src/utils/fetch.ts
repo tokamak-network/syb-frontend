@@ -5,7 +5,7 @@ import { apiRequest } from './api';
 export const fetchTransactions = async (): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
-		url: `/api/v1/transactions`,
+		url: `/transactions`,
 	});
 };
 
@@ -14,7 +14,7 @@ export const fetchTransactionsByAccount = async (
 ): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
-		url: `/api/v1/transactions/${accountAddress}`,
+		url: `/transactions/${accountAddress}`,
 	});
 };
 
@@ -25,7 +25,7 @@ export const fetchTransactionsPaginated = async (
 ): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
-		url: `/api/v1/transactions/list`,
+		url: `/transactions/list`,
 		params: {
 			page,
 			limit,

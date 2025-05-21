@@ -18,10 +18,6 @@ const nextConfig = {
 
     return [
       {
-        source: '/api/v1/:path*',
-        destination: `${apiHost}:${apiPort}/api/v1/:path*`,
-      },
-      {
         source: '/sequencer/:path*',
         destination: `${apiHost}:${apiPort}/api/v1/:path*`,
       },
