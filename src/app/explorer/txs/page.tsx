@@ -11,7 +11,10 @@ import {
 	SearchBarComponent,
 	TransactionsTable,
 } from '@/components';
-import { fetchTransactions } from '@/utils';
+import {
+	fetchTransactionsPaginated,
+	fetchTransactionsByAccount,
+} from '@/utils';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
@@ -23,11 +26,22 @@ const TransactionsPage: React.FC = () => {
 	const { address, isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [order, setOrder] = useState<Order>(Order.DESC);
+	const [page, setPage] = useState<number>(1);
+	const [limit, setLimit] = useState<number>(10);
+
 	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
-		queryKey: ['transactions', order],
-		queryFn: () => fetchTransactions(order),
+		queryKey: ['transactions', order, page, limit],
+		queryFn: () => fetchTransactionsPaginated(page, limit, order),
 		staleTime: 30000,
 		refetchInterval: 30000,
+	});
+
+	const { data: userTransactions, isLoading: isLoadingUserTx } = useQuery({
+		queryKey: ['userTransactions', address],
+		queryFn: () => (address ? fetchTransactionsByAccount(address) : null),
+		staleTime: 30000,
+		refetchInterval: 30000,
+		enabled: !!address,
 	});
 
 	const transactions = transactionHistory?.transactions || [];
@@ -41,6 +55,15 @@ const TransactionsPage: React.FC = () => {
 				transaction.fromAccountIndex.toString().toLowerCase().includes(query))
 		);
 	});
+
+	const handlePageChange = (newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleLimitChange = (newLimit: number) => {
+		setLimit(newLimit);
+		setPage(1);
+	};
 
 	if (isLoadingTx) return <PageLoader />;
 
@@ -81,6 +104,13 @@ const TransactionsPage: React.FC = () => {
 							filteredTransactions={filteredTransactions}
 							setOrder={setOrder}
 							order={order}
+							currentPage={page}
+							totalPages={Math.ceil(
+								(transactionHistory?.pendingItems || 0) / limit,
+							)}
+							onPageChange={handlePageChange}
+							onLimitChange={handleLimitChange}
+							itemsPerPage={limit}
 						/>
 					)}
 				</TabsContent>
@@ -102,14 +132,12 @@ const TransactionsPage: React.FC = () => {
 								Connect your wallet to view your transaction history
 							</p>
 						</div>
+					) : isLoadingUserTx ? (
+						<PageLoader />
 					) : (
-						filteredTransactions && (
+						userTransactions?.transactions && (
 							<TransactionsTable
-								filteredTransactions={filteredTransactions.filter(
-									(transaction) =>
-										formatTonAddress(transaction.fromTonEthereumAddress) ===
-										address,
-								)}
+								filteredTransactions={userTransactions.transactions}
 								setOrder={setOrder}
 								order={order}
 							/>

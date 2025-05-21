@@ -17,42 +17,86 @@ interface Props {
 	filteredTransactions: Transaction[];
 	setOrder: (order: Order) => void;
 	order: Order;
+	// Optional props for external pagination control
+	currentPage?: number;
+	totalPages?: number;
+	itemsPerPage?: number;
+	onPageChange?: (page: number) => void;
+	onLimitChange?: (limit: number) => void;
 }
 
 export const TransactionsTable: React.FC<Props> = ({
 	filteredTransactions,
 	setOrder,
 	order,
+	currentPage: externalCurrentPage,
+	totalPages: externalTotalPages,
+	itemsPerPage: externalItemsPerPage,
+	onPageChange,
+	onLimitChange,
 }) => {
 	const router = useRouter();
 
-	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+	const [internalCurrentPage, setInternalCurrentPage] = useState<number>(1);
+	const [internalItemsPerPage, setInternalItemsPerPage] = useState<number>(10);
 
-	const indexOfLastItem = currentPage * itemsPerPage;
+	const currentPage =
+		externalCurrentPage !== undefined
+			? externalCurrentPage
+			: internalCurrentPage;
+	const itemsPerPage =
+		externalItemsPerPage !== undefined
+			? externalItemsPerPage
+			: internalItemsPerPage;
 
-	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	let displayedTransactions = filteredTransactions;
+	let totalPages = externalTotalPages;
 
-	const currentTransactions = filteredTransactions.slice(
-		indexOfFirstItem,
-		indexOfLastItem,
-	);
+	if (externalCurrentPage === undefined) {
+		const indexOfLastItem = currentPage * itemsPerPage;
+		const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-	const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+		displayedTransactions = filteredTransactions.slice(
+			indexOfFirstItem,
+			indexOfLastItem,
+		);
+
+		totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+	} else {
+		displayedTransactions = filteredTransactions;
+	}
+
 	const handleNextPage = () => {
-		if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+		if (currentPage < (totalPages || 1)) {
+			if (onPageChange) {
+				onPageChange(currentPage + 1);
+			} else {
+				setInternalCurrentPage(currentPage + 1);
+			}
+		}
 	};
 
 	const handlePreviousPage = () => {
-		if (currentPage > 1) setCurrentPage(currentPage - 1);
+		if (currentPage > 1) {
+			if (onPageChange) {
+				onPageChange(currentPage - 1);
+			} else {
+				setInternalCurrentPage(currentPage - 1);
+			}
+		}
 	};
 
 	const pageSizeOptions = [5, 10, 20, 50];
 
 	const handleItemsPerPageChange = (value: number) => {
-		setItemsPerPage(value);
-		setCurrentPage(1); // Reset to first page when changing items per page
+		if (onLimitChange) {
+			onLimitChange(value);
+		} else {
+			setInternalItemsPerPage(value);
+			setInternalCurrentPage(1); // Reset to first page when changing items per page
+		}
 	};
+
 	return (
 		<>
 			<table className="mt-4 min-w-full table-auto divide-y divide-tableBorder border border-tableBorder">
@@ -91,8 +135,8 @@ export const TransactionsTable: React.FC<Props> = ({
 					</tr>
 				</thead>
 				<tbody className="divide-y divide-tableBorder bg-tableBackground">
-					{currentTransactions.length > 0 ? (
-						currentTransactions.map((transaction) => (
+					{displayedTransactions.length > 0 ? (
+						displayedTransactions.map((transaction) => (
 							<tr
 								key={transaction.id}
 								className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
@@ -171,7 +215,7 @@ export const TransactionsTable: React.FC<Props> = ({
 				</Button>
 				<div className="flex items-center gap-4">
 					<span className="text-paginationText">
-						Page {currentPage} of {totalPages}
+						Page {currentPage} of {totalPages || 1}
 					</span>
 					<div className="flex items-center gap-2">
 						<span className="text-paginationText">Show:</span>
@@ -190,7 +234,9 @@ export const TransactionsTable: React.FC<Props> = ({
 				</div>
 				<Button
 					className="rounded border border-paginationButtonBorder bg-paginationButton px-4 py-2 text-paginationButtonText disabled:opacity-50"
-					disabled={currentPage === totalPages || totalPages === 0}
+					disabled={
+						currentPage === (totalPages || 1) || (totalPages || 0) === 0
+					}
 					onClick={handleNextPage}
 				>
 					Next
