@@ -10,7 +10,6 @@ import { ethers } from 'ethers';
 
 import { useWallet } from './useWallet';
 
-// Mock wagmi hooks
 jest.mock('wagmi', () => ({
 	useAccount: jest.fn(),
 	useConnect: jest.fn(),
@@ -19,26 +18,51 @@ jest.mock('wagmi', () => ({
 	useEnsAvatar: jest.fn(),
 }));
 
-// Mock react-query's useQuery
+// Mock React Query with conditional behavior based on enabled state
 jest.mock('@tanstack/react-query', () => ({
-	useQuery: jest.fn(() => ({
-		data: '1.23', // Mocked balance data
-		isLoading: false, // Mocked loading state
+	useQuery: jest.fn(({ enabled, queryKey }) => ({
+		data: enabled ? '1.23' : null,
+		isLoading: false,
+		refetch: jest.fn().mockResolvedValue(true),
+		error: null,
 	})),
 }));
 
-// Mock ethers
 jest.mock('ethers', () => ({
 	ethers: {
 		utils: {
-			formatEther: jest.fn((value) => value), // Mock formatEther to return the input value
+			formatEther: jest.fn((value) => value),
+		},
+		providers: {
+			JsonRpcProvider: jest.fn(() => ({
+				getBalance: jest.fn().mockResolvedValue('1000000000000000000'),
+			})),
 		},
 	},
 }));
 
+// Mock localStorage
+const localStorageMock = (() => {
+	let store: Record<string, string> = {};
+	return {
+		getItem: jest.fn((key: string) => store[key] || null),
+		setItem: jest.fn((key: string, value: string) => {
+			store[key] = value;
+		}),
+		removeItem: jest.fn((key: string) => {
+			delete store[key];
+		}),
+		clear: jest.fn(() => {
+			store = {};
+		}),
+	};
+})();
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
 describe('useWallet', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+		localStorageMock.clear();
 	});
 
 	it('should return default values when not connected', () => {
@@ -72,11 +96,18 @@ describe('useWallet', () => {
 		expect(result.current.connectors).toEqual([]);
 	});
 
-	it('should return wallet data when connected', async () => {
+	it('should return wallet data when connected', () => {
+		const mockChain = {
+			id: 1,
+			name: 'Ethereum',
+			nativeCurrency: { symbol: 'ETH' },
+			rpcUrls: { default: { http: ['https://example.com'] } },
+		};
+
 		(useAccount as jest.Mock).mockReturnValue({
 			address: '0x123',
 			isConnected: true,
-			chain: { id: 1, name: 'Ethereum', nativeCurrency: { symbol: 'ETH' } },
+			chain: mockChain,
 			chainId: 1,
 		});
 		(useConnect as jest.Mock).mockReturnValue({
@@ -91,17 +122,17 @@ describe('useWallet', () => {
 
 		(ethers.utils.formatEther as jest.Mock).mockReturnValue('1.23');
 
-		const { result, waitForNextUpdate } = renderHook(() => useWallet());
+		const { result } = renderHook(() => useWallet());
 
-		await waitForNextUpdate();
-
+		// No need to wait, test synchronously
 		expect(result.current.address).toBe('0x123');
 		expect(result.current.isConnected).toBe(true);
 		expect(result.current.chain).toEqual({
 			id: 1,
 			name: 'Ethereum',
 			nativeCurrency: { symbol: 'ETH' },
-			icon: null,
+			rpcUrls: { default: { http: ['https://example.com'] } },
+			icon: '/images/networks/ethereum-eth-logo.svg',
 		});
 		expect(result.current.chainId).toBe(1);
 		expect(result.current.balance).toBe('1.23');
@@ -127,6 +158,17 @@ describe('useWallet', () => {
 			disconnect: mockDisconnect,
 		});
 
+		// Set up localStorage for testing
+		localStorageMock.setItem(
+			'wagmi.store',
+			JSON.stringify({
+				state: {
+					connections: { value: [{ id: 'test' }] },
+					current: { some: 'data' },
+				},
+			}),
+		);
+
 		const { result } = renderHook(() => useWallet());
 
 		await act(async () => {
@@ -134,5 +176,15 @@ describe('useWallet', () => {
 		});
 
 		expect(mockDisconnect).toHaveBeenCalled();
+		expect(localStorageMock.removeItem).toHaveBeenCalledWith('wagmi.connected');
+		expect(localStorageMock.setItem).toHaveBeenCalledWith(
+			'wagmi.store',
+			JSON.stringify({
+				state: {
+					connections: { value: [] },
+					current: null,
+				},
+			}),
+		);
 	});
 });

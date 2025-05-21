@@ -7,7 +7,7 @@
 		"build": "prisma generate && next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "jest --passWithNoTests",
+		"test": "jest --config jest.config.cjs --passWithNoTests",
 		"lint:fix": "next lint --fix",
 		"lint:strict": "next lint '*/**/*.{js,jsx,ts,tsx}'",
 		"prettier": "prettier --write */**/*.{js,jsx,json,ts,tsx,scss,css,md}",
