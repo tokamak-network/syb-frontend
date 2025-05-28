@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { ErrorDisplay } from '@/components/errors/ErrorDisplay'; // Assuming this component doesn't rely on context from your main layout
+import { ErrorDisplay } from '@/components/errors';
 
 export default function GlobalError({
 	error,
@@ -11,7 +11,6 @@ export default function GlobalError({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		// Log the error to an error reporting service
 		console.error('Global error:', error);
 	}, [error]);
 
