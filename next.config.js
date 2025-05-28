@@ -23,6 +23,9 @@ const nextConfig = {
       },
     ];
   },
+  experimental: {
+    forceSwcTransforms: true,
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
