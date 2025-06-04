@@ -49,8 +49,8 @@ const ExplorerPage: React.FC = () => {
 
 	const filteredTransactions = transactionHistory?.transactions.filter((tx) => {
 		if (txOption === 'all') return true;
-		if (txOption === 'pending') return tx.batchNum === 0;
-		if (txOption === 'forged') return tx.batchNum > 0;
+		if (txOption === 'pending') return tx.batch_num === 0;
+		if (txOption === 'forged') return tx.batch_num > 0;
 
 		return false;
 	});
@@ -87,31 +87,31 @@ const ExplorerPage: React.FC = () => {
 										{filteredTransactions &&
 											filteredTransactions.map((tx, index) => (
 												<tr
-													key={tx.id}
+													key={tx.item_id}
 													className={`${
 														index % 2 === 0
 															? 'bg-tableRowBackground'
 															: 'bg-tableBackground'
 													} cursor-pointer hover:bg-tableHover`}
-													onClick={() => router.push(`/explorer/txs/${tx.id}`)}
+													onClick={() =>
+														router.push(`/explorer/txs/${String(tx.item_id)}`)
+													}
 												>
 													<td className="px-6 py-4 font-medium">
-														{tx.L1Info.ethereumTxHash
-															? formatAddress(tx.L1Info.ethereumTxHash)
-															: formatAddress(tx.id)}
+														{formatAddress(String(tx.item_id))}
 													</td>
 													<td className="px-6 py-4">{tx.type}</td>
 													<td className="px-6 py-4">
-														{formatAddress(tx.fromTonEthereumAddress)}
+														{formatAddress(tx.from_eth_addr)}
 													</td>
 													<td className="px-6 py-4">
-														{formatAddress(tx.toTonEthereumAddress || '')}
+														{formatAddress(tx.to_eth_addr || '')}
 													</td>
 													<td className="px-6 py-4">
 														{formatAmount(tx.amount)}
 													</td>
 													<td className="px-6 py-4">
-														{formatFullTime(new Date(tx.timestamp))}
+														{formatFullTime(new Date(tx.timestamp * 1000))}
 													</td>
 												</tr>
 											))}

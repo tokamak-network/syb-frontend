@@ -49,10 +49,21 @@ const TransactionsPage: React.FC = () => {
 	const filteredTransactions = transactions.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
 		return (
-			transaction.id.toLowerCase().includes(query) ||
-			transaction.fromTonEthereumAddress.toLowerCase().includes(query) ||
-			(transaction.fromAccountIndex &&
-				transaction.fromAccountIndex.toString().toLowerCase().includes(query))
+			(transaction.item_id
+				? String(transaction.item_id).toLowerCase().includes(query)
+				: false) ||
+			(transaction.from_eth_addr
+				? transaction.from_eth_addr.toLowerCase().includes(query)
+				: false) ||
+			(transaction.from_idx
+				? String(transaction.from_idx).toLowerCase().includes(query)
+				: false) ||
+			(transaction.to_eth_addr
+				? transaction.to_eth_addr.toLowerCase().includes(query)
+				: false) ||
+			(transaction.to_idx
+				? String(transaction.to_idx).toLowerCase().includes(query)
+				: false)
 		);
 	});
 

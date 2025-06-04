@@ -49,11 +49,9 @@ const TransactionDetailsPage: React.FC = () => {
 		return <div className="p-8">Transaction not found.</div>;
 	}
 
-	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.L1Info.l1Fee);
+	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.gas_fee);
 
-	const txHashToDisplay = transaction.L1Info.ethereumTxHash
-		? transaction.L1Info.ethereumTxHash
-		: transaction.id;
+	const txHashToDisplay = String(transaction.item_id);
 
 	const getExplorerUrl = () => {
 		if (!chain || !chain.blockExplorers) return null;
@@ -103,22 +101,20 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Status:</strong>{' '}
 					<TxStatus
 						status={
-							(transaction.batchNum === 0
+							(transaction.batch_num === 0
 								? 'Pending'
 								: 'Forged') as ActionStatus
 						}
 					/>
 				</div>
 				<div>
-					<strong>From:</strong>{' '}
-					{formatTonAddress(transaction.fromTonEthereumAddress)}
+					<strong>From:</strong> {formatTonAddress(transaction.from_eth_addr)}
 				</div>
 				<div>
-					<strong>To:</strong>{' '}
-					{formatTonAddress(transaction.toTonEthereumAddress ?? '')}
+					<strong>To:</strong> {formatTonAddress(transaction.to_eth_addr ?? '')}
 				</div>
 				<div>
-					<strong>Block Number:</strong> {transaction.L1Info.ethereumBlockNum}
+					<strong>Block Number:</strong> {transaction.block_number}
 				</div>
 				<div>
 					<strong>Value:</strong> {transaction.amount} ETH
@@ -127,7 +123,8 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Fee:</strong> {gwei} Gwei ({ether} Ether)
 				</div>
 				<div>
-					<strong>Timestamp:</strong> {formatTimestamp(transaction.timestamp)}
+					<strong>Timestamp:</strong>{' '}
+					{formatTimestamp(new Date(transaction.timestamp * 1000))}
 				</div>
 			</div>
 		</div>

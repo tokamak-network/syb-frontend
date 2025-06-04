@@ -135,19 +135,27 @@ interface L1Info {
 }
 
 export interface Transaction {
-	L1Info: L1Info;
-	amount: string;
-	batchNum: number;
-	fromAccountIndex: string;
-	fromTonEthereumAddress: string;
-	id: string;
-	itemId: number;
-	position: number;
-	timestamp: string;
-	toAccountIndex: string;
-	toTonEthereumAddress: string | null;
+	item_id: number;
+	batch_num: number;
+	position: string;
 	type: string;
-	status?: string;
+	from_idx: number;
+	from_eth_addr: string;
+	to_idx: number;
+	to_eth_addr: string;
+	amount: string;
+	block_number: number;
+	timestamp: number;
+	gas_fee: string;
+	// Kept for backward compatibility for now, review if still needed
+	L1Info?: L1Info;
+	fromAccountIndex?: string;
+	fromTonEthereumAddress?: string;
+	id?: string; // Assuming item_id can serve as id
+	itemId?: number; // Duplicate of item_id
+	toAccountIndex?: string;
+	toTonEthereumAddress?: string | null;
+	status?: string; // batch_num can be used to determine status (0 for pending)
 }
 
 export interface TransactionResponse {
