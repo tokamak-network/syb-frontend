@@ -143,14 +143,16 @@ export const TransactionsTable: React.FC<Props> = ({
 								onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
 							>
 								<td className="px-6 py-2">
-									{formatTransactionHash(transaction.L1Info.ethereumTxHash)}
+									{transaction.L1Info?.ethereumTxHash
+										? formatTransactionHash(transaction.L1Info.ethereumTxHash)
+										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
-									<TxTypes txType={transaction.type as ActionType.DEPOSIT} />
+									<TxTypes txType={transaction.type as ActionType} />
 								</td>
 								<td className="px-6 py-2">
 									{transaction.timestamp
-										? formatTimestamp(transaction.timestamp)
+										? formatTimestamp(new Date(transaction.timestamp * 1000))
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
@@ -178,7 +180,7 @@ export const TransactionsTable: React.FC<Props> = ({
 								</td>
 								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
 								<td className="px-6 py-2">
-									{transaction.batchNum === 0 ? (
+									{transaction.batch_num === 0 ? (
 										<div className="flex items-center gap-2">
 											<div className="h-2 w-2 rounded-full bg-yellow-400" />
 											<span className="text-yellow-400">
