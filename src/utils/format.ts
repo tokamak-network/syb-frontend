@@ -1,7 +1,7 @@
 // utils/format.ts
 
 import { format, formatDistanceToNow } from 'date-fns';
-import { isAddress } from 'viem';
+import { isAddress, getAddress } from 'viem';
 
 /**
  * Shortens an Ethereum address for display.
@@ -87,7 +87,12 @@ export const formatAddress = (address: string) => {
 	if (!address) return '-';
 	const cleanAddress = address.replace('ton:', '');
 
-	return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
+	// Apply checksum formatting for Ethereum addresses
+	const checksummedAddress = isAddress(cleanAddress)
+		? toChecksumAddress(cleanAddress)
+		: cleanAddress;
+
+	return `${checksummedAddress.slice(0, 6)}...${checksummedAddress.slice(-4)}`;
 };
 
 export const formatTimestamp = (timestamp: string | Date): string => {
@@ -191,4 +196,26 @@ export const convertWeiToGweiAndEther = (
 	const ether = wei / 1e18;
 
 	return { gwei, ether };
+};
+
+/**
+ * Converts an Ethereum address to its proper EIP-55 checksummed format.
+ * @param address - The Ethereum address (can be lowercase or mixed case).
+ * @returns {string} - The checksummed Ethereum address.
+ */
+export const toChecksumAddress = (address: string): string => {
+	if (!address) return address;
+
+	try {
+		const cleanAddress = address.replace(/^eth:/, '');
+
+		if (isAddress(cleanAddress)) {
+			return getAddress(cleanAddress);
+		}
+
+		return address; // Return original if not a valid address
+	} catch (error) {
+		console.warn('Failed to checksum address:', address, error);
+		return address; // Return original on error
+	}
 };
