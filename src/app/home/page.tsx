@@ -21,11 +21,11 @@ const HomePage: React.FC = () => {
 				if (response.transactions && response.transactions.length > 0) {
 					const latestTx = response.transactions[0];
 					setLastTransaction(latestTx.L1Info?.ethereumTxHash || 'N/A');
-					if (latestTx.L1Info?.ethereumBlockNum) {
-						setLastBlock(latestTx.L1Info.ethereumBlockNum);
+					if (latestTx.block_number) {
+						setLastBlock(latestTx.block_number);
 
 						if (latestTx.timestamp) {
-							const txTime = new Date(latestTx.timestamp);
+							const txTime = new Date(latestTx.timestamp * 1000);
 							const now = new Date();
 							const diffInMs = now.getTime() - txTime.getTime();
 
