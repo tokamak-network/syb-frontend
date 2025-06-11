@@ -43,7 +43,7 @@ const MyAccountPage: React.FC = () => {
 				contracts.sybilSepolia.address,
 			) as `0x${string}`,
 			abi: SybilSepoliaABI,
-			functionName: 'balances',
+			functionName: 'accountInfo',
 			args: address ? [address] : undefined,
 		});
 

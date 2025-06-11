@@ -36,7 +36,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 			return readContract(config, {
 				address: formatEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
-				functionName: 'getQueueLength',
+				functionName: 'lastAddedTxn',
 			});
 		},
 		enabled: !!address,
@@ -50,7 +50,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 			return readContract(config, {
 				address: formatEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
-				functionName: 'getLastForgedBatch',
+				functionName: 'lastForgedBatch',
 			});
 		},
 		enabled: !!address,
@@ -59,20 +59,21 @@ export const useSmartContractData = (accountIdx?: string) => {
 
 	useEffect(() => {
 		const fetchTransactionQueue = async () => {
-			if (!queueLength || Number(queueLength) === 0) return;
+			if (queueLength === null || queueLength === undefined) return;
 
 			try {
-				const indices = Array.from(
-					{ length: Number(queueLength) },
-					(_, i) => i,
-				);
+				// lastAddedTxn returns the index of the last transaction, so we need to add 1 for the count
+				const totalTransactions = Number(queueLength) + 1;
+				if (totalTransactions === 0) return;
+
+				const indices = Array.from({ length: totalTransactions }, (_, i) => i);
 
 				const queuePromises = indices.map((index) =>
 					readContract(config, {
 						address: formatEthAddress(contracts.sybilSepolia.address),
 						abi: SybilSepoliaABI,
-						functionName: 'getL1TransactionQueue',
-						args: [index],
+						functionName: 'unprocessedBatchesMap',
+						args: [BigInt(index)],
 					}),
 				);
 
