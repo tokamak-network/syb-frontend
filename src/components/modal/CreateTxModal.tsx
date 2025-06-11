@@ -62,15 +62,13 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const { data: contractBalance } = useReadContract({
 		address: formatEthAddress(contracts.sybilSepolia.address) as `0x${string}`,
 		abi: SybilSepoliaABI,
-		functionName: 'balances',
+		functionName: 'accountInfo',
 		args: walletAddress ? [walletAddress] : undefined,
 	});
 
-	// Check if user has contract balance
 	useEffect(() => {
 		if (contractBalance) {
-			// If contract balance is greater than 0, user has deposited
-			setHasContractBalance(BigInt(contractBalance.toString()) > BigInt(0));
+			setHasContractBalance(BigInt(contractBalance[0].toString()) > BigInt(0));
 		} else {
 			setHasContractBalance(false);
 		}
