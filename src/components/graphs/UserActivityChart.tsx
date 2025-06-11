@@ -91,7 +91,7 @@ export const UserActivityLineChart: React.FC = () => {
 
 		const activityCounts = transactions.reduce(
 			(acc, transaction) => {
-				const date = new Date(transaction.timestamp);
+				const date = new Date(transaction.timestamp * 1000);
 				const yearMonth = format(date, 'yyyy-MM');
 				acc[yearMonth] = (acc[yearMonth] || 0) + 1;
 				return acc;
@@ -101,7 +101,7 @@ export const UserActivityLineChart: React.FC = () => {
 
 		const userCounts = transactions.reduce(
 			(acc, transaction) => {
-				const date = new Date(transaction.timestamp);
+				const date = new Date(transaction.timestamp * 1000);
 				const yearMonth = format(date, 'yyyy-MM');
 
 				if (!acc.uniqueUsers[yearMonth]) {
