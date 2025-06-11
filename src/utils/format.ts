@@ -85,7 +85,15 @@ export const formatAmount = (amount: string) => {
 
 export const formatAddress = (address: string) => {
 	if (!address) return '-';
-	const cleanAddress = address.replace('ton:', '');
+	let cleanAddress = address.replace('ton:', '');
+
+	// Add 0x prefix if missing and address looks like hex (40 chars)
+	if (
+		!cleanAddress.startsWith('0x') &&
+		/^[a-fA-F0-9]{40}$/.test(cleanAddress)
+	) {
+		cleanAddress = `0x${cleanAddress}`;
+	}
 
 	// Apply checksum formatting for Ethereum addresses
 	const checksummedAddress = isAddress(cleanAddress)
@@ -207,7 +215,16 @@ export const toChecksumAddress = (address: string): string => {
 	if (!address) return address;
 
 	try {
-		const cleanAddress = address.replace(/^eth:/, '');
+		// Remove any prefix like 'eth:' if present
+		let cleanAddress = address.replace(/^eth:/, '');
+
+		// Add 0x prefix if missing and address looks like hex (40 chars)
+		if (
+			!cleanAddress.startsWith('0x') &&
+			/^[a-fA-F0-9]{40}$/.test(cleanAddress)
+		) {
+			cleanAddress = `0x${cleanAddress}`;
+		}
 
 		if (isAddress(cleanAddress)) {
 			return getAddress(cleanAddress);
