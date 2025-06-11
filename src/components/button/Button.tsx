@@ -1,3 +1,5 @@
+'use client';
+
 import React, { forwardRef } from 'react';
 import { ImSpinner2 } from 'react-icons/im';
 import { IconType } from 'react-icons';

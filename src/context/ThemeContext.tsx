@@ -1,6 +1,12 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+	createContext,
+	useContext,
+	useState,
+	ReactNode,
+	useEffect,
+} from 'react';
 
 type Theme = 'light' | 'dark' | 'dim';
 
@@ -15,10 +21,25 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
 	children,
 }) => {
 	const [theme, setTheme] = useState<Theme>('light'); // Default theme is 'light'
+	const [isHydrated, setIsHydrated] = useState(false);
+
+	useEffect(() => {
+		// This ensures the component is hydrated on the client side
+		setIsHydrated(true);
+	}, []);
+
+	// Don't render the theme-specific wrapper until hydrated to avoid hydration mismatches
+	if (!isHydrated) {
+		return (
+			<ThemeContext.Provider value={{ theme, setTheme }}>
+				{children}
+			</ThemeContext.Provider>
+		);
+	}
 
 	return (
 		<ThemeContext.Provider value={{ theme, setTheme }}>
-			<div className={`theme-${theme}`}>{children}</div>{' '}
+			<div className={`theme-${theme}`}>{children}</div>
 		</ThemeContext.Provider>
 	);
 };

@@ -164,7 +164,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		// Check if withdraw amount exceeds contract balance
 		if (txType === 'withdraw' && contractBalance) {
 			const contractBalanceEth = ethers.utils.formatEther(
-				contractBalance.toString(),
+				contractBalance[0].toString(),
 			);
 			if (parseFloat(txAmount) > parseFloat(contractBalanceEth)) {
 				setError('Withdraw amount cannot exceed contract balance');
@@ -407,7 +407,8 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 								{hasContractBalance && contractBalance ? (
 									<span className="text-green-500">
 										Deposited Amount:{' '}
-										{ethers.utils.formatEther(contractBalance.toString())} ETH
+										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
+										ETH
 									</span>
 								) : (
 									<span className="text-yellow-500">
@@ -491,14 +492,17 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 								<div className="text-xs text-gray-400">
 									<div>
 										Available contract balance:{' '}
-										{ethers.utils.formatEther(contractBalance.toString())} ETH
+										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
+										ETH
 									</div>
 									{txAmount && parseFloat(txAmount) > 0 && (
 										<div
 											className={
 												parseFloat(txAmount) >
 												parseFloat(
-													ethers.utils.formatEther(contractBalance.toString()),
+													ethers.utils.formatEther(
+														contractBalance[0].toString(),
+													),
 												)
 													? 'mt-1 text-red-400'
 													: 'mt-1 text-green-400'
@@ -506,7 +510,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 										>
 											{parseFloat(txAmount) >
 											parseFloat(
-												ethers.utils.formatEther(contractBalance.toString()),
+												ethers.utils.formatEther(contractBalance[0].toString()),
 											)
 												? 'Amount exceeds contract balance'
 												: 'Valid amount'}
