@@ -98,14 +98,20 @@ const ExplorerPage: React.FC = () => {
 													}
 												>
 													<td className="px-6 py-4 font-medium">
-														{formatAddress(String(tx.item_id))}
+														{formatAddress(String(tx.tx_hash))}
 													</td>
 													<td className="px-6 py-4">{tx.type}</td>
 													<td className="px-6 py-4">
 														{formatAddress(tx.from_eth_addr)}
 													</td>
 													<td className="px-6 py-4">
-														{formatAddress(tx.to_eth_addr || '')}
+														{[
+															'deposit',
+															'CreateAccountDeposit',
+															'Withdraw',
+														].includes(tx.type.toLowerCase())
+															? '-'
+															: formatAddress(tx.to_eth_addr || '')}
 													</td>
 													<td className="px-6 py-4">
 														{formatAmount(tx.amount)}

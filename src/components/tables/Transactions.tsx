@@ -143,8 +143,8 @@ export const TransactionsTable: React.FC<Props> = ({
 								onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
 							>
 								<td className="px-6 py-2">
-									{transaction.L1Info?.ethereumTxHash
-										? formatTransactionHash(transaction.L1Info.ethereumTxHash)
+									{transaction.tx_hash
+										? formatTransactionHash(transaction.tx_hash)
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
@@ -166,17 +166,23 @@ export const TransactionsTable: React.FC<Props> = ({
 									</div>
 								</td>
 								<td className="px-6 py-2">
-									<div className="group relative">
-										{formatTonAddress(
-											transaction.toTonEthereumAddress ?? '',
-											true,
-										)}
-										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-											{transaction.toTonEthereumAddress
-												? formatTonAddress(transaction.toTonEthereumAddress)
-												: 'N/A'}
+									{['deposit', 'CreateAccountDeposit', 'Withdraw'].includes(
+										transaction.type.toLowerCase(),
+									) ? (
+										'-'
+									) : (
+										<div className="group relative">
+											{formatTonAddress(
+												transaction.toTonEthereumAddress ?? '',
+												true,
+											)}
+											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+												{transaction.toTonEthereumAddress
+													? formatTonAddress(transaction.toTonEthereumAddress)
+													: 'N/A'}
+											</div>
 										</div>
-									</div>
+									)}
 								</td>
 								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
 								<td className="px-6 py-2">
