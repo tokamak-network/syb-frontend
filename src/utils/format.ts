@@ -164,12 +164,15 @@ export const formatTransactionHash = (
 ): string => {
 	if (!hash) return '-';
 
-	// Remove '0x' prefix if present for consistent formatting
-	const cleanHash = hash.startsWith('0x') ? hash.slice(2) : hash;
+	// Ensure the hash has '0x' prefix
+	const prefixedHash = hash.startsWith('0x') ? hash : `0x${hash}`;
 
-	if (cleanHash.length <= chars * 2) return hash;
+	// Remove '0x' prefix for length calculation
+	const cleanHash = prefixedHash.slice(2);
 
-	return `${hash.slice(0, chars + 2)}...${hash.slice(-chars)}`;
+	if (cleanHash.length <= chars * 2) return prefixedHash;
+
+	return `${prefixedHash.slice(0, chars + 2)}...${prefixedHash.slice(-chars)}`;
 };
 
 /**

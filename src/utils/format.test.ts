@@ -229,15 +229,11 @@ describe('formatTransactionHash', () => {
 		expect(formatTransactionHash('')).toBe('-');
 	});
 
-	it('should format a hash without the 0x prefix', () => {
+	it('should format a hash without the 0x prefix and add the prefix', () => {
 		const hash =
 			'1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
-		// The function prepends '0x' for original hash display if cleanHash.length <= chars * 2,
-		// but for longer hashes, it uses the original slicing. Let's ensure it handles this.
-		// original hash will be used, so '0x' + hash.slice(2, 6+2) + '...' + hash.slice(-6)
-		// No, the function is: `${hash.slice(0, chars + 2)}...${hash.slice(-chars)}`
-		// So for '123456....' it would be '12345678...90abcdef' if chars is 6
-		expect(formatTransactionHash(hash)).toBe('12345678...abcdef');
+		// The function should add '0x' prefix and then format properly
+		expect(formatTransactionHash(hash)).toBe('0x123456...abcdef');
 	});
 
 	it('should format a hash with a custom number of characters', () => {
@@ -253,6 +249,6 @@ describe('formatTransactionHash', () => {
 
 	it('should handle a hash without 0x that is shorter than custom chars * 2', () => {
 		const hash = 'abcdef1234'; // 10 chars
-		expect(formatTransactionHash(hash, 6)).toBe('abcdef1234');
+		expect(formatTransactionHash(hash, 6)).toBe('0xabcdef1234');
 	});
 });

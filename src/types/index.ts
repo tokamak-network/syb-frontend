@@ -147,15 +147,13 @@ export interface Transaction {
 	block_number: number;
 	timestamp: number;
 	gas_fee: string;
-	// Kept for backward compatibility for now, review if still needed
-	L1Info?: L1Info;
 	fromAccountIndex?: string;
 	fromTonEthereumAddress?: string;
 	id?: string; // Assuming item_id can serve as id
 	itemId?: number; // Duplicate of item_id
 	toAccountIndex?: string;
 	toTonEthereumAddress?: string | null;
-	status?: string; // batch_num can be used to determine status (0 for pending)
+	tx_hash?: string;
 }
 
 export interface TransactionResponse {
