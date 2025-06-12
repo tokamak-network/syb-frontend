@@ -26,20 +26,27 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
 	useEffect(() => {
 		// This ensures the component is hydrated on the client side
 		setIsHydrated(true);
+
+		// Check for saved theme in localStorage after hydration
+		const savedTheme = localStorage.getItem('theme') as Theme;
+		if (savedTheme && ['light', 'dark', 'dim'].includes(savedTheme)) {
+			setTheme(savedTheme);
+		}
 	}, []);
 
-	// Don't render the theme-specific wrapper until hydrated to avoid hydration mismatches
-	if (!isHydrated) {
-		return (
-			<ThemeContext.Provider value={{ theme, setTheme }}>
-				{children}
-			</ThemeContext.Provider>
-		);
-	}
+	useEffect(() => {
+		// Save theme to localStorage when it changes
+		if (isHydrated) {
+			localStorage.setItem('theme', theme);
+		}
+	}, [theme, isHydrated]);
 
+	// Always render the same structure to avoid hydration mismatches
 	return (
 		<ThemeContext.Provider value={{ theme, setTheme }}>
-			<div className={`theme-${theme}`}>{children}</div>
+			<div className={isHydrated ? `theme-${theme}` : 'theme-light'}>
+				{children}
+			</div>
 		</ThemeContext.Provider>
 	);
 };

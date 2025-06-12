@@ -26,14 +26,15 @@ export const Header: React.FC<{
 		isMobileMenuOpen: false,
 	});
 
+	const [docsURL, setDocsURL] = useState<string | null>(null);
+	const [isClient, setIsClient] = useState(false);
+
 	const {
 		activeButton,
 		isWalletMenuOpen,
 		isCreateTxModalOpen,
 		isMobileMenuOpen,
 	} = menuStates;
-
-	const docsURL = process.env.NEXT_PUBLIC_DOCS_URL;
 
 	const menuRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
@@ -139,6 +140,12 @@ export const Header: React.FC<{
 	}, [disconnect, addToast]);
 
 	useEffect(() => {
+		// Set the docs URL and client flag on mount to prevent hydration mismatch
+		setDocsURL(process.env.NEXT_PUBLIC_DOCS_URL || null);
+		setIsClient(true);
+	}, []);
+
+	useEffect(() => {
 		document.addEventListener('mousedown', handleClickOutside);
 
 		return () => {
@@ -164,7 +171,7 @@ export const Header: React.FC<{
 
 			<nav className="max-w-300 mb-0 hidden flex-col justify-around space-y-2 text-xl font-bold md:flex md:flex-row md:space-x-5 md:space-y-0">
 				<NavLinkButton href="/home" label="Home" />
-				{docsURL && <NavLinkButton href={docsURL} label="Docs" />}
+				{isClient && docsURL && <NavLinkButton href={docsURL} label="Docs" />}
 				<NavLinkButton href="/explorer" label="Explorer" />
 			</nav>
 
@@ -177,7 +184,7 @@ export const Header: React.FC<{
 						label="Home"
 						className="block w-full py-2 text-left"
 					/>
-					{docsURL && (
+					{isClient && docsURL && (
 						<NavLinkButton
 							href={docsURL}
 							label="Docs"
@@ -242,7 +249,7 @@ export const Header: React.FC<{
 					CreateTx
 				</Button>
 				<ThemeDropdown className="fixed right-0 top-60" />
-				{isConnected ? (
+				{isClient && isConnected ? (
 					<div className="relative">
 						<Button
 							className="flex items-center space-x-2 rounded-lg px-4 py-2"
@@ -283,7 +290,7 @@ export const Header: React.FC<{
 							</div>
 						)}
 					</div>
-				) : (
+				) : isClient ? (
 					<Button
 						className="flex items-center space-x-2 rounded-lg px-4 py-2"
 						onClick={connectWallet}
@@ -296,6 +303,8 @@ export const Header: React.FC<{
 						/>
 						<span>Connect</span>
 					</Button>
+				) : (
+					<div className="h-[40px] w-[120px]"></div>
 				)}
 			</div>
 
@@ -306,7 +315,7 @@ export const Header: React.FC<{
 				>
 					<FaPlus />
 				</Button>
-				{isConnected ? (
+				{isClient && isConnected ? (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
 						onClick={handleWalletMenuToggle}
@@ -319,7 +328,7 @@ export const Header: React.FC<{
 							strokeWidth={2.5}
 						/>
 					</Button>
-				) : (
+				) : isClient ? (
 					<Button
 						className="flex items-center rounded-lg px-2 py-1"
 						onClick={connectWallet}
@@ -331,8 +340,10 @@ export const Header: React.FC<{
 							width={16}
 						/>
 					</Button>
+				) : (
+					<div className="h-[32px] w-[60px]"></div>
 				)}
-				{isWalletMenuOpen && (
+				{isClient && isWalletMenuOpen && (
 					<div className="absolute right-12 top-8 mt-2 w-48 rounded-md bg-white shadow-lg">
 						<Link
 							href="/explorer/my-account"
@@ -380,13 +391,15 @@ export const Header: React.FC<{
 				</button>
 			</div>
 
-			<CreateTxModal
-				isConnected={isConnected}
-				isOpen={isCreateTxModalOpen}
-				walletAddress={address}
-				onClose={handleCreateTxModalToggle}
-				onSubmit={handleTransactionSubmit}
-			/>
+			{isClient && (
+				<CreateTxModal
+					isConnected={isConnected}
+					isOpen={isCreateTxModalOpen}
+					walletAddress={address}
+					onClose={handleCreateTxModalToggle}
+					onSubmit={handleTransactionSubmit}
+				/>
+			)}
 		</header>
 	);
 };

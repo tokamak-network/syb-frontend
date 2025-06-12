@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useRouter } from 'next/navigation';
 
@@ -22,8 +22,13 @@ export const Label: React.FC<LabelProps> = ({
 	className = '',
 }) => {
 	const router = useRouter();
+	const [explorerUrl, setExplorerUrl] = useState<string>('');
+	const [isClient, setIsClient] = useState(false);
 
-	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
+	useEffect(() => {
+		setExplorerUrl(process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '');
+		setIsClient(true);
+	}, []);
 	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
 	const displayValue = shortenAddress(value, shorten);
 
@@ -50,7 +55,7 @@ export const Label: React.FC<LabelProps> = ({
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild>
-					{explore ? (
+					{explore && isClient ? (
 						<a
 							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							href={`${explorerUrl}/${explorerPath}`}

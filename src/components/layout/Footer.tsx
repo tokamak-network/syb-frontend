@@ -1,5 +1,7 @@
+'use client';
+
 import Image from 'next/image';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { cn } from '@/utils/cn';
 import {
@@ -13,6 +15,11 @@ import {
 import { LinkButton } from '../button/LinkButton';
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 	return (
 		<footer className={cn('', className)}>
 			<div className="flex w-full flex-col-reverse items-center justify-between gap-14 lg:flex-row">
@@ -33,13 +40,14 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							<span>SYB © – All rights reserved. 2025</span>
 						</div>
 						<div className="flex flex-wrap gap-x-10 gap-y-2">
-							{FooterSocialMedia.map((item) => (
-								<LinkButton
-									key={item.label}
-									href={item.link || ''}
-									icon={item.icon}
-								/>
-							))}
+							{isClient &&
+								FooterSocialMedia.map((item) => (
+									<LinkButton
+										key={item.label}
+										href={item.link || ''}
+										icon={item.icon}
+									/>
+								))}
 						</div>
 					</div>
 				</div>
