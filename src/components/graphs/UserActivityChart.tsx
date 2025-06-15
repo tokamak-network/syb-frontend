@@ -108,11 +108,11 @@ export const UserActivityLineChart: React.FC = () => {
 					acc.uniqueUsers[yearMonth] = new Set();
 				}
 
-				if (transaction.fromTonEthereumAddress) {
-					acc.uniqueUsers[yearMonth].add(transaction.fromTonEthereumAddress);
+				if (transaction.from_eth_addr) {
+					acc.uniqueUsers[yearMonth].add(transaction.from_eth_addr);
 				}
-				if (transaction.toTonEthereumAddress) {
-					acc.uniqueUsers[yearMonth].add(transaction.toTonEthereumAddress);
+				if (transaction.to_eth_addr) {
+					acc.uniqueUsers[yearMonth].add(transaction.to_eth_addr);
 				}
 
 				acc.counts[yearMonth] = acc.uniqueUsers[yearMonth].size;
