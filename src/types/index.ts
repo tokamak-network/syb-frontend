@@ -138,7 +138,7 @@ export interface Transaction {
 	item_id: number;
 	batch_num: number;
 	position: string;
-	type: string;
+	type: ActionType;
 	from_idx: number;
 	from_eth_addr: string;
 	to_idx: number;

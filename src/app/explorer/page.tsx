@@ -16,10 +16,8 @@ import {
 import { Account } from '@/types';
 
 const ExplorerPage: React.FC = () => {
-	const [isModalOpen, setModalOpen] = useState(false);
-	const [showMoreUsers, setShowMoreUsers] = useState(false);
-	const [isNavigating, setIsNavigating] = useState(false);
-	const [txOption, setTxOption] = useState('all');
+	const [isNavigating, setIsNavigating] = useState<boolean>(false);
+	const [txOption, setTxOption] = useState<string>('all');
 
 	const router = useRouter();
 
@@ -79,7 +77,6 @@ const ExplorerPage: React.FC = () => {
 											<th className="px-6 py-3">Type</th>
 											<th className="px-6 py-3">From</th>
 											<th className="px-6 py-3">To</th>
-											<th className="px-6 py-3">Amount</th>
 											<th className="px-6 py-3">Time</th>
 										</tr>
 									</thead>
@@ -107,14 +104,11 @@ const ExplorerPage: React.FC = () => {
 													<td className="px-6 py-4">
 														{[
 															'deposit',
-															'CreateAccountDeposit',
-															'Withdraw',
+															'createaccountdeposit',
+															'withdraw',
 														].includes(tx.type.toLowerCase())
 															? '-'
 															: formatAddress(tx.to_eth_addr || '')}
-													</td>
-													<td className="px-6 py-4">
-														{formatAmount(tx.amount)}
 													</td>
 													<td className="px-6 py-4">
 														{formatFullTime(new Date(tx.timestamp * 1000))}
