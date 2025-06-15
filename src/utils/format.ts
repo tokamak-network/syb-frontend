@@ -164,10 +164,8 @@ export const formatTransactionHash = (
 ): string => {
 	if (!hash) return '-';
 
-	// Ensure the hash has '0x' prefix
 	const prefixedHash = hash.startsWith('0x') ? hash : `0x${hash}`;
 
-	// Remove '0x' prefix for length calculation
 	const cleanHash = prefixedHash.slice(2);
 
 	if (cleanHash.length <= chars * 2) return prefixedHash;
@@ -218,10 +216,8 @@ export const toChecksumAddress = (address: string): string => {
 	if (!address) return address;
 
 	try {
-		// Remove any prefix like 'eth:' if present
 		let cleanAddress = address.replace(/^eth:/, '');
 
-		// Add 0x prefix if missing and address looks like hex (40 chars)
 		if (
 			!cleanAddress.startsWith('0x') &&
 			/^[a-fA-F0-9]{40}$/.test(cleanAddress)
@@ -233,9 +229,9 @@ export const toChecksumAddress = (address: string): string => {
 			return getAddress(cleanAddress);
 		}
 
-		return address; // Return original if not a valid address
+		return address;
 	} catch (error) {
 		console.warn('Failed to checksum address:', address, error);
-		return address; // Return original on error
+		return address;
 	}
 };

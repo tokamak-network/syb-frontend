@@ -12,6 +12,7 @@ import {
 	formatAmount,
 	formatFullTime,
 	formatTime,
+	formatTransactionHash,
 } from '@/utils';
 import { Account } from '@/types';
 
@@ -95,7 +96,7 @@ const ExplorerPage: React.FC = () => {
 													}
 												>
 													<td className="px-6 py-4 font-medium">
-														{formatAddress(String(tx.tx_hash))}
+														{formatTransactionHash(String(tx.tx_hash))}
 													</td>
 													<td className="px-6 py-4">{tx.type}</td>
 													<td className="px-6 py-4">

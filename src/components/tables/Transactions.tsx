@@ -7,6 +7,8 @@ import {
 	formatTransactionHash,
 	formatTimestamp,
 	formatTonAddress,
+	formatEthAddress,
+	toChecksumAddress,
 } from '@/utils/format';
 import { Button, Dropdown } from '@/components';
 import { useRouter } from 'next/navigation';
@@ -17,7 +19,6 @@ interface Props {
 	filteredTransactions: Transaction[];
 	setOrder: (order: Order) => void;
 	order: Order;
-	// Optional props for external pagination control
 	currentPage?: number;
 	totalPages?: number;
 	itemsPerPage?: number;
@@ -93,7 +94,7 @@ export const TransactionsTable: React.FC<Props> = ({
 			onLimitChange(value);
 		} else {
 			setInternalItemsPerPage(value);
-			setInternalCurrentPage(1); // Reset to first page when changing items per page
+			setInternalCurrentPage(1);
 		}
 	};
 
@@ -157,10 +158,10 @@ export const TransactionsTable: React.FC<Props> = ({
 								</td>
 								<td className="px-6 py-2">
 									<div className="group relative">
-										{formatTonAddress(transaction.fromTonEthereumAddress, true)}
+										{toChecksumAddress(transaction.from_eth_addr)}
 										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-											{transaction.fromTonEthereumAddress
-												? formatTonAddress(transaction.fromTonEthereumAddress)
+											{transaction.from_eth_addr
+												? toChecksumAddress(transaction.from_eth_addr)
 												: 'N/A'}
 										</div>
 									</div>
@@ -172,13 +173,10 @@ export const TransactionsTable: React.FC<Props> = ({
 										'-'
 									) : (
 										<div className="group relative">
-											{formatTonAddress(
-												transaction.toTonEthereumAddress ?? '',
-												true,
-											)}
+											{toChecksumAddress(transaction.to_eth_addr ?? '')}
 											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-												{transaction.toTonEthereumAddress
-													? formatTonAddress(transaction.toTonEthereumAddress)
+												{transaction.to_eth_addr
+													? toChecksumAddress(transaction.to_eth_addr)
 													: 'N/A'}
 											</div>
 										</div>

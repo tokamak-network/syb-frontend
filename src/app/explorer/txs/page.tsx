@@ -18,7 +18,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
-import { formatTonAddress } from '@/utils/format';
 import { Order } from '@/types';
 
 const TransactionsPage: React.FC = () => {
@@ -49,14 +48,14 @@ const TransactionsPage: React.FC = () => {
 	const filteredTransactions = transactions.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
 		return (
-			(transaction.item_id
-				? String(transaction.item_id).toLowerCase().includes(query)
+			(transaction.tx_hash
+				? String(transaction.tx_hash).toLowerCase().includes(query)
 				: false) ||
 			(transaction.from_eth_addr
 				? transaction.from_eth_addr.toLowerCase().includes(query)
 				: false) ||
-			(transaction.from_idx
-				? String(transaction.from_idx).toLowerCase().includes(query)
+			(transaction.fromAccountIndex
+				? String(transaction.fromAccountIndex).toLowerCase().includes(query)
 				: false) ||
 			(transaction.to_eth_addr
 				? transaction.to_eth_addr.toLowerCase().includes(query)
