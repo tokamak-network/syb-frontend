@@ -124,16 +124,6 @@ export interface Account {
 	nonce: number;
 }
 
-interface L1Info {
-	ethereumBlockNum: number;
-	historicDepositAmountUSD: number | null;
-	depositAmount: string;
-	toForgeL1TransactionsNum: number;
-	userOrigin: boolean;
-	ethereumTxHash: string;
-	l1Fee: string;
-}
-
 export interface Transaction {
 	item_id: number;
 	batch_num: number;
@@ -147,12 +137,6 @@ export interface Transaction {
 	block_number: number;
 	timestamp: number;
 	gas_fee: string;
-	fromAccountIndex?: string;
-	fromTonEthereumAddress?: string;
-	id?: string; // Assuming item_id can serve as id
-	itemId?: number; // Duplicate of item_id
-	toAccountIndex?: string;
-	toTonEthereumAddress?: string | null;
 	tx_hash?: string;
 }
 

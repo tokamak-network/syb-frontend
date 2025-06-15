@@ -139,9 +139,11 @@ export const TransactionsTable: React.FC<Props> = ({
 					{displayedTransactions.length > 0 ? (
 						displayedTransactions.map((transaction) => (
 							<tr
-								key={transaction.id}
+								key={transaction.item_id}
 								className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
-								onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
+								onClick={() =>
+									router.push(`/explorer/txs/${transaction.item_id}`)
+								}
 							>
 								<td className="px-6 py-2">
 									{transaction.tx_hash
@@ -182,7 +184,7 @@ export const TransactionsTable: React.FC<Props> = ({
 										</div>
 									)}
 								</td>
-								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
+								<td className="px-6 py-2">{transaction.from_idx}</td>
 								<td className="px-6 py-2">
 									{transaction.batch_num === 0 ? (
 										<div className="flex items-center gap-2">

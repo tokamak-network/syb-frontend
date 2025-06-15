@@ -54,8 +54,8 @@ const TransactionsPage: React.FC = () => {
 			(transaction.from_eth_addr
 				? transaction.from_eth_addr.toLowerCase().includes(query)
 				: false) ||
-			(transaction.fromAccountIndex
-				? String(transaction.fromAccountIndex).toLowerCase().includes(query)
+			(transaction.from_idx
+				? String(transaction.from_idx).toLowerCase().includes(query)
 				: false) ||
 			(transaction.to_eth_addr
 				? transaction.to_eth_addr.toLowerCase().includes(query)
