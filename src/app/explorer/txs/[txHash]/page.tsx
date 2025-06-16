@@ -12,9 +12,10 @@ import {
 	convertWeiToGweiAndEther,
 	fetchTransactionByHash,
 	formatTimestamp,
+	formatWeiValue,
+	formatEthAddress,
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
-import { formatTonAddress } from '@/utils';
 import { useWallet } from '@/hooks/useWallet';
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -108,19 +109,19 @@ const TransactionDetailsPage: React.FC = () => {
 					/>
 				</div>
 				<div>
-					<strong>From:</strong> {formatTonAddress(transaction.from_eth_addr)}
+					<strong>From:</strong> {formatEthAddress(transaction.from_eth_addr)}
 				</div>
 				<div>
-					<strong>To:</strong> {formatTonAddress(transaction.to_eth_addr ?? '')}
+					<strong>To:</strong> {formatEthAddress(transaction.to_eth_addr ?? '')}
 				</div>
 				<div>
 					<strong>Block Number:</strong> {transaction.block_number}
 				</div>
 				<div>
-					<strong>Value:</strong> {transaction.amount} ETH
+					<strong>Value:</strong> {formatWeiValue(transaction.amount)}
 				</div>
 				<div>
-					<strong>Fee:</strong> {gwei} Gwei ({ether} Ether)
+					<strong>Fee:</strong> {formatWeiValue(transaction.gas_fee)}
 				</div>
 				<div>
 					<strong>Timestamp:</strong>{' '}

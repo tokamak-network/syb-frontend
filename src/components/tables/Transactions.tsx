@@ -6,7 +6,6 @@ import { ActionType, ActionStatus, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
 	formatTimestamp,
-	formatTonAddress,
 	formatEthAddress,
 	toChecksumAddress,
 } from '@/utils/format';
@@ -124,11 +123,11 @@ export const TransactionsTable: React.FC<Props> = ({
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
-							To
+						<th className="px-6 py-3 text-right text-sm font-bold uppercase text-tableTextPrimary">
+							Amount
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
-							Account Index
+						<th className="px-6 py-3 text-right text-sm font-bold uppercase text-tableTextPrimary">
+							Gas Fee
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Status
@@ -160,7 +159,7 @@ export const TransactionsTable: React.FC<Props> = ({
 								</td>
 								<td className="px-6 py-2">
 									<div className="group relative">
-										{toChecksumAddress(transaction.from_eth_addr)}
+										{formatEthAddress(transaction.from_eth_addr)}
 										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
 											{transaction.from_eth_addr
 												? toChecksumAddress(transaction.from_eth_addr)
@@ -168,23 +167,12 @@ export const TransactionsTable: React.FC<Props> = ({
 										</div>
 									</div>
 								</td>
-								<td className="px-6 py-2">
-									{['deposit', 'CreateAccountDeposit', 'Withdraw'].includes(
-										transaction.type.toLowerCase(),
-									) ? (
-										'-'
-									) : (
-										<div className="group relative">
-											{toChecksumAddress(transaction.to_eth_addr ?? '')}
-											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-												{transaction.to_eth_addr
-													? toChecksumAddress(transaction.to_eth_addr)
-													: 'N/A'}
-											</div>
-										</div>
-									)}
+								<td className="px-6 py-2 text-right">
+									{transaction.amount ? `${transaction.amount} Gwei` : 'N/A'}
 								</td>
-								<td className="px-6 py-2">{transaction.from_idx}</td>
+								<td className="px-6 py-2 text-right">
+									{transaction.gas_fee ? `${transaction.gas_fee} Wei` : 'N/A'}
+								</td>
 								<td className="px-6 py-2">
 									{transaction.batch_num === 0 ? (
 										<div className="flex items-center gap-2">

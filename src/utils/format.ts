@@ -119,10 +119,11 @@ export const validateAddress = (address: string): `0x${string}` => {
 	return address as `0x${string}`;
 };
 
-export const formatEthAddress = (address: string): `0x${string}` => {
+export const formatEthAddress = (address: string): string => {
+	if (!address) return '-';
 	const cleanAddress = address.replace('0x', '');
-
-	return `0x${cleanAddress}` as `0x${string}`;
+	const formattedAddress = toChecksumAddress(`0x${cleanAddress}`);
+	return `${formattedAddress.slice(0, 6)}...${formattedAddress.slice(-4)}`;
 };
 
 export const convertToUint40Format = (amount: string): bigint => {
@@ -174,26 +175,6 @@ export const formatTransactionHash = (
 };
 
 /**
- * Remove a ton prefix from address and format it for display.
- * @param address - The ton address to format.
- * @returns {string} - The formatted ton address.
- */
-export const formatTonAddress = (
-	address?: string,
-	shorten: boolean = false,
-): string => {
-	if (!address) return '-';
-
-	const newAddress = address.replace('ton:', '');
-
-	if (shorten) {
-		return `${newAddress.slice(0, 6)}...${newAddress.slice(-4)}`;
-	}
-
-	return newAddress;
-};
-
-/**
  * Converts wei value to both gwei and ether.
  * @param wei - The amount in wei to convert.
  * @returns {Object} - Object containing the converted gwei and ether values.
@@ -234,4 +215,33 @@ export const toChecksumAddress = (address: string): string => {
 		console.warn('Failed to checksum address:', address, error);
 		return address;
 	}
+};
+
+/**
+ * Formats a value in wei to the most appropriate unit (ETH, Gwei, or Wei)
+ * @param value - The value in wei
+ * @param decimals - Number of decimal places to show (default: 4)
+ * @returns {string} - Formatted value with appropriate unit
+ */
+export const formatWeiValue = (
+	value: string | number,
+	decimals: number = 4,
+): string => {
+	const weiValue = typeof value === 'string' ? parseFloat(value) : value;
+
+	// Convert to ETH
+	const ethValue = weiValue / 1e18;
+	// Convert to Gwei
+	const gweiValue = weiValue / 1e9;
+
+	// If value is less than 0.0001 ETH, show in Gwei
+	if (ethValue < 0.0001 && ethValue > 0) {
+		return `${gweiValue.toFixed(decimals)} Gwei`;
+	}
+	// If value is less than 0.0001 Gwei, show in Wei
+	if (gweiValue < 0.0001 && gweiValue > 0) {
+		return `${weiValue} Wei`;
+	}
+	// Otherwise show in ETH
+	return `${ethValue.toFixed(decimals)} ETH`;
 };

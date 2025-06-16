@@ -169,20 +169,18 @@ describe('validateAddress', () => {
 });
 
 describe('formatEthAddress', () => {
-	it('should format address with 0x prefix', () => {
+	it('should format address with 0x prefix and shorten it', () => {
 		const address = '1234567890123456789012345678901234567890';
-
-		expect(formatEthAddress(address)).toBe(
-			'0x1234567890123456789012345678901234567890',
-		);
+		expect(formatEthAddress(address)).toBe('0x1234...7890');
 	});
 
-	it('should handle address that already has 0x prefix', () => {
+	it('should handle address that already has 0x prefix and shorten it', () => {
 		const address = '0x1234567890123456789012345678901234567890';
+		expect(formatEthAddress(address)).toBe('0x1234...7890');
+	});
 
-		expect(formatEthAddress(address)).toBe(
-			'0x1234567890123456789012345678901234567890',
-		);
+	it('should return dash for empty address', () => {
+		expect(formatEthAddress('')).toBe('-');
 	});
 });
 
