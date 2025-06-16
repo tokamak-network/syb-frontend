@@ -29,9 +29,10 @@ export const Label: React.FC<LabelProps> = ({
 		setExplorerUrl(process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '');
 		setIsClient(true);
 	}, []);
-	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
+	const explorerPath = isTransaction
+		? `tx/${value.startsWith('0x') ? value : `0x${value}`}`
+		: `accounts/${value}`;
 
-	// Use appropriate formatting function based on whether it's a transaction or address
 	const displayValue = isTransaction
 		? formatTransactionHash(
 				value,
@@ -40,7 +41,7 @@ export const Label: React.FC<LabelProps> = ({
 		: shortenAddress(value, shorten);
 
 	const formattedDisplayValue = isTransaction
-		? displayValue // formatTransactionHash already handles proper formatting
+		? displayValue
 		: displayValue.startsWith('0x')
 			? `0x${displayValue.slice(2).toUpperCase()}`
 			: displayValue.toUpperCase();

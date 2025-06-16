@@ -46,7 +46,7 @@ export const fetchTransactionByHash = async (
 ): Promise<Transaction> => {
 	return apiRequest({
 		method: 'GET',
-		url: `/transactions-history/${txHash}`,
+		url: `/transactions/${txHash}`,
 	});
 };
 
