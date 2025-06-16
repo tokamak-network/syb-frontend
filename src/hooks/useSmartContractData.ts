@@ -2,7 +2,7 @@ import { readContract } from '@wagmi/core';
 import { useState, useEffect } from 'react';
 import { useWallet } from './useWallet';
 import { SybilSepoliaABI, VerifierSepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress } from '@/utils';
+import { formatFullEthAddress } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { config } from '@/config';
 
@@ -34,7 +34,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryFn: async () => {
 			if (!address) return null;
 			return readContract(config, {
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'lastAddedTxn',
 			});
@@ -48,7 +48,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryFn: async () => {
 			if (!address) return null;
 			return readContract(config, {
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'lastForgedBatch',
 			});
@@ -70,7 +70,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 
 				const queuePromises = indices.map((index) =>
 					readContract(config, {
-						address: formatEthAddress(contracts.sybilSepolia.address),
+						address: formatFullEthAddress(contracts.sybilSepolia.address),
 						abi: SybilSepoliaABI,
 						functionName: 'unprocessedBatchesMap',
 						args: [BigInt(index)],
@@ -123,7 +123,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 
 			try {
 				const scoreRoot = await readContract(config, {
-					address: formatEthAddress(contracts.sybilSepolia.address),
+					address: formatFullEthAddress(contracts.sybilSepolia.address),
 					abi: SybilSepoliaABI,
 					functionName: 'scoreRootMap',
 					args: [Number(lastForgedBatch)],

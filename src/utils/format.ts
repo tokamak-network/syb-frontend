@@ -126,6 +126,18 @@ export const formatEthAddress = (address: string): string => {
 	return `${formattedAddress.slice(0, 6)}...${formattedAddress.slice(-4)}`;
 };
 
+/**
+ * Formats an Ethereum address to its full checksummed format.
+ * @param address - The Ethereum address to format
+ * @returns {`0x${string}`} - The formatted address with 0x prefix
+ */
+export const formatFullEthAddress = (address: string): `0x${string}` => {
+	if (!address)
+		return '0x0000000000000000000000000000000000000000' as `0x${string}`;
+	const cleanAddress = address.replace('0x', '');
+	return toChecksumAddress(`0x${cleanAddress}`) as `0x${string}`;
+};
+
 export const convertToUint40Format = (amount: string): bigint => {
 	const amountInWei = parseFloat(amount) * 1e18;
 

@@ -3,6 +3,7 @@ import { useWriteContract } from 'wagmi';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import {
 	formatEthAddress,
+	formatFullEthAddress,
 	convertToUint40Format,
 	validateAddress,
 } from '@/utils';
@@ -25,7 +26,7 @@ export const useSepoliaTransactions = () => {
 			}
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'deposit',
 				value: amountValue,
@@ -51,7 +52,7 @@ export const useSepoliaTransactions = () => {
 			const validatedAddress = validateAddress(toEthAddr);
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'vouch',
 				args: [validatedAddress],
@@ -77,7 +78,7 @@ export const useSepoliaTransactions = () => {
 			const validatedAddress = validateAddress(toEthAddr);
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'unvouch',
 				args: [validatedAddress],
@@ -109,7 +110,7 @@ export const useSepoliaTransactions = () => {
 			}
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'withdraw',
 				args: [amountValue],
@@ -141,7 +142,7 @@ export const useSepoliaTransactions = () => {
 			);
 
 			const hash = await writeContractAsync({
-				address: formatEthAddress(contracts.sybilSepolia.address),
+				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
 				functionName: 'explodeMultiple',
 				args: [validatedAddresses],
