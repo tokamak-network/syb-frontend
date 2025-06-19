@@ -166,18 +166,22 @@ export const float2Fix = (floatVal: number): bigint => {
 };
 
 /**
- * Shortens a transaction hash for display.
+ * Formats a transaction hash for display.
  * @param hash - The transaction hash to format.
  * @param chars - Number of characters to show at the start and end (default: 6).
- * @returns {string} - The shortened transaction hash.
+ * @param fullFormat - Whether to return the full hash or shortened version (default: false).
+ * @returns {string} - The formatted transaction hash.
  */
 export const formatTransactionHash = (
 	hash: string,
 	chars: number = 6,
+	fullFormat: boolean = false,
 ): string => {
 	if (!hash) return '-';
 
 	const prefixedHash = hash.startsWith('0x') ? hash : `0x${hash}`;
+
+	if (fullFormat) return prefixedHash;
 
 	const cleanHash = prefixedHash.slice(2);
 
