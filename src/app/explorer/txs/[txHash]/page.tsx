@@ -14,6 +14,7 @@ import {
 	formatTimestamp,
 	formatWeiValue,
 	formatEthAddress,
+	formatTransactionHash,
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
@@ -29,7 +30,7 @@ const TransactionDetailsPage: React.FC = () => {
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ['transaction', txHash],
+		queryKey: ['transaction', txHash as string],
 		queryFn: () => fetchTransactionByHash(txHash as string),
 		enabled: !!txHash,
 		staleTime: 30000,

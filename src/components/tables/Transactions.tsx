@@ -141,7 +141,7 @@ export const TransactionsTable: React.FC<Props> = ({
 								key={transaction.item_id}
 								className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
 								onClick={() =>
-									router.push(`/explorer/txs/${transaction.item_id}`)
+									router.push(`/explorer/txs/${transaction.tx_hash}`)
 								}
 							>
 								<td className="px-6 py-2">

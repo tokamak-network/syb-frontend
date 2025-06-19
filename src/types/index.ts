@@ -154,3 +154,7 @@ export enum Order {
 	ASC = 'ASC',
 	DESC = 'DESC',
 }
+export interface TransactionByHashResponse {
+	message: string;
+	transaction: Transaction;
+}
