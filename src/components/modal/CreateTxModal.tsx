@@ -8,7 +8,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
 import { useToast } from '@/context';
 import { SybilSepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress } from '@/utils';
+import { formatEthAddress, formatFullEthAddress } from '@/utils';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -58,16 +58,23 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	} | null>(null);
 	const [hasContractBalance, setHasContractBalance] = useState<boolean>(false);
 
-	// Read the user's contract balance
-	const { data: contractBalance } = useReadContract({
-		address: formatEthAddress(contracts.sybilSepolia.address) as `0x${string}`,
-		abi: SybilSepoliaABI,
-		functionName: 'accountInfo',
-		args: walletAddress ? [walletAddress] : undefined,
-	});
+	const { data: contractBalance, refetch: refetchContractBalance } =
+		useReadContract({
+			address: formatFullEthAddress(
+				contracts.sybilSepolia.address,
+			) as `0x${string}`,
+			abi: SybilSepoliaABI,
+			functionName: 'accountInfo',
+			args: walletAddress ? [walletAddress] : undefined,
+		});
 
 	useEffect(() => {
 		if (contractBalance) {
+			console.log('Contract balance updated:', {
+				rawValue: contractBalance[0].toString(),
+				formattedValue: ethers.utils.formatEther(contractBalance[0].toString()),
+				hasBalance: BigInt(contractBalance[0].toString()) > BigInt(0),
+			});
 			setHasContractBalance(BigInt(contractBalance[0].toString()) > BigInt(0));
 		} else {
 			setHasContractBalance(false);
@@ -86,6 +93,9 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 	useEffect(() => {
 		if (isSuccess && data) {
+			// Refetch contract balance after successful transaction
+			refetchContractBalance();
+
 			addToast(
 				'success',
 				'Transaction Confirmed',
@@ -135,6 +145,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		txTo,
 		txAmount,
 		pendingTxHash,
+		refetchContractBalance,
 	]);
 
 	const handleSend = async () => {
@@ -360,6 +371,26 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		{ value: 'unvouch', label: 'Unvouch' },
 		{ value: 'explode', label: 'Explode' },
 	];
+
+	// Add a useEffect to refetch balance when the modal is closed and reopened
+	useEffect(() => {
+		if (isOpen && walletAddress) {
+			console.log('Modal opened, refetching contract balance');
+			setTimeout(() => {
+				refetchContractBalance();
+			}, 500); // Small delay to ensure the UI is ready
+		}
+	}, [isOpen, walletAddress, refetchContractBalance]);
+
+	// Add a useEffect to refetch balance after a successful transaction
+	useEffect(() => {
+		if (isSuccess && data) {
+			console.log('Transaction successful, refetching contract balance');
+			setTimeout(() => {
+				refetchContractBalance();
+			}, 1000); // Small delay to ensure the blockchain has updated
+		}
+	}, [isSuccess, data, refetchContractBalance]);
 
 	return (
 		<>
