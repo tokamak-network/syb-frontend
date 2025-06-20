@@ -77,10 +77,26 @@ export const formatFirstLetter = (input: string) => {
 	return input.charAt(0).toUpperCase() + input.slice(1);
 };
 
-export const formatAmount = (amount: string) => {
-	const ethAmount = parseFloat(amount) / 1e18;
+/**
+ * Formats a Wei amount to a user-friendly value in ETH, Gwei, or Wei.
+ * @param amount - The amount in Wei as a string.
+ * @param decimals - Number of decimal places to show (default: 4).
+ * @returns {string} - The formatted amount in the most appropriate unit.
+ */
+export const formatAmount = (amount: string, decimals: number = 4): string => {
+	const weiValue = parseFloat(amount);
 
-	return `${ethAmount.toFixed(4)} ETH`;
+	const ethValue = weiValue / 1e18;
+	const gweiValue = weiValue / 1e9;
+
+	if (ethValue < 0.0001 && ethValue > 0) {
+		return `${gweiValue.toFixed(decimals)} Gwei`;
+	}
+	if (gweiValue < 0.0001 && gweiValue > 0) {
+		return `${weiValue} Wei`;
+	}
+
+	return `${ethValue.toFixed(decimals)} ETH`;
 };
 
 export const formatAddress = (address: string) => {

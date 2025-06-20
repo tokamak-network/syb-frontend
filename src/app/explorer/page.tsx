@@ -153,7 +153,7 @@ const ExplorerPage: React.FC = () => {
 									<tbody className="bg-tableRowBackground">
 										{accounts.map((account: Account, index: number) => (
 											<tr
-												key={account.accountIndex}
+												key={account.idx}
 												className={`${
 													index % 2 === 0
 														? 'bg-tableRowBackground'
@@ -161,7 +161,7 @@ const ExplorerPage: React.FC = () => {
 												} hover:bg-tableHover`}
 											>
 												<td className="px-6 py-4 font-medium">
-													{formatAddress(account.tonEthereumAddress)}
+													{formatAddress(account.eth_addr)}
 												</td>
 												<td className="px-6 py-4">
 													{formatAmount(account.balance)}

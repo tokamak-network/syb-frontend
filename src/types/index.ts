@@ -115,13 +115,10 @@ export interface NetworkType {
 }
 
 export interface Account {
-	accountIndex: string;
+	idx: string;
 	balance: string;
-	name?: string;
-	image?: string;
-	tonEthereumAddress: string;
-	itemId: number;
-	nonce: number;
+	score: string;
+	eth_addr: string;
 }
 
 export interface Transaction {
