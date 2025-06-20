@@ -4,6 +4,7 @@ import {
 	Transaction,
 	TransactionResponse,
 	TransactionByHashResponse,
+	AccountResponse,
 } from '@/types';
 
 import { apiRequest } from './api';
@@ -61,17 +62,21 @@ export const fetchTransactionByHash = async (
 export const fetchAccountByID = async (
 	accountIndex: string,
 ): Promise<Account> => {
-	return apiRequest({
+	const response = await apiRequest<AccountResponse>({
 		method: 'GET',
-		url: `/accounts/${accountIndex}`,
+		url: `/account/${accountIndex}`,
 	});
+
+	return response.account;
 };
 
 export const fetchAccountByAddress = async (
 	accountAddress: string,
 ): Promise<Account> => {
-	return apiRequest({
+	const response = await apiRequest<AccountResponse>({
 		method: 'GET',
 		url: `/accounts/address/${accountAddress}`,
 	});
+
+	return response.account;
 };
