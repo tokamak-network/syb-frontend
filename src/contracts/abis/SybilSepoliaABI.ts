@@ -65,6 +65,7 @@ export const SybilSepoliaABI = [
 				name: 'batchSize',
 				type: 'uint256',
 			},
+			{ indexed: false, internalType: 'bytes', name: 'txnData', type: 'bytes' },
 		],
 		name: 'ForgeBatch',
 		type: 'event',
@@ -306,6 +307,13 @@ export const SybilSepoliaABI = [
 		type: 'function',
 	},
 	{
+		inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
+		name: 'getScore',
+		outputs: [{ internalType: 'uint32', name: 'score', type: 'uint32' }],
+		stateMutability: 'view',
+		type: 'function',
+	},
+	{
 		inputs: [
 			{ internalType: 'bytes32', name: 'role', type: 'bytes32' },
 			{ internalType: 'address', name: 'account', type: 'address' },
@@ -454,6 +462,16 @@ export const SybilSepoliaABI = [
 			{ internalType: 'uint256', name: '_explodeAmount', type: 'uint256' },
 		],
 		name: 'updateExplodeAmount',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function',
+	},
+	{
+		inputs: [
+			{ internalType: 'address', name: 'user', type: 'address' },
+			{ internalType: 'uint32', name: 'score', type: 'uint32' },
+		],
+		name: 'updateScore',
 		outputs: [],
 		stateMutability: 'nonpayable',
 		type: 'function',
