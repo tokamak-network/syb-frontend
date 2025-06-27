@@ -2,51 +2,101 @@
 
 import { useState } from 'react';
 import TxTypes from '@/components/tables/TxType';
-import { ActionType, Transaction } from '@/types';
+import { ActionType, ActionStatus, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
 	formatTimestamp,
-	formatTonAddress,
+	formatEthAddress,
+	toChecksumAddress,
 } from '@/utils/format';
 import { Button, Dropdown } from '@/components';
 import { useRouter } from 'next/navigation';
 
+import { IoMdArrowDropdown } from 'react-icons/io';
+
 interface Props {
 	filteredTransactions: Transaction[];
+	setOrder: (order: Order) => void;
+	order: Order;
+	currentPage?: number;
+	totalPages?: number;
+	itemsPerPage?: number;
+	onPageChange?: (page: number) => void;
+	onLimitChange?: (limit: number) => void;
 }
 
 export const TransactionsTable: React.FC<Props> = ({
 	filteredTransactions,
+	setOrder,
+	order,
+	currentPage: externalCurrentPage,
+	totalPages: externalTotalPages,
+	itemsPerPage: externalItemsPerPage,
+	onPageChange,
+	onLimitChange,
 }) => {
 	const router = useRouter();
 
-	const [currentPage, setCurrentPage] = useState<number>(1);
-	const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+	const [internalCurrentPage, setInternalCurrentPage] = useState<number>(1);
+	const [internalItemsPerPage, setInternalItemsPerPage] = useState<number>(10);
 
-	const indexOfLastItem = currentPage * itemsPerPage;
+	const currentPage =
+		externalCurrentPage !== undefined
+			? externalCurrentPage
+			: internalCurrentPage;
+	const itemsPerPage =
+		externalItemsPerPage !== undefined
+			? externalItemsPerPage
+			: internalItemsPerPage;
 
-	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	let displayedTransactions = filteredTransactions;
+	let totalPages = externalTotalPages;
 
-	const currentTransactions = filteredTransactions.slice(
-		indexOfFirstItem,
-		indexOfLastItem,
-	);
+	if (externalCurrentPage === undefined) {
+		const indexOfLastItem = currentPage * itemsPerPage;
+		const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-	const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+		displayedTransactions = filteredTransactions.slice(
+			indexOfFirstItem,
+			indexOfLastItem,
+		);
+
+		totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+	} else {
+		displayedTransactions = filteredTransactions;
+	}
+
 	const handleNextPage = () => {
-		if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+		if (currentPage < (totalPages || 1)) {
+			if (onPageChange) {
+				onPageChange(currentPage + 1);
+			} else {
+				setInternalCurrentPage(currentPage + 1);
+			}
+		}
 	};
 
 	const handlePreviousPage = () => {
-		if (currentPage > 1) setCurrentPage(currentPage - 1);
+		if (currentPage > 1) {
+			if (onPageChange) {
+				onPageChange(currentPage - 1);
+			} else {
+				setInternalCurrentPage(currentPage - 1);
+			}
+		}
 	};
 
 	const pageSizeOptions = [5, 10, 20, 50];
 
 	const handleItemsPerPageChange = (value: number) => {
-		setItemsPerPage(value);
-		setCurrentPage(1); // Reset to first page when changing items per page
+		if (onLimitChange) {
+			onLimitChange(value);
+		} else {
+			setInternalItemsPerPage(value);
+			setInternalCurrentPage(1);
+		}
 	};
+
 	return (
 		<>
 			<table className="mt-4 min-w-full table-auto divide-y divide-tableBorder border border-tableBorder">
@@ -58,17 +108,26 @@ export const TransactionsTable: React.FC<Props> = ({
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Type
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+						<th
+							onClick={() =>
+								setOrder(order === Order.ASC ? Order.DESC : Order.ASC)
+							}
+							className="flex cursor-pointer items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary"
+						>
 							Timestamp
+							<IoMdArrowDropdown
+								size={16}
+								className={`cursor-pointer ${order === Order.ASC ? 'rotate-180' : ''}`}
+							/>
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
-							To
+						<th className="px-6 py-3 text-right text-sm font-bold uppercase text-tableTextPrimary">
+							Amount
 						</th>
-						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
-							Account Index
+						<th className="px-6 py-3 text-right text-sm font-bold uppercase text-tableTextPrimary">
+							Gas Fee
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							Status
@@ -76,49 +135,61 @@ export const TransactionsTable: React.FC<Props> = ({
 					</tr>
 				</thead>
 				<tbody className="divide-y divide-tableBorder bg-tableBackground">
-					{currentTransactions.length > 0 ? (
-						currentTransactions.map((transaction) => (
+					{displayedTransactions.length > 0 ? (
+						displayedTransactions.map((transaction) => (
 							<tr
-								key={transaction.id}
+								key={transaction.item_id}
 								className="cursor-pointer text-tableTextSecondary transition-colors duration-300 hover:bg-tableHover"
-								onClick={() => router.push(`/explorer/txs/${transaction.id}`)}
+								onClick={() =>
+									router.push(`/explorer/txs/${transaction.tx_hash}`)
+								}
 							>
 								<td className="px-6 py-2">
-									{formatTransactionHash(transaction.L1Info.ethereumTxHash)}
+									{transaction.tx_hash
+										? formatTransactionHash(transaction.tx_hash)
+										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
-									<TxTypes txType={transaction.type as ActionType.DEPOSIT} />
+									<TxTypes txType={transaction.type as ActionType} />
 								</td>
 								<td className="px-6 py-2">
 									{transaction.timestamp
-										? formatTimestamp(transaction.timestamp)
+										? formatTimestamp(new Date(transaction.timestamp * 1000))
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
 									<div className="group relative">
-										{formatTonAddress(transaction.fromTonEthereumAddress, true)}
+										{formatEthAddress(transaction.from_eth_addr)}
 										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-											{transaction.fromTonEthereumAddress
-												? formatTonAddress(transaction.fromTonEthereumAddress)
+											{transaction.from_eth_addr
+												? toChecksumAddress(transaction.from_eth_addr)
 												: 'N/A'}
 										</div>
 									</div>
+								</td>
+								<td className="px-6 py-2 text-right">
+									{transaction.amount ? `${transaction.amount} Gwei` : 'N/A'}
+								</td>
+								<td className="px-6 py-2 text-right">
+									{transaction.gas_fee ? `${transaction.gas_fee} Wei` : 'N/A'}
 								</td>
 								<td className="px-6 py-2">
-									<div className="group relative">
-										{formatTonAddress(
-											transaction.toTonEthereumAddress ?? '',
-											true,
-										)}
-										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-											{transaction.toTonEthereumAddress
-												? formatTonAddress(transaction.toTonEthereumAddress)
-												: 'N/A'}
+									{transaction.batch_num === 0 ? (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-yellow-400" />
+											<span className="text-yellow-400">
+												{ActionStatus.PENDING}
+											</span>
 										</div>
-									</div>
+									) : (
+										<div className="flex items-center gap-2">
+											<div className="h-2 w-2 rounded-full bg-green-400" />
+											<span className="text-green-400">
+												{ActionStatus.FORGED}
+											</span>
+										</div>
+									)}
 								</td>
-								<td className="px-6 py-2">{transaction.fromAccountIndex}</td>
-								<td className="px-6 py-2">{transaction.type}</td>
 							</tr>
 						))
 					) : (
@@ -140,7 +211,7 @@ export const TransactionsTable: React.FC<Props> = ({
 				</Button>
 				<div className="flex items-center gap-4">
 					<span className="text-paginationText">
-						Page {currentPage} of {totalPages}
+						Page {currentPage} of {totalPages || 1}
 					</span>
 					<div className="flex items-center gap-2">
 						<span className="text-paginationText">Show:</span>
@@ -159,7 +230,9 @@ export const TransactionsTable: React.FC<Props> = ({
 				</div>
 				<Button
 					className="rounded border border-paginationButtonBorder bg-paginationButton px-4 py-2 text-paginationButtonText disabled:opacity-50"
-					disabled={currentPage === totalPages || totalPages === 0}
+					disabled={
+						currentPage === (totalPages || 1) || (totalPages || 0) === 0
+					}
 					onClick={handleNextPage}
 				>
 					Next

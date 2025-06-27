@@ -15,15 +15,13 @@ const config: Config = {
     'node_modules/(?!(@wagmi|@tanstack/react-query|viem)/)',
   ],
   transform: {
-    // Use babel-jest to transform files
-    '^.+\\.(t|j)sx?$': 'babel-jest',
+    '^.+\\.(t|j)sx?$': ['babel-jest', { configFile: './babel.config.cjs' }],
     '^.+\\.mjs$': 'jest-esm-transformer',
     '^.+\\.tsx?$': 'ts-jest',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^wagmi$': 'wagmi/dist/cjs/index.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   globals: {
@@ -33,5 +31,4 @@ const config: Config = {
   },
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);

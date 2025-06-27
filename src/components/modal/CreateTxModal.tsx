@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useWaitForTransactionReceipt } from 'wagmi';
+import { useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { useRouter } from 'next/navigation';
+import { ethers } from 'ethers';
 
 import { Input, Select, Button, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
 import { useToast } from '@/context';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import { formatEthAddress, formatFullEthAddress } from '@/utils';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -18,7 +21,7 @@ interface CreateTxModalProps {
 		hash?: `0x${string}`;
 	}) => void;
 	isConnected: boolean;
-	walletAddress?: string;
+	walletAddress?: `0x${string}`;
 }
 
 export const CreateTxModal: React.FC<CreateTxModalProps> = ({
@@ -30,10 +33,16 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 }) => {
 	const router = useRouter();
 	const { balance } = useWallet();
-	const { handleCreateAccount, handleDeposit } = useSepoliaTransactions();
+	const {
+		handleDeposit,
+		handleVouch,
+		handleUnvouch,
+		handleExplodeMultiple,
+		handleWithdraw,
+	} = useSepoliaTransactions();
 	const { addToast } = useToast();
 
-	const [txType, setTxType] = useState<string>('create account');
+	const [txType, setTxType] = useState<string>('deposit');
 	const [txFrom, setTxFrom] = useState<string>(walletAddress || '');
 	const [txTo, setTxTo] = useState<string>('');
 	const [txAmount, setTxAmount] = useState<string>('');
@@ -47,6 +56,30 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		type: string;
 		hash?: `0x${string}`;
 	} | null>(null);
+	const [hasContractBalance, setHasContractBalance] = useState<boolean>(false);
+
+	const { data: contractBalance, refetch: refetchContractBalance } =
+		useReadContract({
+			address: formatFullEthAddress(
+				contracts.sybilSepolia.address,
+			) as `0x${string}`,
+			abi: SybilSepoliaABI,
+			functionName: 'accountInfo',
+			args: walletAddress ? [walletAddress] : undefined,
+		});
+
+	useEffect(() => {
+		if (contractBalance) {
+			console.log('Contract balance updated:', {
+				rawValue: contractBalance[0].toString(),
+				formattedValue: ethers.utils.formatEther(contractBalance[0].toString()),
+				hasBalance: BigInt(contractBalance[0].toString()) > BigInt(0),
+			});
+			setHasContractBalance(BigInt(contractBalance[0].toString()) > BigInt(0));
+		} else {
+			setHasContractBalance(false);
+		}
+	}, [contractBalance]);
 
 	const {
 		data,
@@ -60,6 +93,9 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 	useEffect(() => {
 		if (isSuccess && data) {
+			// Refetch contract balance after successful transaction
+			refetchContractBalance();
+
 			addToast(
 				'success',
 				'Transaction Confirmed',
@@ -109,18 +145,47 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		txTo,
 		txAmount,
 		pendingTxHash,
+		refetchContractBalance,
 	]);
 
 	const handleSend = async () => {
 		if (!isConnected) {
 			setError('Please connect your wallet first');
-
 			return;
 		}
 
-		if (!txAmount || parseFloat(txAmount) <= 0) {
+		if (
+			['deposit', 'withdraw'].includes(txType) &&
+			(!txAmount || parseFloat(txAmount) <= 0)
+		) {
 			setError('Amount must be greater than 0');
+			return;
+		}
 
+		// Check if deposit amount exceeds wallet balance
+		if (
+			txType === 'deposit' &&
+			balance &&
+			parseFloat(txAmount) > parseFloat(balance)
+		) {
+			setError('Deposit amount cannot exceed wallet balance');
+			return;
+		}
+
+		// Check if withdraw amount exceeds contract balance
+		if (txType === 'withdraw' && contractBalance) {
+			const contractBalanceEth = ethers.utils.formatEther(
+				contractBalance[0].toString(),
+			);
+			if (parseFloat(txAmount) > parseFloat(contractBalanceEth)) {
+				setError('Withdraw amount cannot exceed contract balance');
+				return;
+			}
+		}
+
+		// Check if the user has contract balance when attempting non-deposit transactions
+		if (!hasContractBalance && txType !== 'deposit') {
+			setError('You need to make a deposit first to use this functionality');
 			return;
 		}
 
@@ -131,38 +196,44 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			let hash: `0x${string}`;
 
 			switch (txType) {
-				case 'create account':
-					hash = await handleCreateAccount(txAmount);
-					break;
-
 				case 'deposit': {
-					if (!txTo) throw new Error('From index (txTo) is required');
-					const fromIdx = parseInt(txTo, 10);
-
-					if (isNaN(fromIdx)) throw new Error('Invalid from index');
-					hash = await handleDeposit(fromIdx, txAmount);
+					hash = await handleDeposit(txAmount);
 					break;
 				}
 
-				// case 'vouch':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleVouch(txTo, txAmount);
-				//   break;
+				case 'withdraw': {
+					hash = await handleWithdraw(txAmount);
+					break;
+				}
 
-				// case 'unvouch':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleUnvouch(txTo);
-				//   break;
+				case 'vouch': {
+					if (!txTo) throw new Error('Recipient address required');
+					hash = await handleVouch(txTo);
+					break;
+				}
 
-				// case 'exit':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleExit(txTo);
-				//   break;
+				case 'unvouch': {
+					if (!txTo) throw new Error('Recipient address required');
+					hash = await handleUnvouch(txTo);
+					break;
+				}
 
-				// case 'explode':
-				//   if (!txTo) throw new Error('Recipient address required');
-				//   hash = await handleExplode(txTo);
-				//   break;
+				case 'explode': {
+					if (!txTo) throw new Error('Recipient address required');
+
+					// Parse multiple addresses if provided
+					const addresses = txTo.includes(',')
+						? txTo.split(',').map((addr) => addr.trim())
+						: [txTo.trim()];
+
+					// Validate that we have at least one valid address
+					if (addresses.length === 0 || addresses.some((addr) => !addr)) {
+						throw new Error('At least one valid address is required');
+					}
+
+					hash = await handleExplodeMultiple(addresses);
+					break;
+				}
 
 				default:
 					throw new Error('Unknown transaction type');
@@ -219,6 +290,108 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		}
 	}, [isConnected]);
 
+	const renderTransactionGuidance = () => {
+		switch (txType) {
+			case 'deposit':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						Deposit ETH into the Sybil contract. Minimum balance requirement
+						applies.
+					</div>
+				);
+			case 'withdraw':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Withdraw ETH from the Sybil contract. You must maintain minimum
+								balance.
+							</span>
+						)}
+					</div>
+				);
+			case 'vouch':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Vouch for another account. Both accounts must have non-zero
+								balances.
+							</span>
+						)}
+					</div>
+				);
+			case 'unvouch':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Remove your vouch for another account. You must have previously
+								vouched for them.
+							</span>
+						)}
+					</div>
+				);
+			case 'explode':
+				return (
+					<div className="mt-1 text-xs text-gray-400">
+						{!hasContractBalance ? (
+							<span className="text-red-400">
+								First deposit to use this functionality.
+							</span>
+						) : (
+							<span>
+								Explode accounts that have vouched for you. They&apos;ll lose
+								funds up to the explode amount.
+							</span>
+						)}
+					</div>
+				);
+			default:
+				return null;
+		}
+	};
+
+	const txTypeOptions = [
+		{ value: 'deposit', label: 'Deposit' },
+		{ value: 'withdraw', label: 'Withdraw' },
+		{ value: 'vouch', label: 'Vouch' },
+		{ value: 'unvouch', label: 'Unvouch' },
+		{ value: 'explode', label: 'Explode' },
+	];
+
+	// Add a useEffect to refetch balance when the modal is closed and reopened
+	useEffect(() => {
+		if (isOpen && walletAddress) {
+			console.log('Modal opened, refetching contract balance');
+			setTimeout(() => {
+				refetchContractBalance();
+			}, 500); // Small delay to ensure the UI is ready
+		}
+	}, [isOpen, walletAddress, refetchContractBalance]);
+
+	// Add a useEffect to refetch balance after a successful transaction
+	useEffect(() => {
+		if (isSuccess && data) {
+			console.log('Transaction successful, refetching contract balance');
+			setTimeout(() => {
+				refetchContractBalance();
+			}, 1000); // Small delay to ensure the blockchain has updated
+		}
+	}, [isSuccess, data, refetchContractBalance]);
+
 	return (
 		<>
 			<Modal
@@ -230,17 +403,22 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				<div className="flex flex-col space-y-4">
 					<Select
 						label="Type"
-						options={[
-							{ value: 'create account', label: 'Create Account' },
-							{ value: 'deposit', label: 'Deposit' },
-							{ value: 'vouch', label: 'Vouch' },
-							{ value: 'unvouch', label: 'Unvouch' },
-							{ value: 'exit', label: 'Exit' },
-							{ value: 'explode', label: 'Explode' },
-						]}
+						options={txTypeOptions}
 						value={txType}
-						onChange={setTxType}
+						onChange={(e) => {
+							// Only allow changing to non-deposit types if user has a contract balance
+							if (!hasContractBalance && e !== 'deposit') {
+								setError(
+									'You need to make a deposit first to use this functionality',
+								);
+								return;
+							}
+							setTxType(e);
+							setError(null);
+						}}
 					/>
+
+					{renderTransactionGuidance()}
 
 					<Input
 						disabled={!!walletAddress || !isConnected}
@@ -250,53 +428,144 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 					/>
 
 					{isConnected && (
-						<div className="text-sm text-gray-500">
-							Current Balance: {balance ? `${balance} ETH` : 'Loading...'}
+						<div className="space-y-2">
+							<div className="text-sm text-gray-500">
+								Current Wallet Balance:{' '}
+								{balance ? `${balance} ETH` : 'Loading...'}
+							</div>
+
+							<div className="text-sm">
+								{hasContractBalance && contractBalance ? (
+									<span className="text-green-500">
+										Deposited Amount:{' '}
+										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
+										ETH
+									</span>
+								) : (
+									<span className="text-yellow-500">
+										You haven&apos;t deposited any funds yet. Deposit to unlock
+										all features.
+									</span>
+								)}
+							</div>
 						</div>
 					)}
 
-					{['deposit', 'vouch', 'unvouch', 'explode', 'exit'].includes(
-						txType,
-					) && (
-						<Input
-							disabled={!isConnected}
-							label="To"
-							placeholder={
-								['vouch', 'unvouch', 'explode', 'exit'].includes(txType)
-									? 'Enter Index'
-									: 'Enter address'
-							}
-							value={txTo}
-							onChange={(e) => setTxTo(e.target.value)}
-						/>
-					)}
-
-					{['create account', 'deposit'].includes(txType) && (
-						<div className="flex space-x-2">
+					{['vouch', 'unvouch', 'explode'].includes(txType) && (
+						<>
 							<Input
-								disabled={!isConnected}
-								label="Amount (ETH)"
-								placeholder="Enter amount"
-								type="number"
-								value={txAmount}
-								onChange={(e) => setTxAmount(e.target.value)}
+								disabled={
+									!isConnected || (txType !== 'deposit' && !hasContractBalance)
+								}
+								label={
+									txType === 'explode' ? 'To (comma-separated addresses)' : 'To'
+								}
+								placeholder={
+									txType === 'explode' ? 'Enter Address(es)' : 'Enter Address'
+								}
+								value={txTo}
+								onChange={(e) => setTxTo(e.target.value)}
 							/>
-							<Button
-								className="mt-6 px-2 py-1 text-sm"
-								disabled={!isConnected || !balance}
-								onClick={handleSetMaxAmount}
-							>
-								Max
-							</Button>
+
+							{txType === 'explode' && (
+								<div className="text-xs text-gray-400">
+									For multiple addresses, separate them with commas
+								</div>
+							)}
+						</>
+					)}
+
+					{['deposit', 'withdraw'].includes(txType) && (
+						<div className="flex flex-col space-y-2">
+							<div className="flex space-x-2">
+								<Input
+									disabled={
+										!isConnected ||
+										(txType !== 'deposit' && !hasContractBalance)
+									}
+									label="Amount (ETH)"
+									placeholder="Enter amount"
+									type="number"
+									value={txAmount}
+									onChange={(e) => setTxAmount(e.target.value)}
+								/>
+								<Button
+									className="mt-6 px-2 py-1 text-sm"
+									disabled={
+										!isConnected ||
+										!balance ||
+										(txType !== 'deposit' && !hasContractBalance)
+									}
+									onClick={handleSetMaxAmount}
+								>
+									Max
+								</Button>
+							</div>
+							{txType === 'deposit' && balance && (
+								<div className="text-xs text-gray-400">
+									<div>Available wallet balance: {balance} ETH</div>
+									{txAmount && parseFloat(txAmount) > 0 && (
+										<div
+											className={
+												parseFloat(txAmount) > parseFloat(balance)
+													? 'mt-1 text-red-400'
+													: 'mt-1 text-green-400'
+											}
+										>
+											{parseFloat(txAmount) > parseFloat(balance)
+												? 'Amount exceeds available balance'
+												: 'Valid amount'}
+										</div>
+									)}
+								</div>
+							)}
+							{txType === 'withdraw' && contractBalance && (
+								<div className="text-xs text-gray-400">
+									<div>
+										Available contract balance:{' '}
+										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
+										ETH
+									</div>
+									{txAmount && parseFloat(txAmount) > 0 && (
+										<div
+											className={
+												parseFloat(txAmount) >
+												parseFloat(
+													ethers.utils.formatEther(
+														contractBalance[0].toString(),
+													),
+												)
+													? 'mt-1 text-red-400'
+													: 'mt-1 text-green-400'
+											}
+										>
+											{parseFloat(txAmount) >
+											parseFloat(
+												ethers.utils.formatEther(contractBalance[0].toString()),
+											)
+												? 'Amount exceeds contract balance'
+												: 'Valid amount'}
+										</div>
+									)}
+								</div>
+							)}
 						</div>
 					)}
 
-					{error && <p className="text-sm text-red-500">{error}</p>}
+					{error && (
+						<div className="rounded-md bg-red-500/20 p-3">
+							<p className="text-sm text-red-500">{error}</p>
+						</div>
+					)}
 
 					<div className="flex w-full justify-center">
 						<Button
 							className="mt-4 w-auto"
-							disabled={!isConnected || isTransactionProcessing}
+							disabled={
+								!isConnected ||
+								isTransactionProcessing ||
+								(txType !== 'deposit' && !hasContractBalance)
+							}
 							onClick={handleSend}
 						>
 							{!isConnected

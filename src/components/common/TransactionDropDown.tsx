@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { FaList, FaClock, FaCheck } from 'react-icons/fa';
 
@@ -16,8 +18,6 @@ export const TransactionDropDown: React.FC<TransactionDropDownProps> = ({
 	value,
 	onChange,
 }) => {
-	const { theme } = useTheme();
-
 	const transactionOptions = [
 		{
 			value: 'all',
@@ -44,7 +44,7 @@ export const TransactionDropDown: React.FC<TransactionDropDownProps> = ({
 		<Dropdown
 			items={transactionOptions}
 			renderItem={(item) => (
-				<div className="flex items-center space-x-2">
+				<div className="items-left flex space-x-2">
 					{item.icon}
 					<span className="text-sm">{item.label}</span>
 				</div>

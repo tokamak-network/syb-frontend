@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -31,9 +33,14 @@ export const NavLinkButton: React.FC<NavLinkButtonProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const pathname = usePathname();
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
 	const currentThemeStyles = themeStyles[theme];
-	const isActive = pathname === href || pathname.startsWith(href);
+	const isActive = isClient && (pathname === href || pathname.startsWith(href));
 
 	return (
 		<Link

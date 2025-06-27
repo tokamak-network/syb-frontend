@@ -9,6 +9,7 @@ import { ToastProvider } from '@/context';
 import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
 import { mainNetwork, l1TestNetwork, l2TestNetwork } from '@/types';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { ErrorBoundary } from '@/components';
 
 interface AppProvidersProps {
 	children: React.ReactNode;
@@ -26,14 +27,19 @@ export const config = createConfig({
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 	return (
-		<SessionProvider>
-			<WagmiProvider config={config}>
-				<ThemeProvider>
-					<ToastProvider>
-						<ReactQueryProvider>{children}</ReactQueryProvider>
-					</ToastProvider>
-				</ThemeProvider>
-			</WagmiProvider>
-		</SessionProvider>
+		<ErrorBoundary
+			fallbackTitle="Layout Error"
+			fallbackMessage="There was an issue loading the main application layout."
+		>
+			<SessionProvider>
+				<WagmiProvider config={config}>
+					<ThemeProvider>
+						<ToastProvider>
+							<ReactQueryProvider>{children}</ReactQueryProvider>
+						</ToastProvider>
+					</ThemeProvider>
+				</WagmiProvider>
+			</SessionProvider>
+		</ErrorBoundary>
 	);
 };

@@ -115,38 +115,26 @@ export interface NetworkType {
 }
 
 export interface Account {
-	accountIndex: string;
+	idx: string;
 	balance: string;
-	name?: string;
-	image?: string;
-	tonEthereumAddress: string;
-	itemId: number;
-	nonce: number;
-}
-
-interface L1Info {
-	ethereumBlockNum: number;
-	historicDepositAmountUSD: number | null;
-	depositAmount: string;
-	toForgeL1TransactionsNum: number;
-	userOrigin: boolean;
-	ethereumTxHash: string;
-	l1Fee: string;
+	score: string;
+	eth_addr: string;
 }
 
 export interface Transaction {
-	L1Info: L1Info;
+	item_id: number;
+	batch_num: number;
+	position: string;
+	type: ActionType;
+	from_idx: number;
+	from_eth_addr: string;
+	to_idx: number;
+	to_eth_addr: string;
 	amount: string;
-	batchNum: number;
-	fromAccountIndex: string;
-	fromTonEthereumAddress: string;
-	id: string;
-	itemId: number;
-	position: number;
-	timestamp: string;
-	toAccountIndex: string;
-	toTonEthereumAddress: string | null;
-	type: string;
+	block_number: number;
+	timestamp: number;
+	gas_fee: string;
+	tx_hash?: string;
 }
 
 export interface TransactionResponse {
@@ -157,4 +145,19 @@ export interface TransactionResponse {
 export interface AccountsResponse {
 	accounts: Account[];
 	pendingItems: number;
+}
+
+export enum Order {
+	ASC = 'ASC',
+	DESC = 'DESC',
+}
+
+export interface AccountResponse {
+	account: Account;
+	message: string;
+}
+
+export interface TransactionByHashResponse {
+	message: string;
+	transaction: Transaction;
 }

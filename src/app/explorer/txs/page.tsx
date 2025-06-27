@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 
 import {
 	Button,
@@ -10,20 +11,36 @@ import {
 	SearchBarComponent,
 	TransactionsTable,
 } from '@/components';
-import { fetchTransactions } from '@/utils';
+import {
+	fetchTransactionsPaginated,
+	fetchTransactionsByAccount,
+} from '@/utils';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
-import { formatTonAddress } from '@/utils/format';
+import { Order } from '@/types';
+
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
-	const { address } = useWallet();
+	const { address, isConnected } = useWallet();
 	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [order, setOrder] = useState<Order>(Order.DESC);
+	const [page, setPage] = useState<number>(1);
+	const [limit, setLimit] = useState<number>(10);
+
 	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
-		queryKey: ['transactions'],
-		queryFn: fetchTransactions,
+		queryKey: ['transactions', order, page, limit],
+		queryFn: () => fetchTransactionsPaginated(page, limit, order),
 		staleTime: 30000,
 		refetchInterval: 30000,
+	});
+
+	const { data: userTransactions, isLoading: isLoadingUserTx } = useQuery({
+		queryKey: ['userTransactions', address],
+		queryFn: () => (address ? fetchTransactionsByAccount(address) : null),
+		staleTime: 30000,
+		refetchInterval: 30000,
+		enabled: !!address,
 	});
 
 	const transactions = transactionHistory?.transactions || [];
@@ -31,12 +48,32 @@ const TransactionsPage: React.FC = () => {
 	const filteredTransactions = transactions.filter((transaction) => {
 		const query = searchQuery.toLowerCase();
 		return (
-			transaction.id.toLowerCase().includes(query) ||
-			transaction.fromTonEthereumAddress.toLowerCase().includes(query) ||
-			(transaction.fromAccountIndex &&
-				transaction.fromAccountIndex.toString().toLowerCase().includes(query))
+			(transaction.tx_hash
+				? String(transaction.tx_hash).toLowerCase().includes(query)
+				: false) ||
+			(transaction.from_eth_addr
+				? transaction.from_eth_addr.toLowerCase().includes(query)
+				: false) ||
+			(transaction.from_idx
+				? String(transaction.from_idx).toLowerCase().includes(query)
+				: false) ||
+			(transaction.to_eth_addr
+				? transaction.to_eth_addr.toLowerCase().includes(query)
+				: false) ||
+			(transaction.to_idx
+				? String(transaction.to_idx).toLowerCase().includes(query)
+				: false)
 		);
 	});
+
+	const handlePageChange = (newPage: number) => {
+		setPage(newPage);
+	};
+
+	const handleLimitChange = (newLimit: number) => {
+		setLimit(newLimit);
+		setPage(1);
+	};
 
 	if (isLoadingTx) return <PageLoader />;
 
@@ -73,18 +110,48 @@ const TransactionsPage: React.FC = () => {
 				</TabsList>
 				<TabsContent value="all">
 					{filteredTransactions && (
-						<TransactionsTable filteredTransactions={filteredTransactions} />
+						<TransactionsTable
+							filteredTransactions={filteredTransactions}
+							setOrder={setOrder}
+							order={order}
+							currentPage={page}
+							totalPages={Math.ceil(
+								(transactionHistory?.pendingItems || 0) / limit,
+							)}
+							onPageChange={handlePageChange}
+							onLimitChange={handleLimitChange}
+							itemsPerPage={limit}
+						/>
 					)}
 				</TabsContent>
 				<TabsContent value="me">
-					{filteredTransactions && (
-						<TransactionsTable
-							filteredTransactions={filteredTransactions.filter(
-								(transaction) =>
-									formatTonAddress(transaction.fromTonEthereumAddress) ===
-									address,
-							)}
-						/>
+					{!isConnected ? (
+						<div className="flex flex-col items-center justify-center rounded-lg p-10 text-center">
+							<div className="mb-4 rounded-full bg-purple-600 p-3">
+								<Image
+									src="/images/wallets/metamask.svg"
+									alt="MetaMask"
+									width={24}
+									height={24}
+								/>
+							</div>
+							<p className="text-xl font-semibold text-purple-900">
+								Please connect your MetaMask wallet
+							</p>
+							<p className="mt-2 text-purple-950">
+								Connect your wallet to view your transaction history
+							</p>
+						</div>
+					) : isLoadingUserTx ? (
+						<PageLoader />
+					) : (
+						userTransactions?.transactions && (
+							<TransactionsTable
+								filteredTransactions={userTransactions.transactions}
+								setOrder={setOrder}
+								order={order}
+							/>
+						)
 					)}
 				</TabsContent>
 			</Tabs>

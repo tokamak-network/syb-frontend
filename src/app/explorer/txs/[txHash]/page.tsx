@@ -12,20 +12,26 @@ import {
 	convertWeiToGweiAndEther,
 	fetchTransactionByHash,
 	formatTimestamp,
+	formatWeiValue,
+	formatEthAddress,
+	formatTransactionHash,
+	formatFullEthAddress,
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
-import { formatTonAddress } from '@/utils';
+import { useWallet } from '@/hooks/useWallet';
+import { FiExternalLink } from 'react-icons/fi';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();
 	const router = useRouter();
+	const { chain } = useWallet();
 
 	const {
 		data: transaction,
 		isLoading,
 		error,
 	} = useQuery({
-		queryKey: ['transaction', txHash],
+		queryKey: ['transaction', txHash as string],
 		queryFn: () => fetchTransactionByHash(txHash as string),
 		enabled: !!txHash,
 		staleTime: 30000,
@@ -46,7 +52,22 @@ const TransactionDetailsPage: React.FC = () => {
 		return <div className="p-8">Transaction not found.</div>;
 	}
 
-	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.L1Info.l1Fee);
+	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.gas_fee);
+
+	const txHashToDisplay = formatTransactionHash(
+		transaction.tx_hash ?? '',
+		10,
+		true,
+	);
+
+	const getExplorerUrl = () => {
+		if (!chain || !chain.blockExplorers) return null;
+
+		const explorerUrl = chain.blockExplorers.default.url;
+		return `${explorerUrl}/tx/${txHashToDisplay}`;
+	};
+
+	const explorerUrl = getExplorerUrl();
 
 	return (
 		<div className="p-8">
@@ -65,9 +86,19 @@ const TransactionDetailsPage: React.FC = () => {
 			<div className="space-y-4">
 				<div>
 					<strong>Transaction Hash:</strong>{' '}
-					{transaction.L1Info.ethereumTxHash
-						? transaction.L1Info.ethereumTxHash
-						: transaction.id}
+					{explorerUrl ? (
+						<a
+							href={explorerUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+						>
+							{formatTransactionHash(txHashToDisplay)}
+							<FiExternalLink className="ml-1" />
+						</a>
+					) : (
+						txHashToDisplay
+					)}
 				</div>
 				<div className="flex items-center space-x-2">
 					<strong>Type:</strong>
@@ -77,7 +108,7 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Status:</strong>{' '}
 					<TxStatus
 						status={
-							(transaction.batchNum === 0
+							(transaction.batch_num === 0
 								? 'Pending'
 								: 'Forged') as ActionStatus
 						}
@@ -85,23 +116,24 @@ const TransactionDetailsPage: React.FC = () => {
 				</div>
 				<div>
 					<strong>From:</strong>{' '}
-					{formatTonAddress(transaction.fromTonEthereumAddress)}
+					{formatFullEthAddress(transaction.from_eth_addr)}
 				</div>
 				<div>
 					<strong>To:</strong>{' '}
-					{formatTonAddress(transaction.toTonEthereumAddress ?? '')}
+					{formatFullEthAddress(transaction.to_eth_addr ?? '')}
 				</div>
 				<div>
-					<strong>Block Number:</strong> {transaction.L1Info.ethereumBlockNum}
+					<strong>Block Number:</strong> {transaction.block_number}
 				</div>
 				<div>
-					<strong>Value:</strong> {transaction.amount} ETH
+					<strong>Value:</strong> {formatWeiValue(transaction.amount)}
 				</div>
 				<div>
-					<strong>Fee:</strong> {gwei} Gwei ({ether} Ether)
+					<strong>Fee:</strong> {formatWeiValue(transaction.gas_fee)}
 				</div>
 				<div>
-					<strong>Timestamp:</strong> {formatTimestamp(transaction.timestamp)}
+					<strong>Timestamp:</strong>{' '}
+					{formatTimestamp(new Date(transaction.timestamp * 1000))}
 				</div>
 			</div>
 		</div>

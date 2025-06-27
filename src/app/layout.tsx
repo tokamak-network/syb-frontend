@@ -2,14 +2,9 @@ import type { Metadata } from 'next';
 
 import React from 'react';
 import './globals.css';
-import dynamic from 'next/dynamic';
 
 import { AppProviders } from '@/providers/AppProviders';
-
-const Layout = dynamic(
-	() => import('@/components/layout').then((mod) => mod.Layout),
-	{ ssr: false },
-);
+import { Layout } from '@/components/layout';
 
 export const metadata: Metadata = {
 	title: 'SYB',
@@ -23,7 +18,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html className={``} lang="en">
-			<body>
+			<body suppressHydrationWarning={true}>
 				<AppProviders>
 					<Layout>{children}</Layout>
 				</AppProviders>

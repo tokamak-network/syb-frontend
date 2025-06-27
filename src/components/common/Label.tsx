@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useRouter } from 'next/navigation';
 
-import { shortenAddress } from '@/utils';
+import { shortenAddress, formatTransactionHash } from '@/utils';
 
 interface LabelProps {
 	value: string;
-	shorten?: 'middle' | 'end';
+	shorten?: 'middle' | 'end' | 'full';
 	explore?: boolean;
 	isTransaction: boolean;
 	navigateToAccount?: boolean;
@@ -22,16 +22,29 @@ export const Label: React.FC<LabelProps> = ({
 	className = '',
 }) => {
 	const router = useRouter();
+	const [explorerUrl, setExplorerUrl] = useState<string>('');
+	const [isClient, setIsClient] = useState(false);
 
-	const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '';
-	const explorerPath = isTransaction ? `tx/${value}` : `accounts/${value}`;
-	const displayValue = shortenAddress(value, shorten);
+	useEffect(() => {
+		setExplorerUrl(process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL || '');
+		setIsClient(true);
+	}, []);
+	const explorerPath = isTransaction
+		? `tx/${value.startsWith('0x') ? value : `0x${value}`}`
+		: `accounts/${value}`;
 
-	console.log(value, 'value');
+	const displayValue = isTransaction
+		? formatTransactionHash(
+				value,
+				shorten === 'end' ? 4 : shorten === 'full' ? 64 : 6,
+			)
+		: shortenAddress(value, shorten);
 
-	const formattedDisplayValue = displayValue.startsWith('0x')
-		? `0x${displayValue.slice(2).toUpperCase()}`
-		: displayValue.toUpperCase();
+	const formattedDisplayValue = isTransaction
+		? displayValue
+		: displayValue.startsWith('0x')
+			? `0x${displayValue.slice(2).toUpperCase()}`
+			: displayValue.toUpperCase();
 
 	const handleClick = () => {
 		if (navigateToAccount) {
@@ -52,9 +65,9 @@ export const Label: React.FC<LabelProps> = ({
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger asChild>
-					{explore ? (
+					{explore && isClient ? (
 						<a
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							href={`${explorerUrl}/${explorerPath}`}
 							rel="noopener noreferrer"
 							target="_blank"
@@ -63,7 +76,7 @@ export const Label: React.FC<LabelProps> = ({
 						</a>
 					) : navigateToAccount ? (
 						<span
-							className={`inline-block w-fit cursor-pointer text-blue-500 hover:underline ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-blue-500 hover:underline ${className}`}
 							role="button"
 							tabIndex={0}
 							onClick={handleClick}
@@ -73,7 +86,7 @@ export const Label: React.FC<LabelProps> = ({
 						</span>
 					) : (
 						<span
-							className={`inline-block w-fit cursor-pointer text-gray-700 ${className}`}
+							className={`inline-block cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 ${className}`}
 						>
 							{formattedDisplayValue}
 						</span>
@@ -82,12 +95,16 @@ export const Label: React.FC<LabelProps> = ({
 				<Tooltip.Portal>
 					<Tooltip.Content
 						align="center"
-						className="rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-md"
+						className="w-[300px] break-words rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-lg"
 						side="top"
 					>
-						{value.startsWith('0x')
-							? `0x${value.slice(2).toUpperCase()}`
-							: value.toUpperCase()}
+						{isTransaction
+							? value.startsWith('0x')
+								? value
+								: `0x${value}`
+							: value.startsWith('0x')
+								? `0x${value.slice(2).toUpperCase()}`
+								: value.toUpperCase()}
 						<Tooltip.Arrow className="fill-gray-800" />
 					</Tooltip.Content>
 				</Tooltip.Portal>

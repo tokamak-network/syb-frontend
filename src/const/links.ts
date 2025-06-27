@@ -104,42 +104,42 @@ export const FooterLegals = [
 export const FooterSocialMedia = [
 	{
 		label: 'MEDIUM',
-		link: 'https://medium.syb.com',
+		link: process.env.NEXT_PUBLIC_MEDIUM_URL,
 		icon: FaMedium,
 	},
 	{
 		label: 'TWITTER',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_TWITTER_URL,
 		icon: FaTwitter,
 	},
 	{
 		label: 'FACEBOOK',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_FACEBOOK_URL,
 		icon: FaFacebook,
 	},
 	{
 		label: 'TELEGRAM',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_TELEGRAM_GROUP_URL,
 		icon: FaTelegram,
 	},
 	{
 		label: 'DISCORD',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_DISCORD_URL,
 		icon: FaDiscord,
 	},
 	{
 		label: 'LINKEDIN',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_LINKEDIN_URL,
 		icon: FaLinkedin,
 	},
 	{
 		label: 'TIKTOK',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_TIKTOK_URL,
 		icon: FaTiktok,
 	},
 	{
 		label: 'INSTAGRAM',
-		link: 'https://docs.syb.com',
+		link: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
 		icon: FaInstagram,
 	},
 ];

@@ -1,7 +1,7 @@
 // utils/format.ts
 
 import { format, formatDistanceToNow } from 'date-fns';
-import { isAddress } from 'viem';
+import { isAddress, getAddress } from 'viem';
 
 /**
  * Shortens an Ethereum address for display.
@@ -77,17 +77,46 @@ export const formatFirstLetter = (input: string) => {
 	return input.charAt(0).toUpperCase() + input.slice(1);
 };
 
-export const formatAmount = (amount: string) => {
-	const ethAmount = parseFloat(amount) / 1e18;
+/**
+ * Formats a Wei amount to a user-friendly value in ETH, Gwei, or Wei.
+ * @param amount - The amount in Wei as a string.
+ * @param decimals - Number of decimal places to show (default: 4).
+ * @returns {string} - The formatted amount in the most appropriate unit.
+ */
+export const formatAmount = (amount: string, decimals: number = 4): string => {
+	const weiValue = parseFloat(amount);
 
-	return `${ethAmount.toFixed(4)} ETH`;
+	const ethValue = weiValue / 1e18;
+	const gweiValue = weiValue / 1e9;
+
+	if (ethValue < 0.0001 && ethValue > 0) {
+		return `${gweiValue.toFixed(decimals)} Gwei`;
+	}
+	if (gweiValue < 0.0001 && gweiValue > 0) {
+		return `${weiValue} Wei`;
+	}
+
+	return `${ethValue.toFixed(decimals)} ETH`;
 };
 
 export const formatAddress = (address: string) => {
 	if (!address) return '-';
-	const cleanAddress = address.replace('ton:', '');
+	let cleanAddress = address.replace('ton:', '');
 
-	return `${cleanAddress.slice(0, 6)}...${cleanAddress.slice(-4)}`;
+	// Add 0x prefix if missing and address looks like hex (40 chars)
+	if (
+		!cleanAddress.startsWith('0x') &&
+		/^[a-fA-F0-9]{40}$/.test(cleanAddress)
+	) {
+		cleanAddress = `0x${cleanAddress}`;
+	}
+
+	// Apply checksum formatting for Ethereum addresses
+	const checksummedAddress = isAddress(cleanAddress)
+		? toChecksumAddress(cleanAddress)
+		: cleanAddress;
+
+	return `${checksummedAddress.slice(0, 6)}...${checksummedAddress.slice(-4)}`;
 };
 
 export const formatTimestamp = (timestamp: string | Date): string => {
@@ -106,10 +135,23 @@ export const validateAddress = (address: string): `0x${string}` => {
 	return address as `0x${string}`;
 };
 
-export const formatEthAddress = (address: string): `0x${string}` => {
+export const formatEthAddress = (address: string): string => {
+	if (!address) return '-';
 	const cleanAddress = address.replace('0x', '');
+	const formattedAddress = toChecksumAddress(`0x${cleanAddress}`);
+	return `${formattedAddress.slice(0, 6)}...${formattedAddress.slice(-4)}`;
+};
 
-	return `0x${cleanAddress}` as `0x${string}`;
+/**
+ * Formats an Ethereum address to its full checksummed format.
+ * @param address - The Ethereum address to format
+ * @returns {`0x${string}`} - The formatted address with 0x prefix
+ */
+export const formatFullEthAddress = (address: string): `0x${string}` => {
+	if (!address)
+		return '0x0000000000000000000000000000000000000000' as `0x${string}`;
+	const cleanAddress = address.replace('0x', '');
+	return toChecksumAddress(`0x${cleanAddress}`) as `0x${string}`;
 };
 
 export const convertToUint40Format = (amount: string): bigint => {
@@ -140,43 +182,28 @@ export const float2Fix = (floatVal: number): bigint => {
 };
 
 /**
- * Shortens a transaction hash for display.
+ * Formats a transaction hash for display.
  * @param hash - The transaction hash to format.
  * @param chars - Number of characters to show at the start and end (default: 6).
- * @returns {string} - The shortened transaction hash.
+ * @param fullFormat - Whether to return the full hash or shortened version (default: false).
+ * @returns {string} - The formatted transaction hash.
  */
 export const formatTransactionHash = (
 	hash: string,
 	chars: number = 6,
+	fullFormat: boolean = false,
 ): string => {
 	if (!hash) return '-';
 
-	// Remove '0x' prefix if present for consistent formatting
-	const cleanHash = hash.startsWith('0x') ? hash.slice(2) : hash;
+	const prefixedHash = hash.startsWith('0x') ? hash : `0x${hash}`;
 
-	if (cleanHash.length <= chars * 2) return hash;
+	if (fullFormat) return prefixedHash;
 
-	return `${hash.slice(0, chars + 2)}...${hash.slice(-chars)}`;
-};
+	const cleanHash = prefixedHash.slice(2);
 
-/**
- * Remove a ton prefix from address and format it for display.
- * @param address - The ton address to format.
- * @returns {string} - The formatted ton address.
- */
-export const formatTonAddress = (
-	address?: string,
-	shorten: boolean = false,
-): string => {
-	if (!address) return '-';
+	if (cleanHash.length <= chars * 2) return prefixedHash;
 
-	const newAddress = address.replace('ton:', '');
-
-	if (shorten) {
-		return `${newAddress.slice(0, 6)}...${newAddress.slice(-4)}`;
-	}
-
-	return newAddress;
+	return `${prefixedHash.slice(0, chars + 2)}...${prefixedHash.slice(-chars)}`;
 };
 
 /**
@@ -191,4 +218,62 @@ export const convertWeiToGweiAndEther = (
 	const ether = wei / 1e18;
 
 	return { gwei, ether };
+};
+
+/**
+ * Converts an Ethereum address to its proper EIP-55 checksummed format.
+ * @param address - The Ethereum address (can be lowercase or mixed case).
+ * @returns {string} - The checksummed Ethereum address.
+ */
+export const toChecksumAddress = (address: string): string => {
+	if (!address) return address;
+
+	try {
+		let cleanAddress = address.replace(/^eth:/, '');
+
+		if (
+			!cleanAddress.startsWith('0x') &&
+			/^[a-fA-F0-9]{40}$/.test(cleanAddress)
+		) {
+			cleanAddress = `0x${cleanAddress}`;
+		}
+
+		if (isAddress(cleanAddress)) {
+			return getAddress(cleanAddress);
+		}
+
+		return address;
+	} catch (error) {
+		console.warn('Failed to checksum address:', address, error);
+		return address;
+	}
+};
+
+/**
+ * Formats a value in wei to the most appropriate unit (ETH, Gwei, or Wei)
+ * @param value - The value in wei
+ * @param decimals - Number of decimal places to show (default: 4)
+ * @returns {string} - Formatted value with appropriate unit
+ */
+export const formatWeiValue = (
+	value: string | number,
+	decimals: number = 4,
+): string => {
+	const weiValue = typeof value === 'string' ? parseFloat(value) : value;
+
+	// Convert to ETH
+	const ethValue = weiValue / 1e18;
+	// Convert to Gwei
+	const gweiValue = weiValue / 1e9;
+
+	// If value is less than 0.0001 ETH, show in Gwei
+	if (ethValue < 0.0001 && ethValue > 0) {
+		return `${gweiValue.toFixed(decimals)} Gwei`;
+	}
+	// If value is less than 0.0001 Gwei, show in Wei
+	if (gweiValue < 0.0001 && gweiValue > 0) {
+		return `${weiValue} Wei`;
+	}
+	// Otherwise show in ETH
+	return `${ethValue.toFixed(decimals)} ETH`;
 };

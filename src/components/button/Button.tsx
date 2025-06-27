@@ -1,4 +1,6 @@
-import React, { forwardRef } from 'react';
+'use client';
+
+import React, { forwardRef, useState, useEffect } from 'react';
 import { ImSpinner2 } from 'react-icons/im';
 import { IconType } from 'react-icons';
 
@@ -28,7 +30,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 		ref,
 	) => {
 		const { theme } = useTheme();
-		const currentThemeStyles = themeStyles[theme];
+		const [isClient, setIsClient] = useState(false);
+
+		useEffect(() => {
+			setIsClient(true);
+		}, []);
+
+		// Use default light theme styles until client-side hydration is complete
+		const currentThemeStyles = isClient
+			? themeStyles[theme]
+			: themeStyles.light;
 
 		return (
 			<button

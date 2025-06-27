@@ -17,6 +17,7 @@ import {
 	formatEthAddress,
 	convertToUint40Format,
 	float2Fix,
+	formatTransactionHash,
 } from './format';
 
 describe('shortenAddress', () => {
@@ -168,20 +169,18 @@ describe('validateAddress', () => {
 });
 
 describe('formatEthAddress', () => {
-	it('should format address with 0x prefix', () => {
+	it('should format address with 0x prefix and shorten it', () => {
 		const address = '1234567890123456789012345678901234567890';
-
-		expect(formatEthAddress(address)).toBe(
-			'0x1234567890123456789012345678901234567890',
-		);
+		expect(formatEthAddress(address)).toBe('0x1234...7890');
 	});
 
-	it('should handle address that already has 0x prefix', () => {
+	it('should handle address that already has 0x prefix and shorten it', () => {
 		const address = '0x1234567890123456789012345678901234567890';
+		expect(formatEthAddress(address)).toBe('0x1234...7890');
+	});
 
-		expect(formatEthAddress(address)).toBe(
-			'0x1234567890123456789012345678901234567890',
-		);
+	it('should return dash for empty address', () => {
+		expect(formatEthAddress('')).toBe('-');
 	});
 });
 
@@ -204,5 +203,50 @@ describe('float2Fix', () => {
 
 	it('should handle zero', () => {
 		expect(float2Fix(0)).toBe(0n);
+	});
+});
+
+describe('formatTransactionHash', () => {
+	it('should format a standard transaction hash', () => {
+		const hash =
+			'0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+		expect(formatTransactionHash(hash)).toBe('0x123456...abcdef');
+	});
+
+	it('should return the original hash if it is too short to shorten', () => {
+		const hash = '0x12345';
+		expect(formatTransactionHash(hash)).toBe('0x12345');
+	});
+
+	it('should return the original hash if it is short (<= 12 chars for default of 6)', () => {
+		const hash = '0x1234567890ab'; // 14 chars including 0x, cleanHash is 12
+		expect(formatTransactionHash(hash)).toBe('0x1234567890ab');
+	});
+
+	it('should return "-" for an empty hash string', () => {
+		expect(formatTransactionHash('')).toBe('-');
+	});
+
+	it('should format a hash without the 0x prefix and add the prefix', () => {
+		const hash =
+			'1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+		// The function should add '0x' prefix and then format properly
+		expect(formatTransactionHash(hash)).toBe('0x123456...abcdef');
+	});
+
+	it('should format a hash with a custom number of characters', () => {
+		const hash =
+			'0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+		expect(formatTransactionHash(hash, 4)).toBe('0x1234...cdef');
+	});
+
+	it('should handle a hash that is shorter than custom chars * 2 but has 0x', () => {
+		const hash = '0xabcdef1234'; // 12 chars, cleanHash is 10
+		expect(formatTransactionHash(hash, 6)).toBe('0xabcdef1234');
+	});
+
+	it('should handle a hash without 0x that is shorter than custom chars * 2', () => {
+		const hash = 'abcdef1234'; // 10 chars
+		expect(formatTransactionHash(hash, 6)).toBe('0xabcdef1234');
 	});
 });

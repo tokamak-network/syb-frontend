@@ -12,14 +12,13 @@ import {
 	formatAmount,
 	formatFullTime,
 	formatTime,
+	formatTransactionHash,
 } from '@/utils';
 import { Account } from '@/types';
 
 const ExplorerPage: React.FC = () => {
-	const [isModalOpen, setModalOpen] = useState(false);
-	const [showMoreUsers, setShowMoreUsers] = useState(false);
-	const [isNavigating, setIsNavigating] = useState(false);
-	const [txOption, setTxOption] = useState('all');
+	const [isNavigating, setIsNavigating] = useState<boolean>(false);
+	const [txOption, setTxOption] = useState<string>('all');
 
 	const router = useRouter();
 
@@ -29,7 +28,7 @@ const ExplorerPage: React.FC = () => {
 		error: txError,
 	} = useQuery({
 		queryKey: ['transactions'],
-		queryFn: fetchTransactions,
+		queryFn: () => fetchTransactions(),
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});
@@ -49,8 +48,8 @@ const ExplorerPage: React.FC = () => {
 
 	const filteredTransactions = transactionHistory?.transactions.filter((tx) => {
 		if (txOption === 'all') return true;
-		if (txOption === 'pending') return tx.batchNum === 0;
-		if (txOption === 'forged') return tx.batchNum > 0;
+		if (txOption === 'pending') return tx.batch_num === 0;
+		if (txOption === 'forged') return tx.batch_num > 0;
 
 		return false;
 	});
@@ -61,7 +60,7 @@ const ExplorerPage: React.FC = () => {
 	};
 
 	return (
-		<div className="max-w-full overflow-hidden p-4 md:p-8">
+		<div className="max-w-full overflow-hidden">
 			<div className="flex gap-8 md:flex-col md:gap-10 lg:flex-row">
 				<div className="w-full">
 					<TransactionDropDown value={txOption} onChange={setTxOption} />
@@ -79,7 +78,6 @@ const ExplorerPage: React.FC = () => {
 											<th className="px-6 py-3">Type</th>
 											<th className="px-6 py-3">From</th>
 											<th className="px-6 py-3">To</th>
-											<th className="px-6 py-3">Amount</th>
 											<th className="px-6 py-3">Time</th>
 										</tr>
 									</thead>
@@ -87,30 +85,34 @@ const ExplorerPage: React.FC = () => {
 										{filteredTransactions &&
 											filteredTransactions.map((tx, index) => (
 												<tr
-													key={tx.id}
+													key={tx.item_id}
 													className={`${
 														index % 2 === 0
 															? 'bg-tableRowBackground'
 															: 'bg-tableBackground'
-													} hover:bg-tableHover`}
+													} cursor-pointer hover:bg-tableHover`}
+													onClick={() =>
+														router.push(`/explorer/txs/${String(tx.item_id)}`)
+													}
 												>
 													<td className="px-6 py-4 font-medium">
-														{tx.L1Info.ethereumTxHash
-															? formatAddress(tx.L1Info.ethereumTxHash)
-															: formatAddress(tx.id)}
+														{formatTransactionHash(String(tx.tx_hash))}
 													</td>
 													<td className="px-6 py-4">{tx.type}</td>
 													<td className="px-6 py-4">
-														{formatAddress(tx.fromTonEthereumAddress)}
+														{formatAddress(tx.from_eth_addr)}
 													</td>
 													<td className="px-6 py-4">
-														{formatAddress(tx.toTonEthereumAddress || '')}
+														{[
+															'deposit',
+															'createaccountdeposit',
+															'withdraw',
+														].includes(tx.type.toLowerCase())
+															? '-'
+															: formatAddress(tx.to_eth_addr || '')}
 													</td>
 													<td className="px-6 py-4">
-														{formatAmount(tx.amount)}
-													</td>
-													<td className="px-6 py-4">
-														{formatFullTime(new Date(tx.timestamp))}
+														{formatFullTime(new Date(tx.timestamp * 1000))}
 													</td>
 												</tr>
 											))}
@@ -124,7 +126,7 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						)}
 						<Button
-							className="mt-4 rounded-full"
+							className="w-full"
 							onClick={() => handleNavigation('/explorer/txs')}
 						>
 							Show All Transactions
@@ -151,7 +153,7 @@ const ExplorerPage: React.FC = () => {
 									<tbody className="bg-tableRowBackground">
 										{accounts.map((account: Account, index: number) => (
 											<tr
-												key={account.accountIndex}
+												key={account.idx}
 												className={`${
 													index % 2 === 0
 														? 'bg-tableRowBackground'
@@ -159,7 +161,7 @@ const ExplorerPage: React.FC = () => {
 												} hover:bg-tableHover`}
 											>
 												<td className="px-6 py-4 font-medium">
-													{formatAddress(account.tonEthereumAddress)}
+													{formatAddress(account.eth_addr)}
 												</td>
 												<td className="px-6 py-4">
 													{formatAmount(account.balance)}

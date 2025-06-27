@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/global.d.ts", "src/hooks/useWallet.test.ts", "src/utils/color.test.ts", "src/**/*",
+    "src/global.d.ts", "src/hooks/useWallet.test.ts", "src/utils/color.test.ts", "src/**/*", "babel.config.cjs",
   ],
   "exclude": ["node_modules"]
 }
