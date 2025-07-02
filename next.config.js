@@ -13,13 +13,13 @@ const nextConfig = {
 		];
 	},
 	async rewrites() {
-		const apiHost = process.env.NEXT_PUBLIC_API_HOST || 'http://localhost';
-		const apiPort = process.env.NEXT_PUBLIC_API_PORT || '8080';
+		const apiHost = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+		console.log('apiHost', apiHost);
 
 		return [
 			{
 				source: '/sequencer/:path*',
-				destination: `${apiHost}:${apiPort}/api/v1/:path*`,
+				destination: `${apiHost}/api/v1/:path*`,
 			},
 		];
 	},
