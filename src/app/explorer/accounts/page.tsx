@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button, PageLoader, SearchBarComponent, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
+import { useScoreUpdate } from '@/hooks';
 import { apiRequest } from '@/utils/api';
 import { Account, AccountsResponse } from '@/types';
 import { useToast } from '@/context';
@@ -17,11 +18,18 @@ const AccountPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 	const [isVouchModalOpen, setIsVouchModalOpen] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isScoreModalOpen, setIsScoreModalOpen] = useState<boolean>(false);
+	const [isVouchLoading, setIsVouchLoading] = useState<boolean>(false);
+	const [isScoreLoading, setIsScoreLoading] = useState<boolean>(false);
 	const { handleVouch } = useSepoliaTransactions();
+	const { handleUpdateScore } = useScoreUpdate();
 	const { addToast } = useToast();
 
-	const { data: accountResponse, isLoading: isLoadingAccounts } = useQuery({
+	const {
+		data: accountResponse,
+		isLoading: isLoadingAccounts,
+		refetch,
+	} = useQuery({
 		queryKey: ['accounts'],
 		queryFn: async () => {
 			const response: AccountsResponse = await apiRequest({
@@ -33,26 +41,23 @@ const AccountPage: React.FC = () => {
 		},
 	});
 
-	// Function to update score - will be connected to smart contract later
-	const updateScore = async (accountAddress: string) => {
-		try {
-			alert(`Updating score for ${accountAddress}`);
-		} catch (error) {
-			console.error('Error updating score:', error);
-		}
-	};
-
 	// Function to handle opening the vouch modal
 	const openVouchModal = (account: Account) => {
 		setSelectedAccount(account);
 		setIsVouchModalOpen(true);
 	};
 
+	// Function to handle opening the score update modal
+	const openScoreModal = (account: Account) => {
+		setSelectedAccount(account);
+		setIsScoreModalOpen(true);
+	};
+
 	// Function to handle vouching for an account
 	const handleVouchForAccount = async () => {
 		if (!selectedAccount) return;
 
-		setIsLoading(true);
+		setIsVouchLoading(true);
 		try {
 			const hash = await handleVouch(selectedAccount.eth_addr);
 
@@ -64,6 +69,7 @@ const AccountPage: React.FC = () => {
 
 			setIsVouchModalOpen(false);
 			setSelectedAccount(null);
+			refetch(); // Refresh the account list
 		} catch (error: any) {
 			addToast(
 				'error',
@@ -71,7 +77,41 @@ const AccountPage: React.FC = () => {
 				error.message || 'Failed to vouch for account',
 			);
 		} finally {
-			setIsLoading(false);
+			setIsVouchLoading(false);
+		}
+	};
+
+	// Function to handle updating score for an account
+	const handleUpdateScoreForAccount = async () => {
+		if (!selectedAccount) return;
+
+		setIsScoreLoading(true);
+		try {
+			// Calculate new score (increment by 1)
+			const newScore =
+				(selectedAccount.score
+					? parseInt(selectedAccount.score.toString())
+					: 0) + 1;
+
+			const hash = await handleUpdateScore(selectedAccount.eth_addr, newScore);
+
+			addToast(
+				'success',
+				'Score Update Successful',
+				`You have successfully updated the score for account ${selectedAccount.idx}. Transaction hash: ${hash}`,
+			);
+
+			setIsScoreModalOpen(false);
+			setSelectedAccount(null);
+			refetch(); // Refresh the account list
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Score Update Failed',
+				error.message || 'Failed to update score for account',
+			);
+		} finally {
+			setIsScoreLoading(false);
 		}
 	};
 
@@ -153,7 +193,7 @@ const AccountPage: React.FC = () => {
 												className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
 												onClick={(e) => {
 													e.stopPropagation();
-													updateScore(account.eth_addr);
+													openScoreModal(account);
 												}}
 											>
 												Update Score
@@ -216,9 +256,76 @@ const AccountPage: React.FC = () => {
 								<Button
 									className="bg-blue-500 hover:bg-blue-600"
 									onClick={handleVouchForAccount}
-									disabled={isLoading}
+									disabled={isVouchLoading}
 								>
-									{isLoading ? 'Processing...' : 'Confirm Vouch'}
+									{isVouchLoading ? 'Processing...' : 'Confirm Vouch'}
+								</Button>
+							</div>
+						</>
+					)}
+				</div>
+			</Modal>
+
+			{/* Update Score Confirmation Modal */}
+			<Modal
+				className="max-w-md"
+				isOpen={isScoreModalOpen}
+				title="Update Score Confirmation"
+				onClose={() => setIsScoreModalOpen(false)}
+			>
+				<div className="flex flex-col space-y-4">
+					{selectedAccount && (
+						<>
+							<p className="text-center text-white">
+								Are you sure you want to update the score for this account?
+							</p>
+
+							<div className="rounded-md bg-gray-800 p-4">
+								<div className="grid grid-cols-2 gap-2">
+									<p className="text-sm text-gray-400">Account ID:</p>
+									<p className="text-sm font-medium text-white">
+										{selectedAccount.idx}
+									</p>
+
+									<p className="text-sm text-gray-400">Address:</p>
+									<p className="overflow-hidden text-ellipsis text-sm font-medium text-white">
+										{selectedAccount.eth_addr}
+									</p>
+
+									<p className="text-sm text-gray-400">Current Score:</p>
+									<p className="text-sm font-medium text-white">
+										{selectedAccount.score}
+									</p>
+
+									<p className="text-sm text-gray-400">New Score:</p>
+									<p className="text-sm font-medium text-white">
+										{(selectedAccount.score
+											? parseInt(selectedAccount.score.toString())
+											: 0) + 1}
+									</p>
+								</div>
+							</div>
+
+							<div className="mt-2 text-xs text-gray-400">
+								<p>
+									Updating the score will increase the account's reputation in
+									the network. This action cannot be undone.
+								</p>
+							</div>
+
+							<div className="flex justify-center space-x-4 pt-4">
+								<Button
+									className="bg-gray-600 hover:bg-gray-700"
+									onClick={() => setIsScoreModalOpen(false)}
+								>
+									Cancel
+								</Button>
+								<Button
+									className="bg-green-500 hover:bg-green-600"
+									onClick={handleUpdateScoreForAccount}
+									disabled={isScoreLoading}
+								>
+									{isScoreLoading ? 'Processing...' : 'Confirm Update'}
 								</Button>
 							</div>
 						</>
