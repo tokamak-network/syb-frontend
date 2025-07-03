@@ -174,7 +174,7 @@ export const TransactionsTable: React.FC<Props> = ({
 									{transaction.gas_fee ? `${transaction.gas_fee} Wei` : 'N/A'}
 								</td>
 								<td className="px-6 py-2">
-									{transaction.batch_num === 0 ? (
+									{!transaction.is_tx_forged ? (
 										<div className="flex items-center gap-2">
 											<div className="h-2 w-2 rounded-full bg-yellow-400" />
 											<span className="text-yellow-400">

@@ -135,6 +135,7 @@ export interface Transaction {
 	timestamp: number;
 	gas_fee: string;
 	tx_hash?: string;
+	is_tx_forged: boolean;
 }
 
 export interface TransactionResponse {
