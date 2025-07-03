@@ -308,8 +308,8 @@ const AccountPage: React.FC = () => {
 
 							<div className="mt-2 text-xs text-gray-400">
 								<p>
-									Updating the score will increase the account's reputation in
-									the network. This action cannot be undone.
+									Updating the score will increase the account&apos;s reputation
+									in the network. This action cannot be undone.
 								</p>
 							</div>
 
