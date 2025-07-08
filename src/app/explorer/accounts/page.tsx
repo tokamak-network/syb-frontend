@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { IoArrowBackSharp } from 'react-icons/io5';
 
 import { Button, PageLoader, SearchBarComponent, Modal } from '@/components';
 import { useWallet } from '@/hooks/useWallet';
@@ -115,6 +116,10 @@ const AccountPage: React.FC = () => {
 		}
 	};
 
+	const handleBackToExplorer = () => {
+		router.push('/explorer');
+	};
+
 	if (isLoadingAccounts) return <PageLoader />;
 
 	const filteredAccounts = accountResponse?.accounts.filter(
@@ -124,6 +129,17 @@ const AccountPage: React.FC = () => {
 
 	return (
 		<div className="flex flex-col items-center space-y-12 p-6">
+			{/* Back button */}
+			<div className="mb-4 self-start">
+				<Button
+					className="inline-flex w-auto items-center hover:underline"
+					leftIcon={IoArrowBackSharp}
+					onClick={handleBackToExplorer}
+				>
+					Back to Explorer
+				</Button>
+			</div>
+
 			{/* Search Bar */}
 			<SearchBarComponent
 				placeholder="Search accounts by ID..."
