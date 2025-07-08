@@ -48,8 +48,8 @@ const ExplorerPage: React.FC = () => {
 
 	const filteredTransactions = transactionHistory?.transactions.filter((tx) => {
 		if (txOption === 'all') return true;
-		if (txOption === 'pending') return tx.batch_num === 0;
-		if (txOption === 'forged') return tx.batch_num > 0;
+		if (txOption === 'pending') return tx.is_tx_forged === false;
+		if (txOption === 'forged') return tx.is_tx_forged === true;
 
 		return false;
 	});
