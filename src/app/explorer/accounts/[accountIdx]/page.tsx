@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { FiArrowUp, FiThumbsUp, FiCopy } from 'react-icons/fi';
 import { BiCoin, BiMedal } from 'react-icons/bi';
+import { IoArrowBackSharp } from 'react-icons/io5';
 import Image from 'next/image';
 import Jazzicon from 'react-jazzicon';
 
@@ -17,6 +18,7 @@ import { themeStyles } from '@/const/themeStyles';
 
 const AccountDetailsPage: React.FC = () => {
 	const params = useParams();
+	const router = useRouter();
 	const accountIdx = decodeURIComponent(params.accountIdx as string);
 	const { isConnected, address } = useWallet();
 	const { handleUpdateScore } = useScoreUpdate();
@@ -174,6 +176,10 @@ const AccountDetailsPage: React.FC = () => {
 		}
 	};
 
+	const handleBack = () => {
+		router.push('/explorer/accounts');
+	};
+
 	if (isError) {
 		return (
 			<div className="flex h-[70vh] items-center justify-center">
@@ -191,6 +197,17 @@ const AccountDetailsPage: React.FC = () => {
 		<div
 			className={`container mx-auto max-w-4xl px-4 py-12 ${currentThemeStyles.text}`}
 		>
+			{/* Back button */}
+			<div className="mb-4">
+				<Button
+					className="inline-flex w-auto items-center hover:underline"
+					leftIcon={IoArrowBackSharp}
+					onClick={handleBack}
+				>
+					Back to Accounts List
+				</Button>
+			</div>
+
 			{isLoading ? (
 				<PageLoader />
 			) : (
