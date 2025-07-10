@@ -92,7 +92,7 @@ const ExplorerPage: React.FC = () => {
 															: 'bg-tableBackground'
 													} cursor-pointer hover:bg-tableHover`}
 													onClick={() =>
-														router.push(`/explorer/txs/${String(tx.item_id)}`)
+														router.push(`/explorer/txs/${String(tx.tx_hash)}`)
 													}
 												>
 													<td className="px-6 py-4 font-medium">
