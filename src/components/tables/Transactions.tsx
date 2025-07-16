@@ -23,6 +23,7 @@ interface Props {
 	itemsPerPage?: number;
 	onPageChange?: (page: number) => void;
 	onLimitChange?: (limit: number) => void;
+	useExternalPagination?: boolean;
 }
 
 export const TransactionsTable: React.FC<Props> = ({
@@ -34,6 +35,7 @@ export const TransactionsTable: React.FC<Props> = ({
 	itemsPerPage: externalItemsPerPage,
 	onPageChange,
 	onLimitChange,
+	useExternalPagination = false,
 }) => {
 	const router = useRouter();
 
@@ -52,7 +54,8 @@ export const TransactionsTable: React.FC<Props> = ({
 	let displayedTransactions = filteredTransactions;
 	let totalPages = externalTotalPages;
 
-	if (externalCurrentPage === undefined) {
+	// Only apply internal pagination if we're not using external pagination
+	if (!useExternalPagination && externalCurrentPage === undefined) {
 		const indexOfLastItem = currentPage * itemsPerPage;
 		const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -62,8 +65,6 @@ export const TransactionsTable: React.FC<Props> = ({
 		);
 
 		totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-	} else {
-		displayedTransactions = filteredTransactions;
 	}
 
 	const handleNextPage = () => {

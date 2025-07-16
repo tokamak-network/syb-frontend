@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
@@ -12,13 +12,14 @@ import {
 	TransactionsTable,
 } from '@/components';
 import {
+	fetchTransactions,
 	fetchTransactionsPaginated,
 	fetchTransactionsByAccount,
 } from '@/utils';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
-import { Order } from '@/types';
+import { Order, TransactionResponse } from '@/types';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
@@ -27,6 +28,21 @@ const TransactionsPage: React.FC = () => {
 	const [order, setOrder] = useState<Order>(Order.DESC);
 	const [page, setPage] = useState<number>(1);
 	const [limit, setLimit] = useState<number>(10);
+	const [activeTab, setActiveTab] = useState<string>('all');
+	const [totalTransactions, setTotalTransactions] = useState<number>(0);
+
+	const { data: allTransactions } = useQuery({
+		queryKey: ['allTransactions'],
+		queryFn: fetchTransactions,
+		staleTime: 60000,
+		refetchInterval: 60000,
+	});
+
+	useEffect(() => {
+		if (allTransactions?.transactions) {
+			setTotalTransactions(allTransactions.transactions.length);
+		}
+	}, [allTransactions]);
 
 	const { data: transactionHistory, isLoading: isLoadingTx } = useQuery({
 		queryKey: ['transactions', order, page, limit],
@@ -36,7 +52,7 @@ const TransactionsPage: React.FC = () => {
 	});
 
 	const { data: userTransactions, isLoading: isLoadingUserTx } = useQuery({
-		queryKey: ['userTransactions', address],
+		queryKey: ['userTransactions', address, order],
 		queryFn: () => (address ? fetchTransactionsByAccount(address) : null),
 		staleTime: 30000,
 		refetchInterval: 30000,
@@ -44,8 +60,10 @@ const TransactionsPage: React.FC = () => {
 	});
 
 	const transactions = transactionHistory?.transactions || [];
+	const totalPages = Math.max(1, Math.ceil(totalTransactions / limit));
 
 	const filteredTransactions = transactions.filter((transaction) => {
+		if (!searchQuery) return true;
 		const query = searchQuery.toLowerCase();
 		return (
 			(transaction.tx_hash
@@ -66,6 +84,15 @@ const TransactionsPage: React.FC = () => {
 		);
 	});
 
+	const userTxs = userTransactions?.transactions || [];
+	const [userTxPage, setUserTxPage] = useState<number>(1);
+	const [userTxLimit, setUserTxLimit] = useState<number>(10);
+
+	const indexOfLastUserTx = userTxPage * userTxLimit;
+	const indexOfFirstUserTx = indexOfLastUserTx - userTxLimit;
+	const displayedUserTxs = userTxs.slice(indexOfFirstUserTx, indexOfLastUserTx);
+	const userTxTotalPages = Math.max(1, Math.ceil(userTxs.length / userTxLimit));
+
 	const handlePageChange = (newPage: number) => {
 		setPage(newPage);
 	};
@@ -75,7 +102,24 @@ const TransactionsPage: React.FC = () => {
 		setPage(1);
 	};
 
-	if (isLoadingTx) return <PageLoader />;
+	const handleUserTxPageChange = (newPage: number) => {
+		setUserTxPage(newPage);
+	};
+
+	const handleUserTxLimitChange = (newLimit: number) => {
+		setUserTxLimit(newLimit);
+		setUserTxPage(1);
+	};
+
+	useEffect(() => {
+		if (activeTab === 'all') {
+			setPage(1);
+		} else {
+			setUserTxPage(1);
+		}
+	}, [activeTab]);
+
+	if (isLoadingTx && activeTab === 'all') return <PageLoader />;
 
 	return (
 		<div className="space-y-2 p-8">
@@ -93,7 +137,11 @@ const TransactionsPage: React.FC = () => {
 				onChange={(e) => setSearchQuery(e.target.value)}
 			/>
 
-			<Tabs defaultValue="all" className="shadow-blackA2 flex w-full flex-col">
+			<Tabs
+				defaultValue="all"
+				className="shadow-blackA2 flex w-full flex-col"
+				onValueChange={(value) => setActiveTab(value)}
+			>
 				<TabsList className="flex w-[400px] shrink-0 border-b border-tabBorder">
 					<TabsTrigger
 						className="text-mauve11 flex h-[45px] flex-1 cursor-pointer select-none items-center justify-center px-5 data-[state=active]:border-b-2 data-[state=active]:border-tabActive"
@@ -115,12 +163,11 @@ const TransactionsPage: React.FC = () => {
 							setOrder={setOrder}
 							order={order}
 							currentPage={page}
-							totalPages={Math.ceil(
-								(transactionHistory?.pendingItems || 0) / limit,
-							)}
+							totalPages={totalPages}
 							onPageChange={handlePageChange}
 							onLimitChange={handleLimitChange}
 							itemsPerPage={limit}
+							useExternalPagination={true}
 						/>
 					)}
 				</TabsContent>
@@ -147,9 +194,15 @@ const TransactionsPage: React.FC = () => {
 					) : (
 						userTransactions?.transactions && (
 							<TransactionsTable
-								filteredTransactions={userTransactions.transactions}
+								filteredTransactions={displayedUserTxs}
 								setOrder={setOrder}
 								order={order}
+								currentPage={userTxPage}
+								totalPages={userTxTotalPages}
+								onPageChange={handleUserTxPageChange}
+								onLimitChange={handleUserTxLimitChange}
+								itemsPerPage={userTxLimit}
+								useExternalPagination={false}
 							/>
 						)
 					)}
