@@ -71,7 +71,7 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						) : (
 							<div className="overflow-x-auto">
-								<table className="w-full text-left text-sm text-tableTextPrimary">
+								<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
 									<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
 										<tr>
 											<th className="px-6 py-3">Tx Hash</th>
@@ -81,15 +81,15 @@ const ExplorerPage: React.FC = () => {
 											<th className="px-6 py-3">Time</th>
 										</tr>
 									</thead>
-									<tbody className="bg-tableRowBackground">
+									<tbody className="bg-tableBackground">
 										{filteredTransactions &&
 											filteredTransactions.map((tx, index) => (
 												<tr
 													key={tx.item_id}
 													className={`${
 														index % 2 === 0
-															? 'bg-tableRowBackground'
-															: 'bg-tableBackground'
+															? 'bg-tableBackground'
+															: 'bg-tableRowBackground'
 													} cursor-pointer hover:bg-tableHover`}
 													onClick={() =>
 														router.push(`/explorer/txs/${String(tx.tx_hash)}`)
@@ -143,21 +143,21 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						) : (
 							<div className="overflow-x-auto">
-								<table className="w-full text-left text-sm text-tableTextPrimary">
+								<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
 									<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
 										<tr>
 											<th className="px-6 py-3">Address</th>
 											<th className="px-6 py-3">Balance</th>
 										</tr>
 									</thead>
-									<tbody className="bg-tableRowBackground">
+									<tbody className="bg-tableBackground">
 										{accounts.map((account: Account, index: number) => (
 											<tr
 												key={account.idx}
 												className={`${
 													index % 2 === 0
-														? 'bg-tableRowBackground'
-														: 'bg-tableBackground'
+														? 'bg-tableBackground'
+														: 'bg-tableRowBackground'
 												} hover:bg-tableHover`}
 											>
 												<td className="px-6 py-4 font-medium">
