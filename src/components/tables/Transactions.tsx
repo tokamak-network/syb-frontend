@@ -23,6 +23,7 @@ interface Props {
 	itemsPerPage?: number;
 	onPageChange?: (page: number) => void;
 	onLimitChange?: (limit: number) => void;
+	useExternalPagination?: boolean;
 }
 
 export const TransactionsTable: React.FC<Props> = ({
@@ -34,6 +35,7 @@ export const TransactionsTable: React.FC<Props> = ({
 	itemsPerPage: externalItemsPerPage,
 	onPageChange,
 	onLimitChange,
+	useExternalPagination = false,
 }) => {
 	const router = useRouter();
 
@@ -52,7 +54,8 @@ export const TransactionsTable: React.FC<Props> = ({
 	let displayedTransactions = filteredTransactions;
 	let totalPages = externalTotalPages;
 
-	if (externalCurrentPage === undefined) {
+	// Only apply internal pagination if we're not using external pagination
+	if (!useExternalPagination && externalCurrentPage === undefined) {
 		const indexOfLastItem = currentPage * itemsPerPage;
 		const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
@@ -62,8 +65,6 @@ export const TransactionsTable: React.FC<Props> = ({
 		);
 
 		totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-	} else {
-		displayedTransactions = filteredTransactions;
 	}
 
 	const handleNextPage = () => {
@@ -97,6 +98,14 @@ export const TransactionsTable: React.FC<Props> = ({
 		}
 	};
 
+	const shouldShowToAddress = (txType: ActionType): boolean => {
+		return ![
+			ActionType.DEPOSIT,
+			ActionType.WITHDRAW,
+			ActionType.EXPLODE,
+		].includes(txType as ActionType);
+	};
+
 	return (
 		<>
 			<table className="mt-4 min-w-full table-auto divide-y divide-tableBorder border border-tableBorder">
@@ -122,6 +131,9 @@ export const TransactionsTable: React.FC<Props> = ({
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
 							From
+						</th>
+						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
+							To
 						</th>
 						<th className="px-6 py-3 text-right text-sm font-bold uppercase text-tableTextPrimary">
 							Amount
@@ -167,6 +179,20 @@ export const TransactionsTable: React.FC<Props> = ({
 										</div>
 									</div>
 								</td>
+								<td className="px-6 py-2">
+									{shouldShowToAddress(transaction.type) ? (
+										<div className="group relative">
+											{formatEthAddress(transaction.to_eth_addr)}
+											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+												{transaction.to_eth_addr
+													? toChecksumAddress(transaction.to_eth_addr)
+													: 'N/A'}
+											</div>
+										</div>
+									) : (
+										'-'
+									)}
+								</td>
 								<td className="px-6 py-2 text-right">
 									{transaction.amount ? `${transaction.amount} Gwei` : 'N/A'}
 								</td>
@@ -194,7 +220,7 @@ export const TransactionsTable: React.FC<Props> = ({
 						))
 					) : (
 						<tr>
-							<td className="px-6 py-2 text-center" colSpan={7}>
+							<td className="px-6 py-2 text-center" colSpan={8}>
 								No transactions found
 							</td>
 						</tr>
