@@ -36,7 +36,6 @@ export const fetchTransactionsPaginated = async (
 		params: {
 			page,
 			limit,
-			order,
 		},
 	});
 };
