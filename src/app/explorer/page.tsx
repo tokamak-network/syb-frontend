@@ -71,53 +71,55 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						) : (
 							<div className="overflow-x-auto">
-								<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
-									<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
-										<tr>
-											<th className="px-6 py-3">Tx Hash</th>
-											<th className="px-6 py-3">Type</th>
-											<th className="px-6 py-3">From</th>
-											<th className="px-6 py-3">To</th>
-											<th className="px-6 py-3">Time</th>
-										</tr>
-									</thead>
-									<tbody className="bg-tableBackground">
-										{filteredTransactions &&
-											filteredTransactions.map((tx, index) => (
-												<tr
-													key={tx.item_id}
-													className={`${
-														index % 2 === 0
-															? 'bg-tableBackground'
-															: 'bg-tableRowBackground'
-													} cursor-pointer hover:bg-tableHover`}
-													onClick={() =>
-														router.push(`/explorer/txs/${String(tx.tx_hash)}`)
-													}
-												>
-													<td className="px-6 py-4 font-medium">
-														{formatTransactionHash(String(tx.tx_hash))}
-													</td>
-													<td className="px-6 py-4">{tx.type}</td>
-													<td className="px-6 py-4">
-														{formatAddress(tx.from_eth_addr)}
-													</td>
-													<td className="px-6 py-4">
-														{[
-															'deposit',
-															'createaccountdeposit',
-															'withdraw',
-														].includes(tx.type.toLowerCase())
-															? '-'
-															: formatAddress(tx.to_eth_addr || '')}
-													</td>
-													<td className="px-6 py-4">
-														{formatFullTime(new Date(tx.timestamp * 1000))}
-													</td>
-												</tr>
-											))}
-									</tbody>
-								</table>
+								<div className="max-h-96 overflow-y-auto">
+									<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
+										<thead className="sticky top-0 z-10 bg-tableHeader text-xs uppercase text-tableTextSecondary">
+											<tr>
+												<th className="px-6 py-3">Tx Hash</th>
+												<th className="px-6 py-3">Type</th>
+												<th className="px-6 py-3">From</th>
+												<th className="px-6 py-3">To</th>
+												<th className="px-6 py-3">Time</th>
+											</tr>
+										</thead>
+										<tbody className="bg-tableBackground">
+											{filteredTransactions &&
+												filteredTransactions.map((tx, index) => (
+													<tr
+														key={tx.item_id}
+														className={`${
+															index % 2 === 0
+																? 'bg-tableBackground'
+																: 'bg-tableRowBackground'
+														} cursor-pointer hover:bg-tableHover`}
+														onClick={() =>
+															router.push(`/explorer/txs/${String(tx.tx_hash)}`)
+														}
+													>
+														<td className="px-6 py-4 font-medium">
+															{formatTransactionHash(String(tx.tx_hash))}
+														</td>
+														<td className="px-6 py-4">{tx.type}</td>
+														<td className="px-6 py-4">
+															{formatAddress(tx.from_eth_addr)}
+														</td>
+														<td className="px-6 py-4">
+															{[
+																'deposit',
+																'createaccountdeposit',
+																'withdraw',
+															].includes(tx.type.toLowerCase())
+																? '-'
+																: formatAddress(tx.to_eth_addr || '')}
+														</td>
+														<td className="px-6 py-4">
+															{formatFullTime(new Date(tx.timestamp * 1000))}
+														</td>
+													</tr>
+												))}
+										</tbody>
+									</table>
+								</div>
 							</div>
 						)}
 						{transactionHistory && transactionHistory?.pendingItems > 0 && (
@@ -143,33 +145,35 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						) : (
 							<div className="overflow-x-auto">
-								<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
-									<thead className="bg-tableHeader text-xs uppercase text-tableTextSecondary">
-										<tr>
-											<th className="px-6 py-3">Address</th>
-											<th className="px-6 py-3">Balance</th>
-										</tr>
-									</thead>
-									<tbody className="bg-tableBackground">
-										{accounts.map((account: Account, index: number) => (
-											<tr
-												key={account.idx}
-												className={`${
-													index % 2 === 0
-														? 'bg-tableBackground'
-														: 'bg-tableRowBackground'
-												} hover:bg-tableHover`}
-											>
-												<td className="px-6 py-4 font-medium">
-													{formatAddress(account.eth_addr)}
-												</td>
-												<td className="px-6 py-4">
-													{formatAmount(account.balance)}
-												</td>
+								<div className="max-h-96 overflow-y-auto">
+									<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
+										<thead className="sticky top-0 z-10 bg-tableHeader text-xs uppercase text-tableTextSecondary">
+											<tr>
+												<th className="px-6 py-3">Address</th>
+												<th className="px-6 py-3">Balance</th>
 											</tr>
-										))}
-									</tbody>
-								</table>
+										</thead>
+										<tbody className="bg-tableBackground">
+											{accounts.map((account: Account, index: number) => (
+												<tr
+													key={account.idx}
+													className={`${
+														index % 2 === 0
+															? 'bg-tableBackground'
+															: 'bg-tableRowBackground'
+													} hover:bg-tableHover`}
+												>
+													<td className="px-6 py-4 font-medium">
+														{formatAddress(account.eth_addr)}
+													</td>
+													<td className="px-6 py-4">
+														{formatAmount(account.balance)}
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
 							</div>
 						)}
 					</div>
