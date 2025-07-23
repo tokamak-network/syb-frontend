@@ -96,7 +96,7 @@ const HomePage: React.FC = () => {
 					) : (
 						<Label
 							className="text-3xl text-secondaryText"
-							explore={true}
+							explore={false}
 							isTransaction={true}
 							navigateToAccount={true}
 							shorten="full"
