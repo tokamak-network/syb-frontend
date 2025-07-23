@@ -98,6 +98,21 @@ export const TransactionsTable: React.FC<Props> = ({
 		}
 	};
 
+	const handleOpenSepoliaExplorer = (
+		txHash: string,
+		event: React.MouseEvent,
+	) => {
+		event.stopPropagation();
+		const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL;
+		if (explorerUrl && txHash) {
+			window.open(
+				`${explorerUrl}/tx/0x${txHash}`,
+				'_blank',
+				'noopener,noreferrer',
+			);
+		}
+	};
+
 	const shouldShowToAddress = (txType: ActionType): boolean => {
 		return ![
 			ActionType.DEPOSIT,
@@ -157,9 +172,23 @@ export const TransactionsTable: React.FC<Props> = ({
 								}
 							>
 								<td className="px-6 py-2">
-									{transaction.tx_hash
-										? formatTransactionHash(transaction.tx_hash)
-										: 'N/A'}
+									<div className="flex items-center gap-2">
+										<span className="flex-1">
+											{transaction.tx_hash
+												? formatTransactionHash(transaction.tx_hash)
+												: 'N/A'}
+										</span>
+										{transaction.tx_hash && (
+											<Button
+												className="h-6 rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-600"
+												onClick={(e) =>
+													handleOpenSepoliaExplorer(transaction.tx_hash!, e)
+												}
+											>
+												Sepolia
+											</Button>
+										)}
+									</div>
 								</td>
 								<td className="px-6 py-2">
 									<TxTypes txType={transaction.type as ActionType} />
