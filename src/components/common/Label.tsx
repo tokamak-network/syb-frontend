@@ -30,7 +30,7 @@ export const Label: React.FC<LabelProps> = ({
 		setIsClient(true);
 	}, []);
 	const explorerPath = isTransaction
-		? `tx/${value.startsWith('0x') ? value : `0x${value}`}`
+		? `txs/${value.startsWith('0x') ? value : `0x${value}`}`
 		: `accounts/${value}`;
 
 	const displayValue = isTransaction

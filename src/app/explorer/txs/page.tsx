@@ -34,8 +34,6 @@ const TransactionsPage: React.FC = () => {
 	const { data: allTransactions } = useQuery({
 		queryKey: ['allTransactions'],
 		queryFn: fetchTransactions,
-		staleTime: 60000,
-		refetchInterval: 60000,
 	});
 
 	useEffect(() => {
