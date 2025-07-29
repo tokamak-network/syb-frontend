@@ -8,6 +8,7 @@ import {
 	formatTimestamp,
 	formatEthAddress,
 	toChecksumAddress,
+	formatBalanceToEth,
 } from '@/utils/format';
 import { Button, Dropdown } from '@/components';
 import { useRouter } from 'next/navigation';
@@ -223,10 +224,14 @@ export const TransactionsTable: React.FC<Props> = ({
 									)}
 								</td>
 								<td className="px-6 py-2 text-right">
-									{transaction.amount ? `${transaction.amount} Gwei` : 'N/A'}
+									{transaction.amount
+										? `${formatBalanceToEth(transaction.amount)} ETH`
+										: 'N/A'}
 								</td>
 								<td className="px-6 py-2 text-right">
-									{transaction.gas_fee ? `${transaction.gas_fee} Wei` : 'N/A'}
+									{transaction.gas_fee
+										? `${formatBalanceToEth(transaction.gas_fee)} ETH`
+										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
 									{transaction.is_tx_forged ? (
