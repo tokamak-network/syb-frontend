@@ -12,6 +12,11 @@ import { useScoreUpdate } from '@/hooks';
 import { apiRequest } from '@/utils/api';
 import { Account, AccountsResponse } from '@/types';
 import { useToast } from '@/context';
+import {
+	formatScore,
+	convertBigIntToNumber,
+	formatBalanceToEth,
+} from '@/utils/format';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
@@ -89,10 +94,7 @@ const AccountPage: React.FC = () => {
 		setIsScoreLoading(true);
 		try {
 			// Calculate new score (increment by 1)
-			const newScore =
-				(selectedAccount.score
-					? parseInt(selectedAccount.score.toString())
-					: 0) + 1;
+			const newScore = convertBigIntToNumber(selectedAccount.score) + 1;
 
 			const hash = await handleUpdateScore(selectedAccount.eth_addr, newScore);
 
@@ -184,10 +186,10 @@ const AccountPage: React.FC = () => {
 									{account.eth_addr}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
-									{account.balance}
+									{formatBalanceToEth(account.balance)}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
-									{account.score}
+									{formatScore(account.score)}
 								</td>
 								{isConnected && (
 									<td className="whitespace-nowrap px-6 py-2 text-left font-normal">
@@ -250,7 +252,7 @@ const AccountPage: React.FC = () => {
 
 									<p className="text-sm text-gray-400">Score:</p>
 									<p className="text-sm font-medium text-white">
-										{selectedAccount.score}
+										{formatScore(selectedAccount.score)}
 									</p>
 								</div>
 							</div>
@@ -310,14 +312,12 @@ const AccountPage: React.FC = () => {
 
 									<p className="text-sm text-gray-400">Current Score:</p>
 									<p className="text-sm font-medium text-white">
-										{selectedAccount.score}
+										{formatScore(selectedAccount.score)}
 									</p>
 
 									<p className="text-sm text-gray-400">New Score:</p>
 									<p className="text-sm font-medium text-white">
-										{(selectedAccount.score
-											? parseInt(selectedAccount.score.toString())
-											: 0) + 1}
+										{convertBigIntToNumber(selectedAccount.score) + 1}
 									</p>
 								</div>
 							</div>
