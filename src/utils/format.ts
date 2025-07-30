@@ -277,3 +277,72 @@ export const formatWeiValue = (
 	// Otherwise show in ETH
 	return `${ethValue.toFixed(decimals)} ETH`;
 };
+
+/**
+ * Formats a balance value specifically for ETH display.
+ * @param balance - The balance value (can be BigInt, string, or number) in Wei.
+ * @param decimals - Number of decimal places to show (default: 4).
+ * @returns {string} - The formatted balance in ETH.
+ */
+export const formatBalanceToEth = (
+	balance: bigint | string | number | null | undefined,
+	decimals: number = 4,
+): string => {
+	if (balance === null || balance === undefined) return '0 ETH';
+
+	// Convert to number for calculation
+	let weiValue: number;
+
+	if (typeof balance === 'bigint') {
+		weiValue = Number(balance);
+	} else if (typeof balance === 'string') {
+		weiValue = parseFloat(balance) || 0;
+	} else {
+		weiValue = balance;
+	}
+
+	// Convert Wei to ETH
+	const ethValue = weiValue / 1e18;
+
+	return `${ethValue.toFixed(decimals)} ETH`;
+};
+
+/**
+ * Converts a BigInt value to a regular number for display.
+ * @param value - The BigInt value to convert.
+ * @returns {number} - The converted number.
+ */
+export const convertBigIntToNumber = (
+	value: bigint | string | number | null | undefined,
+): number => {
+	if (value === null || value === undefined) return 0;
+
+	if (typeof value === 'number') return value;
+
+	if (typeof value === 'string') {
+		// Try to parse as BigInt first, then as number
+		try {
+			return Number(BigInt(value));
+		} catch {
+			return Number(value) || 0;
+		}
+	}
+
+	if (typeof value === 'bigint') {
+		return Number(value);
+	}
+
+	return 0;
+};
+
+/**
+ * Formats a score value for display, handling BigInt conversion.
+ * @param score - The score value (can be BigInt, string, or number).
+ * @returns {string} - The formatted score as a string.
+ */
+export const formatScore = (
+	score: bigint | string | number | null | undefined,
+): string => {
+	const numericScore = convertBigIntToNumber(score);
+	return numericScore.toString();
+};

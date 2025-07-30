@@ -4,14 +4,7 @@ import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
 import { cn } from '@/utils/cn';
-import {
-	FooterLegals,
-	FooterResources,
-	FooterServices,
-	FooterSiteMap,
-	FooterSocialMedia,
-} from '@/const';
-
+import { FooterSocialMedia } from '@/const';
 import { LinkButton } from '../button/LinkButton';
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
@@ -20,77 +13,63 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
+
 	return (
-		<footer className={cn('', className)}>
-			<div className="flex w-full flex-col-reverse items-center justify-between gap-14 lg:flex-row">
-				<div className="flex w-full flex-col items-start space-y-10 lg:w-1/3">
-					<h2 className="text-4xl font-bold">Sybil Guard</h2>
-					<p className="max-w-full text-left">
-						Creating an identity-proving algorithm and zk-rollup network for
-						user identification.
-					</p>
-					<Image
-						alt="partnership-primary-dark-logo"
-						height={150}
-						src={'/images/partnership-primary-dark-logo.png'}
-						width={300}
-					/>
-					<div className="flex w-full flex-col justify-between gap-y-4 sm:flex-row lg:flex-col">
-						<div className="min-w-72">
-							<span>SYB © – All rights reserved. 2025</span>
+		<footer
+			className={cn('border-border w-full border-t bg-background', className)}
+		>
+			<div className="container mx-auto px-4 py-12">
+				<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+					{/* Left Column - Brand & Description */}
+					<div className="flex flex-col space-y-6">
+						<div className="space-y-4">
+							<h2 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+								Sybil Guard
+							</h2>
+							<p className="text-muted-foreground max-w-md text-sm leading-relaxed md:text-base">
+								Creating an identity-proving algorithm and zk-rollup network for
+								user identification.
+							</p>
 						</div>
-						<div className="flex flex-wrap gap-x-10 gap-y-2">
-							{isClient &&
-								FooterSocialMedia.map((item) => (
-									<LinkButton
-										key={item.label}
-										href={item.link || ''}
-										icon={item.icon}
-									/>
-								))}
+
+						{/* Partnership Logo */}
+						<div className="relative">
+							<Image
+								alt="partnership-primary-dark-logo"
+								height={120}
+								src={'/images/partnership-primary-dark-logo.png'}
+								width={240}
+								className="object-contain"
+							/>
 						</div>
 					</div>
-				</div>
-				<div className="flex w-full flex-row flex-wrap justify-between gap-x-5 gap-y-10 xl:w-2/3 xl:gap-x-14">
-					<div className="flex flex-col gap-y-10">
-						<h4 className="text-xl font-bold lg:text-2xl">Sitemap</h4>
-						<ul className="flex flex-col gap-y-6">
-							{FooterSiteMap.map((item) => (
-								<li key={item.label}>
-									<LinkButton href={item.link} label={item.label} />
-								</li>
-							))}
-						</ul>
-					</div>
-					<div className="flex flex-col gap-y-10">
-						<h4 className="text-xl font-bold lg:text-2xl">Developer</h4>
-						<ul className="flex flex-col gap-y-6">
-							{FooterServices.map((item) => (
-								<li key={item.label}>
-									<LinkButton href={item.link} label={item.label} />
-								</li>
-							))}
-						</ul>
-					</div>
-					<div className="flex flex-col gap-y-10">
-						<h4 className="text-xl font-bold lg:text-2xl">Resources</h4>
-						<ul className="flex flex-col gap-y-6">
-							{FooterResources.map((item) => (
-								<li key={item.label}>
-									<LinkButton href={item.link} label={item.label} />
-								</li>
-							))}
-						</ul>
-					</div>
-					<div className="flex flex-col gap-y-10">
-						<h4 className="text-xl font-bold lg:text-2xl">Legals</h4>
-						<ul className="flex flex-col gap-y-6">
-							{FooterLegals.map((item) => (
-								<li key={item.label}>
-									<LinkButton href={item.link} label={item.label} />
-								</li>
-							))}
-						</ul>
+
+					{/* Right Column - Social Media & Copyright */}
+					<div className="flex flex-col justify-between space-y-6">
+						{/* Social Media Links */}
+						<div className="space-y-4">
+							<h3 className="text-lg font-semibold text-foreground">
+								Connect With Us
+							</h3>
+							<div className="flex flex-wrap gap-3">
+								{isClient &&
+									FooterSocialMedia.map((item) => (
+										<LinkButton
+											key={item.label}
+											href={item.link || ''}
+											icon={item.icon}
+											className="hover:bg-accent rounded-lg p-2 transition-colors"
+										/>
+									))}
+							</div>
+						</div>
+
+						{/* Copyright */}
+						<div className="space-y-2">
+							<div className="text-muted-foreground text-sm">
+								<span>SYB © – All rights reserved. 2025</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

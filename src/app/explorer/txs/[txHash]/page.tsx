@@ -108,9 +108,9 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Status:</strong>{' '}
 					<TxStatus
 						status={
-							(transaction.batch_num === 0
-								? 'Pending'
-								: 'Forged') as ActionStatus
+							transaction.is_tx_forged
+								? ActionStatus.FORGED
+								: ActionStatus.PENDING
 						}
 					/>
 				</div>
