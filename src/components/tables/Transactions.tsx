@@ -225,12 +225,12 @@ export const TransactionsTable: React.FC<Props> = ({
 								</td>
 								<td className="px-6 py-2 text-right">
 									{transaction.amount
-										? `${formatBalanceToEth(transaction.amount)} ETH`
+										? `${formatBalanceToEth(transaction.amount)}`
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2 text-right">
 									{transaction.gas_fee
-										? `${formatBalanceToEth(transaction.gas_fee)} ETH`
+										? `${formatBalanceToEth(transaction.gas_fee)}`
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
