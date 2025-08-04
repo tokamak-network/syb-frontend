@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { HttpStatusCode } from 'axios';
 import { getServerSession } from 'next-auth/next';
+import { Session } from 'next-auth';
 
 import { pinata } from '@/config';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { Session } from 'next-auth';
 
 export const dynamic = 'force-dynamic';
 

@@ -4,6 +4,7 @@ import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
+import { FiExternalLink } from 'react-icons/fi';
 
 import TxTypes from '@/components/tables/TxType';
 import TxStatus from '@/components/tables/TxStatus';
@@ -13,13 +14,11 @@ import {
 	fetchTransactionByHash,
 	formatTimestamp,
 	formatWeiValue,
-	formatEthAddress,
 	formatTransactionHash,
 	formatFullEthAddress,
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
 import { useWallet } from '@/hooks/useWallet';
-import { FiExternalLink } from 'react-icons/fi';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();
@@ -64,6 +63,7 @@ const TransactionDetailsPage: React.FC = () => {
 		if (!chain || !chain.blockExplorers) return null;
 
 		const explorerUrl = chain.blockExplorers.default.url;
+
 		return `${explorerUrl}/tx/${txHashToDisplay}`;
 	};
 
@@ -88,10 +88,10 @@ const TransactionDetailsPage: React.FC = () => {
 					<strong>Transaction Hash:</strong>{' '}
 					{explorerUrl ? (
 						<a
-							href={explorerUrl}
-							target="_blank"
-							rel="noopener noreferrer"
 							className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+							href={explorerUrl}
+							rel="noopener noreferrer"
+							target="_blank"
 						>
 							{formatTransactionHash(txHashToDisplay)}
 							<FiExternalLink className="ml-1" />

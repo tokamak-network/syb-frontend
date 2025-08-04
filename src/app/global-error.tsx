@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { ErrorDisplay } from '@/components/errors';
 
 export default function GlobalError({
@@ -18,9 +19,9 @@ export default function GlobalError({
 		<html lang="en">
 			<body>
 				<ErrorDisplay
-					title="Application Error"
-					message="A critical error occurred in the application. We apologize for the inconvenience."
 					digest={error.digest}
+					message="A critical error occurred in the application. We apologize for the inconvenience."
+					title="Application Error"
 					onReset={reset}
 				/>
 			</body>

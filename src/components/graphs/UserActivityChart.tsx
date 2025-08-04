@@ -3,8 +3,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { format } from 'date-fns';
-import { fetchTransactions } from '@/utils/fetch';
-import { Transaction, TransactionResponse } from '@/types';
 import {
 	Chart as ChartJS,
 	ChartOptions,
@@ -21,6 +19,9 @@ import {
 	Legend,
 	TimeScale,
 } from 'chart.js';
+
+import { fetchTransactions } from '@/utils/fetch';
+import { Transaction, TransactionResponse } from '@/types';
 import { ZoomPluginOptions } from '@/types/chart';
 
 interface ChartProps {
@@ -93,7 +94,9 @@ export const UserActivityLineChart: React.FC = () => {
 			(acc, transaction) => {
 				const date = new Date(transaction.timestamp * 1000);
 				const yearMonth = format(date, 'yyyy-MM');
+
 				acc[yearMonth] = (acc[yearMonth] || 0) + 1;
+
 				return acc;
 			},
 			{} as Record<string, number>,
@@ -116,6 +119,7 @@ export const UserActivityLineChart: React.FC = () => {
 				}
 
 				acc.counts[yearMonth] = acc.uniqueUsers[yearMonth].size;
+
 				return acc;
 			},
 			{
@@ -135,6 +139,7 @@ export const UserActivityLineChart: React.FC = () => {
 					label: 'Number of Activities',
 					data: labels.map((label) => {
 						const yearMonth = format(new Date(label), 'yyyy-MM');
+
 						return activityCounts[yearMonth] || 0;
 					}),
 					borderColor: '#36A2EB',
@@ -165,6 +170,7 @@ export const UserActivityLineChart: React.FC = () => {
 					label: 'Number of Users',
 					data: labels.map((label) => {
 						const yearMonth = format(new Date(label), 'yyyy-MM');
+
 						return userCounts[yearMonth] || 0;
 					}),
 					borderColor: '#FF6384',
@@ -299,17 +305,17 @@ export const UserActivityLineChart: React.FC = () => {
 		<div className="h-[350px] w-full">
 			<div className="mb-2 flex justify-end">
 				<button
-					onClick={handleResetZoom}
 					className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
+					onClick={handleResetZoom}
 				>
 					Reset Zoom
 				</button>
 			</div>
 			<div className="relative h-full">
 				<ChartComponent
+					chartRef={chartRef}
 					data={chartData}
 					options={chartOptions}
-					chartRef={chartRef}
 				/>
 			</div>
 		</div>

@@ -4,8 +4,9 @@ import {
 	ErrorBoundary as ReactErrorBoundary,
 	FallbackProps,
 } from 'react-error-boundary';
-import { ErrorDisplay } from './ErrorDisplay';
 import React, { ErrorInfo } from 'react';
+
+import { ErrorDisplay } from './ErrorDisplay';
 
 interface FunctionalErrorBoundaryProps {
 	children: React.ReactNode;
@@ -17,10 +18,10 @@ interface FunctionalErrorBoundaryProps {
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 	return (
 		<ErrorDisplay
-			title="Component Error"
 			message={
 				error.message || 'This part of the application encountered an error.'
 			}
+			title="Component Error"
 			onReset={resetErrorBoundary}
 		/>
 	);
@@ -44,17 +45,17 @@ export function ErrorBoundary({
 		<ReactErrorBoundary
 			FallbackComponent={(props) => (
 				<ErrorDisplay
-					title={fallbackTitle}
 					message={
 						fallbackMessage ||
 						props.error.message ||
 						'This part of the application encountered an error.'
 					}
+					title={fallbackTitle}
 					onReset={props.resetErrorBoundary}
 				/>
 			)}
-			onError={handleOnError}
 			resetKeys={onResetKeys}
+			onError={handleOnError}
 		>
 			{children}
 		</ReactErrorBoundary>

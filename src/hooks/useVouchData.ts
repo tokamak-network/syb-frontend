@@ -1,11 +1,12 @@
 import { readContract, getPublicClient } from '@wagmi/core';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { parseAbiItem } from 'viem';
+
 import { SybilSepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress } from '@/utils';
 import { config } from '@/config';
+
 import { useWallet } from './useWallet';
-import { Log, createPublicClient, http, parseAbiItem } from 'viem';
 
 interface VouchData {
 	hasVouched: boolean;
@@ -63,6 +64,7 @@ export const useVouchData = () => {
 				} catch (err) {
 					console.error('Error checking vouch status:', err);
 					setError(err instanceof Error ? err : new Error(String(err)));
+
 					return false;
 				}
 			},
@@ -88,6 +90,7 @@ export const useVouchData = () => {
 			const contractAddress = formatAs0xAddress(contracts.sybilSepolia.address);
 
 			const client = getPublicClient(config);
+
 			if (!client) {
 				throw new Error('Failed to create client');
 			}
@@ -205,6 +208,7 @@ export const useVouchData = () => {
 			};
 		} catch (err) {
 			console.error('Error fetching transaction details:', err);
+
 			return {
 				txHash: null,
 				timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
@@ -258,6 +262,7 @@ export const useVouchData = () => {
 				} catch (err) {
 					console.error('Error fetching vouchers:', err);
 					setError(err instanceof Error ? err : new Error(String(err)));
+
 					return [];
 				}
 			},
@@ -280,6 +285,7 @@ export const useVouchData = () => {
 							voucherAddress,
 							targetAddress,
 						);
+
 						vouchTransactions.push({
 							address: voucherAddress,
 							txHash,
@@ -355,6 +361,7 @@ export const useVouchData = () => {
 				} catch (err) {
 					console.error('Error fetching vouched addresses:', err);
 					setError(err instanceof Error ? err : new Error(String(err)));
+
 					return [];
 				}
 			},
@@ -377,6 +384,7 @@ export const useVouchData = () => {
 							voucherAddress,
 							recipientAddress,
 						);
+
 						vouchTransactions.push({
 							address: recipientAddress,
 							txHash,

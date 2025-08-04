@@ -29,6 +29,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
 
 		// Check for saved theme in localStorage after hydration
 		const savedTheme = localStorage.getItem('theme') as Theme;
+
 		if (savedTheme && ['light', 'dark', 'dim'].includes(savedTheme)) {
 			setTheme(savedTheme);
 		}

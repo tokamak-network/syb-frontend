@@ -19,10 +19,10 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 								<div className="relative h-12 w-12">
 									<Image
 										alt="Sybil Guard Logo"
+										className="object-contain"
 										height={48}
 										src={'/images/logo-light.png'}
 										width={48}
-										className="object-contain"
 									/>
 								</div>
 								<h2 className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-2xl font-bold text-transparent md:text-3xl">
@@ -48,10 +48,10 @@ export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 							<div className="relative">
 								<Image
 									alt="partnership-primary-dark-logo"
+									className="object-contain md:h-16 md:w-32 lg:h-20 lg:w-40"
 									height={60}
 									src={'/images/partnership-primary-dark-logo.png'}
 									width={120}
-									className="object-contain md:h-16 md:w-32 lg:h-20 lg:w-40"
 								/>
 							</div>
 						</div>

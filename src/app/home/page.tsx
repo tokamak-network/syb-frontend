@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { UserActivityLineChart, Label } from '@/components';
 import { fetchTransactions } from '@/utils/fetch';
 import { TransactionResponse } from '@/types';
@@ -20,6 +21,7 @@ const HomePage: React.FC = () => {
 
 				if (response.transactions && response.transactions.length > 0) {
 					const latestTx = response.transactions[0];
+
 					setLastTransaction(latestTx.tx_hash || 'N/A');
 					if (latestTx.block_number) {
 						setLastBlock(latestTx.block_number);

@@ -139,6 +139,7 @@ export const formatEthAddress = (address: string): string => {
 	if (!address) return '-';
 	const cleanAddress = address.replace('0x', '');
 	const formattedAddress = toChecksumAddress(`0x${cleanAddress}`);
+
 	return `${formattedAddress.slice(0, 6)}...${formattedAddress.slice(-4)}`;
 };
 
@@ -151,6 +152,7 @@ export const formatFullEthAddress = (address: string): `0x${string}` => {
 	if (!address)
 		return '0x0000000000000000000000000000000000000000' as `0x${string}`;
 	const cleanAddress = address.replace('0x', '');
+
 	return toChecksumAddress(`0x${cleanAddress}`) as `0x${string}`;
 };
 
@@ -245,6 +247,7 @@ export const toChecksumAddress = (address: string): string => {
 		return address;
 	} catch (error) {
 		console.warn('Failed to checksum address:', address, error);
+
 		return address;
 	}
 };
@@ -274,6 +277,7 @@ export const formatWeiValue = (
 	if (gweiValue < 0.0001 && gweiValue > 0) {
 		return `${weiValue} Wei`;
 	}
+
 	// Otherwise show in ETH
 	return `${ethValue.toFixed(decimals)} ETH`;
 };
@@ -344,5 +348,6 @@ export const formatScore = (
 	score: bigint | string | number | null | undefined,
 ): string => {
 	const numericScore = convertBigIntToNumber(score);
+
 	return numericScore.toString();
 };

@@ -163,10 +163,10 @@ export const Header: React.FC<{
 		<header className="fixed left-0 right-0 top-0 z-40 flex items-center justify-between border-b-2 bg-background px-4 py-4 md:px-8 lg:px-16 xl:px-20">
 			<Image
 				alt="logo"
+				className="h-8 w-auto md:h-10 lg:h-12"
 				height={50}
 				src={'/images/logo-light.png'}
 				width={150}
-				className="h-8 w-auto md:h-10 lg:h-12"
 			/>
 
 			<nav className="max-w-300 mb-0 hidden flex-col justify-around space-y-2 text-xl font-bold md:flex md:flex-row md:space-x-5 md:space-y-0">
@@ -180,21 +180,21 @@ export const Header: React.FC<{
 			>
 				<div className="space-y-2 px-4 py-2">
 					<NavLinkButton
+						className="block w-full py-2 text-left"
 						href="/home"
 						label="Home"
-						className="block w-full py-2 text-left"
 					/>
 					{isClient && docsURL && (
 						<NavLinkButton
+							className="block w-full py-2 text-left"
 							href={docsURL}
 							label="Docs"
-							className="block w-full py-2 text-left"
 						/>
 					)}
 					<NavLinkButton
+						className="block w-full py-2 text-left"
 						href="/explorer"
 						label="Explorer"
-						className="block w-full py-2 text-left"
 					/>
 					<hr className="my-2" />
 				</div>
@@ -270,8 +270,8 @@ export const Header: React.FC<{
 						{isWalletMenuOpen && (
 							<div className="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-lg">
 								<Link
-									href="/explorer/my-account"
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+									href="/explorer/my-account"
 								>
 									My Account
 								</Link>
@@ -304,7 +304,7 @@ export const Header: React.FC<{
 						<span>Connect</span>
 					</Button>
 				) : (
-					<div className="h-[40px] w-[120px]"></div>
+					<div className="h-[40px] w-[120px]" />
 				)}
 			</div>
 
@@ -341,13 +341,13 @@ export const Header: React.FC<{
 						/>
 					</Button>
 				) : (
-					<div className="h-[32px] w-[60px]"></div>
+					<div className="h-[32px] w-[60px]" />
 				)}
 				{isClient && isWalletMenuOpen && (
 					<div className="absolute right-12 top-8 mt-2 w-48 rounded-md bg-white shadow-lg">
 						<Link
-							href="/explorer/my-account"
 							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+							href="/explorer/my-account"
 						>
 							My Account
 						</Link>
@@ -366,26 +366,26 @@ export const Header: React.FC<{
 					</div>
 				)}
 				<button
+					aria-label="Toggle mobile menu"
 					className="rounded-md p-2 md:hidden"
 					onClick={toggleMobileMenu}
-					aria-label="Toggle mobile menu"
 				>
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
 						className="h-6 w-6"
 						fill="none"
-						viewBox="0 0 24 24"
 						stroke="currentColor"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
 					>
 						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
 							d={
 								isMobileMenuOpen
 									? 'M6 18L18 6M6 6l12 12'
 									: 'M4 6h16M4 12h16M4 18h16'
 							}
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
 						/>
 					</svg>
 				</button>

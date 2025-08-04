@@ -1,10 +1,12 @@
 import { readContract } from '@wagmi/core';
 import { useState, useEffect } from 'react';
-import { useWallet } from './useWallet';
-import { SybilSepoliaABI, VerifierSepoliaABI, contracts } from '@/contracts';
-import { formatFullEthAddress } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
+
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import { formatFullEthAddress } from '@/utils';
 import { config } from '@/config';
+
+import { useWallet } from './useWallet';
 
 interface Vouch {
 	fromIdx: string;
@@ -33,6 +35,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryKey: ['queueLength', address],
 		queryFn: async () => {
 			if (!address) return null;
+
 			return readContract(config, {
 				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
@@ -47,6 +50,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryKey: ['lastForgedBatch', address],
 		queryFn: async () => {
 			if (!address) return null;
+
 			return readContract(config, {
 				address: formatFullEthAddress(contracts.sybilSepolia.address),
 				abi: SybilSepoliaABI,
@@ -64,6 +68,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 			try {
 				// lastAddedTxn returns the index of the last transaction, so we need to add 1 for the count
 				const totalTransactions = Number(queueLength) + 1;
+
 				if (totalTransactions === 0) return;
 
 				const indices = Array.from({ length: totalTransactions }, (_, i) => i);
@@ -78,6 +83,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 				);
 
 				const queueResults = await Promise.all(queuePromises);
+
 				setTransactionQueueData(queueResults);
 			} catch (error) {
 				console.error('Failed to fetch transaction queue:', error);
@@ -92,9 +98,11 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryFn: async () => {
 			try {
 				if (!address || !lastForgedBatch) return [];
+
 				return [];
 			} catch (error) {
 				console.error('Error fetching vouch events:', error);
+
 				return [];
 			}
 		},
@@ -107,9 +115,11 @@ export const useSmartContractData = (accountIdx?: string) => {
 		queryFn: async () => {
 			try {
 				if (!address || !lastForgedBatch) return [];
+
 				return [];
 			} catch (error) {
 				console.error('Error fetching transaction history:', error);
+
 				return [];
 			}
 		},
@@ -144,6 +154,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 				fromIdx: event.fromIdx,
 				toIdx: event.toIdx,
 			}));
+
 			setVouchesData(processedVouches);
 		}
 	}, [vouchEvents]);
@@ -158,6 +169,7 @@ export const useSmartContractData = (accountIdx?: string) => {
 				amount: event.args?.amount ? String(event.args.amount) : '0',
 				timestamp: event.blockTimestamp || Date.now(),
 			}));
+
 			setTransactions(processedTransactions);
 		}
 	}, [txHistory]);

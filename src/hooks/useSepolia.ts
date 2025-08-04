@@ -2,7 +2,6 @@ import { useWriteContract } from 'wagmi';
 
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import {
-	formatEthAddress,
 	formatFullEthAddress,
 	convertToUint40Format,
 	validateAddress,
@@ -21,6 +20,7 @@ export const useSepoliaTransactions = () => {
 
 			// Check that amount doesn't exceed the limit according to the contract
 			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+
 			if (amountValue >= LIMIT_AMOUNT) {
 				throw new Error('Amount exceeds the maximum limit');
 			}
@@ -105,6 +105,7 @@ export const useSepoliaTransactions = () => {
 
 			// Check that amount doesn't exceed the limit according to the contract
 			const LIMIT_AMOUNT = BigInt(2) ** BigInt(128);
+
 			if (amountValue >= LIMIT_AMOUNT) {
 				throw new Error('Amount exceeds the maximum limit');
 			}

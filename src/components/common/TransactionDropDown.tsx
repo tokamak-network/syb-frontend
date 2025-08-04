@@ -3,8 +3,6 @@
 import React from 'react';
 import { FaList, FaClock, FaCheck } from 'react-icons/fa';
 
-import { useTheme } from '@/context/ThemeContext';
-
 import { Button } from '../button';
 
 import { Dropdown } from './DropDown';

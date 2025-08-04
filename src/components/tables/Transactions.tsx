@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { IoMdArrowDropdown } from 'react-icons/io';
+
 import TxTypes from '@/components/tables/TxType';
-import { ActionType, ActionStatus, Order, Transaction } from '@/types';
+import { ActionType, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
 	formatTimestamp,
@@ -11,9 +14,6 @@ import {
 	formatBalanceToEth,
 } from '@/utils/format';
 import { Button, Dropdown } from '@/components';
-import { useRouter } from 'next/navigation';
-
-import { IoMdArrowDropdown } from 'react-icons/io';
 
 interface Props {
 	filteredTransactions: Transaction[];
@@ -105,6 +105,7 @@ export const TransactionsTable: React.FC<Props> = ({
 	) => {
 		event.stopPropagation();
 		const explorerUrl = process.env.NEXT_PUBLIC_TESTNET_BLOCK_EXPLORER_URL;
+
 		if (explorerUrl && txHash) {
 			window.open(
 				`${explorerUrl}/tx/0x${txHash}`,
@@ -134,15 +135,15 @@ export const TransactionsTable: React.FC<Props> = ({
 							Type
 						</th>
 						<th
+							className="flex cursor-pointer items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary"
 							onClick={() =>
 								setOrder(order === Order.ASC ? Order.DESC : Order.ASC)
 							}
-							className="flex cursor-pointer items-center gap-1 px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary"
 						>
 							Timestamp
 							<IoMdArrowDropdown
-								size={16}
 								className={`cursor-pointer ${order === Order.ASC ? 'rotate-180' : ''}`}
+								size={16}
 							/>
 						</th>
 						<th className="px-6 py-3 text-left text-sm font-bold uppercase text-tableTextPrimary">
@@ -278,13 +279,13 @@ export const TransactionsTable: React.FC<Props> = ({
 						<Dropdown
 							items={pageSizeOptions}
 							renderItem={(item) => <span>{item}</span>}
-							onItemSelect={handleItemsPerPageChange}
 							triggerContent={
 								<div className="flex min-w-[60px] items-center justify-between gap-2 px-2 py-1">
 									<span>{itemsPerPage}</span>
 									<span>▼</span>
 								</div>
 							}
+							onItemSelect={handleItemsPerPageChange}
 						/>
 					</div>
 				</div>

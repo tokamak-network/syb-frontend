@@ -42,8 +42,8 @@ export const Dropdown = <T,>({
 			<DropdownMenu.Portal>
 				<DropdownMenu.Content
 					className={`z-50 rounded-md p-2 shadow-lg transition-all duration-300 ${currentThemeStyles.text} ${currentThemeStyles.background} data-[side=left]:animate-slideRightAndFade`}
-					sideOffset={sideOffset}
 					side={side}
+					sideOffset={sideOffset}
 				>
 					{items.map((item, index) => (
 						<DropdownMenu.Item

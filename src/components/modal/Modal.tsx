@@ -2,7 +2,6 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 
 import { cn } from '@/utils/cn';
-import { themeStyles } from '@/const';
 
 interface ModalProps {
 	isOpen: boolean;
@@ -37,9 +36,9 @@ export const Modal: React.FC<ModalProps> = ({
 					<div className="space-y-4">{children}</div>
 
 					<button
-						onClick={onClose}
 						aria-label="Close"
 						className="absolute right-2 top-2 rounded-full p-1 text-white hover:bg-white/10"
+						onClick={onClose}
 					>
 						✕
 					</button>

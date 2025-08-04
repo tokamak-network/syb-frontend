@@ -11,7 +11,6 @@ import {
 	formatAddress,
 	formatAmount,
 	formatFullTime,
-	formatTime,
 	formatTransactionHash,
 } from '@/utils';
 import { Account } from '@/types';
