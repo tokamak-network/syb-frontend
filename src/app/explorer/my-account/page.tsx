@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { FiExternalLink } from 'react-icons/fi';
+import { useReadContract } from 'wagmi';
+import { ethers } from 'ethers';
+
 import { useWallet } from '@/hooks/useWallet';
 import { Button } from '@/components/button';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useVouchData } from '@/hooks/useVouchData';
-import { FiExternalLink } from 'react-icons/fi';
-import { useReadContract } from 'wagmi';
-import { ethers } from 'ethers';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { formatEthAddress } from '@/utils';
 
@@ -78,6 +79,7 @@ const MyAccountPage: React.FC = () => {
 
 	const getExplorerUrl = (txHash: string) => {
 		const explorerBaseUrl = 'https://sepolia.etherscan.io/tx/';
+
 		return `${explorerBaseUrl}${txHash}`;
 	};
 
@@ -131,7 +133,7 @@ const MyAccountPage: React.FC = () => {
 
 			{isLoading ? (
 				<div className="flex justify-center p-10">
-					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2"></div>
+					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2" />
 				</div>
 			) : (
 				<>
@@ -160,7 +162,7 @@ const MyAccountPage: React.FC = () => {
 							)}
 						>
 							{isBalanceLoading ? (
-								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2"></div>
+								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
 							) : (
 								<>
 									{balance}{' '}
@@ -186,7 +188,7 @@ const MyAccountPage: React.FC = () => {
 							)}
 						>
 							{isContractBalanceLoading ? (
-								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2"></div>
+								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
 							) : (
 								<>
 									{formattedDepositAmount}{' '}
@@ -210,7 +212,7 @@ const MyAccountPage: React.FC = () => {
 						<h2 className="mb-4 text-xl font-semibold">Users I Vouched For</h2>
 						{isVouchedLoading ? (
 							<div className="flex justify-center p-4">
-								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
+								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2" />
 							</div>
 						) : vouchedError ? (
 							<p className="text-red-500">
@@ -244,10 +246,10 @@ const MyAccountPage: React.FC = () => {
 												<td className="whitespace-nowrap px-6 py-4 font-mono">
 													{user.txHash ? (
 														<a
-															href={getExplorerUrl(user.txHash)}
-															target="_blank"
-															rel="noopener noreferrer"
 															className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+															href={getExplorerUrl(user.txHash)}
+															rel="noopener noreferrer"
+															target="_blank"
 														>
 															{user.txHash.substring(0, 10)}...
 															<FiExternalLink className="ml-1" />
@@ -276,7 +278,7 @@ const MyAccountPage: React.FC = () => {
 						</h2>
 						{isVouchersLoading ? (
 							<div className="flex justify-center p-4">
-								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2"></div>
+								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2" />
 							</div>
 						) : vouchersError ? (
 							<p className="text-red-500">
@@ -310,10 +312,10 @@ const MyAccountPage: React.FC = () => {
 												<td className="whitespace-nowrap px-6 py-4 font-mono">
 													{user.txHash ? (
 														<a
-															href={getExplorerUrl(user.txHash)}
-															target="_blank"
-															rel="noopener noreferrer"
 															className="inline-flex items-center text-blue-500 hover:text-blue-700 hover:underline"
+															href={getExplorerUrl(user.txHash)}
+															rel="noopener noreferrer"
+															target="_blank"
 														>
 															{user.txHash.substring(0, 10)}...
 															<FiExternalLink className="ml-1" />

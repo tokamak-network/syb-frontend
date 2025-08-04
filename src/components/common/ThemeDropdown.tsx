@@ -39,10 +39,10 @@ export const ThemeDropdown: React.FC<ThemeDropdownProps> = ({ className }) => {
 		<div className={cn(className)}>
 			<Dropdown
 				items={themeOptions}
-				side="left"
 				renderItem={(item) => (
 					<div className="flex items-center space-x-2">{item.icon}</div>
 				)}
+				side="left"
 				triggerContent={
 					<button
 						aria-label="Select Theme"

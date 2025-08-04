@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { ErrorDisplay } from '@/components/errors';
 
 export default function Error({
@@ -16,12 +17,12 @@ export default function Error({
 
 	return (
 		<ErrorDisplay
-			title="Something Went Wrong"
+			digest={error.digest}
 			message={
 				error.message ||
 				'An unexpected client-side error occurred. Please try again.'
 			}
-			digest={error.digest}
+			title="Something Went Wrong"
 			onReset={reset}
 		/>
 	);

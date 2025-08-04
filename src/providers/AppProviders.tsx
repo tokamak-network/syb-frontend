@@ -28,8 +28,8 @@ export const config = createConfig({
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
 	return (
 		<ErrorBoundary
-			fallbackTitle="Layout Error"
 			fallbackMessage="There was an issue loading the main application layout."
+			fallbackTitle="Layout Error"
 		>
 			<SessionProvider>
 				<WagmiProvider config={config}>

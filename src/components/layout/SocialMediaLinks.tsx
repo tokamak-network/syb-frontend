@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { FooterSocialMedia } from '@/const';
+
 import { LinkButton } from '../button/LinkButton';
 
 export const SocialMediaLinks: React.FC = () => {
@@ -11,9 +12,9 @@ export const SocialMediaLinks: React.FC = () => {
 			{FooterSocialMedia.map((item) => (
 				<LinkButton
 					key={item.label}
+					className="hover:bg-accent rounded-lg p-2 transition-colors"
 					href={item.link || ''}
 					icon={item.icon}
-					className="hover:bg-accent rounded-lg p-2 transition-colors"
 				/>
 			))}
 		</div>

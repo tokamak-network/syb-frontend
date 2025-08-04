@@ -53,6 +53,7 @@ export const useWallet = () => {
 						chain.rpcUrls?.default?.http?.[0],
 					);
 					const rawBalance = await provider.getBalance(address);
+
 					return ethers.utils.formatEther(rawBalance);
 				} catch (fallbackError) {
 					console.error(
@@ -75,12 +76,15 @@ export const useWallet = () => {
 		if (address && chain) {
 			try {
 				await refetchBalance();
+
 				return true;
 			} catch (error) {
 				console.error('Failed to update balance:', error);
+
 				return false;
 			}
 		}
+
 		return false;
 	};
 

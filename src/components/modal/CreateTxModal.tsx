@@ -8,7 +8,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { useSepoliaTransactions } from '@/hooks/useSepolia';
 import { useToast } from '@/context';
 import { SybilSepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress, formatFullEthAddress } from '@/utils';
+import { formatFullEthAddress } from '@/utils';
 
 interface CreateTxModalProps {
 	isOpen: boolean;
@@ -151,6 +151,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 	const handleSend = async () => {
 		if (!isConnected) {
 			setError('Please connect your wallet first');
+
 			return;
 		}
 
@@ -159,6 +160,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			(!txAmount || parseFloat(txAmount) <= 0)
 		) {
 			setError('Amount must be greater than 0');
+
 			return;
 		}
 
@@ -169,6 +171,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			parseFloat(txAmount) > parseFloat(balance)
 		) {
 			setError('Deposit amount cannot exceed wallet balance');
+
 			return;
 		}
 
@@ -177,8 +180,10 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 			const contractBalanceEth = ethers.utils.formatEther(
 				contractBalance[0].toString(),
 			);
+
 			if (parseFloat(txAmount) > parseFloat(contractBalanceEth)) {
 				setError('Withdraw amount cannot exceed contract balance');
+
 				return;
 			}
 		}
@@ -186,6 +191,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		// Check if the user has contract balance when attempting non-deposit transactions
 		if (!hasContractBalance && txType !== 'deposit') {
 			setError('You need to make a deposit first to use this functionality');
+
 			return;
 		}
 
@@ -411,6 +417,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 								setError(
 									'You need to make a deposit first to use this functionality',
 								);
+
 								return;
 							}
 							setTxType(e);
@@ -589,17 +596,17 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 				<div className="flex flex-col space-y-4">
 					<div className="flex items-center justify-center space-x-2 text-green-500">
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
 							className="h-12 w-12"
 							fill="none"
-							viewBox="0 0 24 24"
 							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
 						>
 							<path
+								d="M5 13l4 4L19 7"
 								strokeLinecap="round"
 								strokeLinejoin="round"
 								strokeWidth={2}
-								d="M5 13l4 4L19 7"
 							/>
 						</svg>
 					</div>

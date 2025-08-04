@@ -6,12 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import { FiArrowUp, FiThumbsUp, FiCopy } from 'react-icons/fi';
 import { BiCoin, BiMedal } from 'react-icons/bi';
 import { IoArrowBackSharp } from 'react-icons/io5';
-import Image from 'next/image';
 import Jazzicon from 'react-jazzicon';
 
 import { Button, PageLoader } from '@/components';
 import { useWallet, useScoreUpdate, useSepoliaTransactions } from '@/hooks';
-import { fetchAccountByID } from '@/utils';
+import { useVouchData } from '@/hooks/useVouchData';
+import { fetchAccountByID, fetchAccounts } from '@/utils';
 import { cn } from '@/utils/cn';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const/themeStyles';
@@ -30,9 +30,7 @@ const AccountDetailsPage: React.FC = () => {
 	const currentThemeStyles = themeStyles[theme];
 	const [screenWidth, setScreenWidth] = useState<number>(0);
 
-	// Set up screen width tracking for responsive address display
 	useEffect(() => {
-		// Initialize with current window width
 		setScreenWidth(window.innerWidth);
 
 		// Update on resize
@@ -41,6 +39,7 @@ const AccountDetailsPage: React.FC = () => {
 		};
 
 		window.addEventListener('resize', handleResize);
+
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
@@ -57,8 +56,24 @@ const AccountDetailsPage: React.FC = () => {
 		enabled: !!accountIdx,
 	});
 
+	const { data: accountsData } = useQuery({
+		queryKey: ['accounts'],
+		queryFn: fetchAccounts,
+		staleTime: 30000,
+		refetchInterval: 30000,
+	});
+
+	const allAccountAddresses = useMemo(() => {
+		if (!accountsData?.accounts) return [];
+
+		return accountsData.accounts
+			.map((acc: any) => acc.eth_addr)
+			.filter(Boolean);
+	}, [accountsData]);
+
 	const avatarSeed = useMemo(() => {
 		if (!account?.eth_addr) return 0;
+
 		return parseInt(account.eth_addr.slice(2, 10), 16);
 	}, [account?.eth_addr]);
 
@@ -87,6 +102,7 @@ const AccountDetailsPage: React.FC = () => {
 		try {
 			setIsVouching(true);
 			const hash = await handleVouch(account.eth_addr);
+
 			console.log('Vouched successfully:', hash);
 			await refetch();
 		} catch (error) {
@@ -105,21 +121,15 @@ const AccountDetailsPage: React.FC = () => {
 	const truncateAddress = (address: string) => {
 		if (!address) return '';
 
-		// Dynamic truncation based on screen width
 		if (screenWidth < 400) {
-			// Very small screens: show minimal
 			return `${address.slice(0, 4)}...${address.slice(-4)}`;
 		} else if (screenWidth < 640) {
-			// Small screens: show a bit more
 			return `${address.slice(0, 6)}...${address.slice(-4)}`;
 		} else if (screenWidth < 768) {
-			// Medium screens
 			return `${address.slice(0, 8)}...${address.slice(-6)}`;
 		} else if (screenWidth < 1024) {
-			// Large screens
 			return `${address.slice(0, 10)}...${address.slice(-8)}`;
 		} else {
-			// Extra large screens: show even more or full address
 			return `${address.slice(0, 14)}...${address.slice(-12)}`;
 		}
 	};
@@ -180,6 +190,93 @@ const AccountDetailsPage: React.FC = () => {
 		router.push('/explorer/accounts');
 	};
 
+	// Custom components for voucher display
+	const AccountVouchedUsers: React.FC = () => {
+		const { useAddressesVouchedFor } = useVouchData();
+		const [vouchedAddresses, setVouchedAddresses] = useState<string[]>([]);
+
+		const {
+			vouchedAddresses: fetchedAddresses,
+			isLoading,
+			error,
+		} = useAddressesVouchedFor(account?.eth_addr || '', allAccountAddresses);
+
+		useEffect(() => {
+			if (fetchedAddresses) {
+				setVouchedAddresses(fetchedAddresses);
+			}
+		}, [fetchedAddresses]);
+
+		if (isLoading) {
+			return <div className="animate-pulse">Loading vouched users...</div>;
+		}
+
+		if (error) {
+			return <div className="text-red-500">Error: {error.message}</div>;
+		}
+
+		if (vouchedAddresses.length === 0) {
+			return <div>This account hasn&apos;t vouched for any users yet.</div>;
+		}
+
+		return (
+			<div>
+				<ul className="space-y-2">
+					{vouchedAddresses.map((address) => (
+						<li key={address} className="rounded-md border p-2">
+							<span className="font-mono">{address}</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+	};
+
+	const AccountUsersWhoVouched: React.FC = () => {
+		const { useVouchersFor } = useVouchData();
+		const [vouchers, setVouchers] = useState<string[]>([]);
+
+		const {
+			vouchers: fetchedVouchers,
+			isLoading,
+			error,
+		} = useVouchersFor(account?.eth_addr || '', allAccountAddresses);
+
+		useEffect(() => {
+			if (fetchedVouchers) {
+				setVouchers(fetchedVouchers);
+			}
+		}, [fetchedVouchers]);
+
+		if (isLoading) {
+			return (
+				<div className="animate-pulse">
+					Loading users who vouched for this account...
+				</div>
+			);
+		}
+
+		if (error) {
+			return <div className="text-red-500">Error: {error.message}</div>;
+		}
+
+		if (vouchers.length === 0) {
+			return <div>No users have vouched for this account yet.</div>;
+		}
+
+		return (
+			<div>
+				<ul className="space-y-2">
+					{vouchers.map((address) => (
+						<li key={address} className="rounded-md border p-2">
+							<span className="font-mono">{address}</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+	};
+
 	if (isError) {
 		return (
 			<div className="flex h-[70vh] items-center justify-center">
@@ -217,7 +314,7 @@ const AccountDetailsPage: React.FC = () => {
 							className={`flex flex-col items-center space-y-6 rounded-2xl ${getHeaderBg()} p-8 text-center shadow-xl backdrop-blur-md`}
 						>
 							<div className="relative">
-								<div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-75 blur"></div>
+								<div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-75 blur" />
 								<div className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-gray-800 bg-gray-700">
 									<Jazzicon diameter={112} seed={avatarSeed} />
 								</div>
@@ -235,9 +332,9 @@ const AccountDetailsPage: React.FC = () => {
 											{truncateAddress(account.eth_addr)}
 										</p>
 										<button
-											onClick={() => copyToClipboard(account.eth_addr)}
 											className={`ml-2 rounded-full p-1.5 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'} transition-colors hover:bg-gray-700 hover:text-white`}
 											title="Copy address"
+											onClick={() => copyToClipboard(account.eth_addr)}
 										>
 											<FiCopy size={16} />
 										</button>
@@ -263,7 +360,7 @@ const AccountDetailsPage: React.FC = () => {
 									<div
 										className={`mr-4 flex h-12 w-12 items-center justify-center rounded-full ${getIconBgColor('blue')} p-3`}
 									>
-										<BiCoin size={28} className={getIconColor('blue')} />
+										<BiCoin className={getIconColor('blue')} size={28} />
 									</div>
 									<div>
 										<p
@@ -286,7 +383,7 @@ const AccountDetailsPage: React.FC = () => {
 										style={{
 											width: `${Math.min(parseInt(account.balance) / 10, 100)}%`,
 										}}
-									></div>
+									/>
 								</div>
 							</div>
 
@@ -297,7 +394,7 @@ const AccountDetailsPage: React.FC = () => {
 									<div
 										className={`mr-4 flex h-12 w-12 items-center justify-center rounded-full ${getIconBgColor('purple')} p-3`}
 									>
-										<BiMedal size={28} className={getIconColor('purple')} />
+										<BiMedal className={getIconColor('purple')} size={28} />
 									</div>
 									<div>
 										<p
@@ -320,7 +417,7 @@ const AccountDetailsPage: React.FC = () => {
 										style={{
 											width: `${Math.min(parseInt(account.score || '0') * 10, 100)}%`,
 										}}
-									></div>
+									/>
 								</div>
 							</div>
 						</div>
@@ -342,13 +439,13 @@ const AccountDetailsPage: React.FC = () => {
 											'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-blue-600 disabled:hover:to-blue-700',
 											'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900',
 										)}
-										onClick={onVouch}
 										disabled={
 											isVouching ||
 											address?.toLowerCase() === account.eth_addr.toLowerCase()
 										}
-										leftIcon={FiThumbsUp}
 										isLoading={isVouching}
+										leftIcon={FiThumbsUp}
+										onClick={onVouch}
 									>
 										{isVouching ? 'Vouching...' : 'Vouch for User'}
 									</Button>
@@ -358,13 +455,41 @@ const AccountDetailsPage: React.FC = () => {
 											'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-purple-600 disabled:hover:to-purple-700',
 											'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900',
 										)}
-										onClick={onUpdateScore}
 										disabled={isUpdatingScore}
-										leftIcon={FiArrowUp}
 										isLoading={isUpdatingScore}
+										leftIcon={FiArrowUp}
+										onClick={onUpdateScore}
 									>
 										{isUpdatingScore ? 'Updating...' : 'Increase Trust Score'}
 									</Button>
+								</div>
+							</div>
+						)}
+
+						{/* Voucher sections */}
+						{account && (
+							<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+								{/* Users vouched by this account */}
+								<div
+									className={`rounded-xl ${getCardBg()} p-6 shadow-lg backdrop-blur-sm`}
+								>
+									<h3
+										className={`mb-4 text-lg font-medium ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}
+									>
+										Users Vouched by This Account
+									</h3>
+									<AccountVouchedUsers />
+								</div>
+
+								<div
+									className={`rounded-xl ${getCardBg()} p-6 shadow-lg backdrop-blur-sm`}
+								>
+									<h3
+										className={`mb-4 text-lg font-medium ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}
+									>
+										Users Who Vouched for This Account
+									</h3>
+									<AccountUsersWhoVouched />
 								</div>
 							</div>
 						)}

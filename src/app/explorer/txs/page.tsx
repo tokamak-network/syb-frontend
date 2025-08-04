@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 
 import {
 	Button,
@@ -16,10 +18,8 @@ import {
 	fetchTransactionsPaginated,
 	fetchTransactionsByAccount,
 } from '@/utils';
-import { useRouter } from 'next/navigation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { useWallet } from '@/hooks/useWallet';
-import { Order, TransactionResponse } from '@/types';
+import { Order } from '@/types';
 
 const TransactionsPage: React.FC = () => {
 	const router = useRouter();
@@ -63,6 +63,7 @@ const TransactionsPage: React.FC = () => {
 	const filteredTransactions = transactions.filter((transaction) => {
 		if (!searchQuery) return true;
 		const query = searchQuery.toLowerCase();
+
 		return (
 			(transaction.tx_hash
 				? String(transaction.tx_hash).toLowerCase().includes(query)
@@ -136,8 +137,8 @@ const TransactionsPage: React.FC = () => {
 			/>
 
 			<Tabs
-				defaultValue="all"
 				className="shadow-blackA2 flex w-full flex-col"
+				defaultValue="all"
 				onValueChange={(value) => setActiveTab(value)}
 			>
 				<TabsList className="flex w-[400px] shrink-0 border-b border-tabBorder">
@@ -157,15 +158,15 @@ const TransactionsPage: React.FC = () => {
 				<TabsContent value="all">
 					{filteredTransactions && (
 						<TransactionsTable
-							filteredTransactions={filteredTransactions}
-							setOrder={setOrder}
-							order={order}
 							currentPage={page}
-							totalPages={totalPages}
-							onPageChange={handlePageChange}
-							onLimitChange={handleLimitChange}
+							filteredTransactions={filteredTransactions}
 							itemsPerPage={limit}
+							order={order}
+							setOrder={setOrder}
+							totalPages={totalPages}
 							useExternalPagination={true}
+							onLimitChange={handleLimitChange}
+							onPageChange={handlePageChange}
 						/>
 					)}
 				</TabsContent>
@@ -174,10 +175,10 @@ const TransactionsPage: React.FC = () => {
 						<div className="flex flex-col items-center justify-center rounded-lg p-10 text-center">
 							<div className="mb-4 rounded-full bg-purple-600 p-3">
 								<Image
-									src="/images/wallets/metamask.svg"
 									alt="MetaMask"
-									width={24}
 									height={24}
+									src="/images/wallets/metamask.svg"
+									width={24}
 								/>
 							</div>
 							<p className="text-xl font-semibold text-purple-900">
@@ -192,15 +193,15 @@ const TransactionsPage: React.FC = () => {
 					) : (
 						userTransactions?.transactions && (
 							<TransactionsTable
-								filteredTransactions={displayedUserTxs}
-								setOrder={setOrder}
-								order={order}
 								currentPage={userTxPage}
-								totalPages={userTxTotalPages}
-								onPageChange={handleUserTxPageChange}
-								onLimitChange={handleUserTxLimitChange}
+								filteredTransactions={displayedUserTxs}
 								itemsPerPage={userTxLimit}
+								order={order}
+								setOrder={setOrder}
+								totalPages={userTxTotalPages}
 								useExternalPagination={false}
+								onLimitChange={handleUserTxLimitChange}
+								onPageChange={handleUserTxPageChange}
 							/>
 						)
 					)}

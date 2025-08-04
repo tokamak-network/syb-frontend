@@ -196,14 +196,14 @@ const AccountPage: React.FC = () => {
 										<div className="flex space-x-2">
 											<Button
 												className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
-												onClick={(e) => {
-													e.stopPropagation();
-													openVouchModal(account);
-												}}
 												disabled={
 													address?.toLowerCase() ===
 													account.eth_addr.toLowerCase()
 												}
+												onClick={(e) => {
+													e.stopPropagation();
+													openVouchModal(account);
+												}}
 											>
 												Vouch
 											</Button>
@@ -273,8 +273,8 @@ const AccountPage: React.FC = () => {
 								</Button>
 								<Button
 									className="bg-blue-500 hover:bg-blue-600"
-									onClick={handleVouchForAccount}
 									disabled={isVouchLoading}
+									onClick={handleVouchForAccount}
 								>
 									{isVouchLoading ? 'Processing...' : 'Confirm Vouch'}
 								</Button>
@@ -338,8 +338,8 @@ const AccountPage: React.FC = () => {
 								</Button>
 								<Button
 									className="bg-green-500 hover:bg-green-600"
-									onClick={handleUpdateScoreForAccount}
 									disabled={isScoreLoading}
+									onClick={handleUpdateScoreForAccount}
 								>
 									{isScoreLoading ? 'Processing...' : 'Confirm Update'}
 								</Button>

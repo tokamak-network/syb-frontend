@@ -1,7 +1,8 @@
 'use client';
 
-import { Button } from '../button';
 import Link from 'next/link';
+
+import { Button } from '../button';
 
 interface ErrorDisplayProps {
 	title: string;
@@ -20,17 +21,17 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 		<div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4 text-gray-800 dark:from-gray-800 dark:to-gray-900 dark:text-gray-200">
 			<div className="w-full max-w-lg rounded-xl bg-white p-8 text-center shadow-2xl md:p-12 dark:bg-gray-700">
 				<svg
-					xmlns="http://www.w3.org/2000/svg"
 					className="mx-auto mb-6 h-20 w-20 text-red-500 dark:text-red-400"
 					fill="none"
-					viewBox="0 0 24 24"
 					stroke="currentColor"
 					strokeWidth="2"
+					viewBox="0 0 24 24"
+					xmlns="http://www.w3.org/2000/svg"
 				>
 					<path
+						d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
 				<h1 className="mb-4 text-3xl font-bold text-red-600 md:text-4xl dark:text-red-500">
@@ -48,14 +49,14 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
 				)}
 				<div className="flex flex-col justify-center gap-4 sm:flex-row">
 					{onReset && (
-						<Button color="red" onClick={onReset} className="w-full sm:w-auto">
+						<Button className="w-full sm:w-auto" color="red" onClick={onReset}>
 							Try Again
 						</Button>
 					)}
-					<Link href="/" passHref>
+					<Link passHref href="/">
 						<Button
-							color="gray"
 							className="w-full border-gray-500 text-gray-700 sm:w-auto dark:border-gray-400 dark:text-gray-300"
+							color="gray"
 						>
 							Go to Homepage
 						</Button>
