@@ -473,10 +473,10 @@ const AccountDetailsPage: React.FC = () => {
 							<div>
 								<h3 className="text-lg font-medium">Connections</h3>
 								<AccountNetworkGraph
-									mode="ego"
 									accounts={accountsData?.accounts || []}
 									centerAddress={account.eth_addr}
 									maxDepth={3}
+									mode="ego"
 								/>
 							</div>
 						)}

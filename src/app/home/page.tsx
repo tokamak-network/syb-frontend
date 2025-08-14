@@ -155,10 +155,10 @@ const HomeNetworkGraph: React.FC = () => {
 				Account Network
 			</p>
 			<AccountNetworkGraph
-				mode="global"
 				accounts={data.accounts}
-				height={560}
 				className="bg-gradient-to-b from-slate-900/40 to-slate-800/40"
+				height={560}
+				mode="global"
 			/>
 		</div>
 	);
