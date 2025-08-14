@@ -14,7 +14,8 @@ const nextConfig = {
 	},
 	async rewrites() {
 		const apiHost = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-		console.log('apiHost', apiHost);
+		console.log('API Host configured:', apiHost);
+		console.log('Environment:', process.env.NODE_ENV);
 
 		return [
 			{
