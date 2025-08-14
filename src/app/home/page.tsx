@@ -7,7 +7,6 @@ import { UserActivityLineChart, Label } from '@/components';
 import { fetchTransactions, fetchAccounts } from '@/utils';
 import { TransactionResponse, AccountsResponse } from '@/types';
 import { AccountNetworkGraph } from '@/components/graphs';
-import { useTheme } from '@/context';
 
 const HomePage: React.FC = () => {
 	const [lastTransaction, setLastTransaction] = useState<string | null>(null);
@@ -15,8 +14,6 @@ const HomePage: React.FC = () => {
 	const [lastBlockTime, setLastBlockTime] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-
-	const { theme } = useTheme();
 
 	useEffect(() => {
 		const getTransactionData = async () => {
@@ -78,13 +75,13 @@ const HomePage: React.FC = () => {
 
 	return (
 		<div className="w-full space-y-10">
-			<section className="w-full rounded-xl border border-tableBorder bg-slate-900/30 p-5">
+			<section className="w-full rounded-xl border border-tableBorder bg-background p-5">
 				<h2 className="mb-5 text-2xl font-semibold text-primaryText">
 					Network Activity
 				</h2>
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-3">
 					<div className="flex h-[350px] flex-col justify-between">
-						<div className="rounded-lg border border-tableBorder bg-slate-800/40 p-4">
+						<div className="rounded-lg border border-tableBorder bg-tableBackground p-4">
 							<p className="text-lg font-medium text-primaryText">Last Block</p>
 							{isLoading ? (
 								<p className="mt-2 text-secondaryText">Loading...</p>
@@ -92,22 +89,18 @@ const HomePage: React.FC = () => {
 								<p className="mt-2 text-red-500">{error}</p>
 							) : (
 								<p className="mt-2">
-									<span
-										className={`text-2xl font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-100'}`}
-									>
+									<span className="text-2xl font-semibold text-primaryText">
 										#{lastBlock?.toLocaleString() || 'N/A'}
 									</span>
 									{lastBlockTime && (
-										<span
-											className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} ml-1`}
-										>
+										<span className="ml-1 text-secondaryText">
 											({lastBlockTime})
 										</span>
 									)}
 								</p>
 							)}
 						</div>
-						<div className="rounded-lg border border-tableBorder bg-slate-800/40 p-4">
+						<div className="rounded-lg border border-tableBorder bg-tableBackground p-4">
 							<p className="text-lg font-medium text-primaryText">
 								Last Transaction
 							</p>
@@ -117,11 +110,11 @@ const HomePage: React.FC = () => {
 								<p className="mt-2 text-red-500">{error}</p>
 							) : (
 								<Label
-									className={`mt-2 text-xl ${theme === 'light' ? 'text-gray-800' : 'text-gray-100'}`}
+									className="mt-2 text-xl text-primaryText"
 									explore={false}
 									isTransaction={true}
 									navigateToAccount={true}
-									shorten="full"
+									shorten="middle"
 									value={lastTransaction || 'N/A'}
 								/>
 							)}
@@ -129,14 +122,14 @@ const HomePage: React.FC = () => {
 					</div>
 					{/* Chart */}
 					<div className="md:col-span-2">
-						<div className="h-full rounded-lg border border-tableBorder bg-slate-800/40">
+						<div className="h-full rounded-lg border border-tableBorder bg-tableBackground p-3">
 							<UserActivityLineChart />
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<section className="w-full rounded-xl border border-tableBorder bg-slate-900/30 p-5">
+			<section className="w-full rounded-xl border border-tableBorder bg-background p-5">
 				<HomeNetworkGraph />
 			</section>
 		</div>
