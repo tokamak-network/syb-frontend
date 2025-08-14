@@ -119,6 +119,7 @@ export interface Account {
 	balance: string;
 	score: string;
 	eth_addr: string;
+	score_int: string;
 }
 
 export interface Transaction {
