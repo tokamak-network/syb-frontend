@@ -43,10 +43,12 @@ const buildUndirectedAdjacency = (
 		if (!map.has(a)) map.set(a, new Set());
 		map.get(a)!.add(b);
 	};
+
 	for (const e of edges) {
 		add(e.from, e.to);
 		add(e.to, e.from);
 	}
+
 	return map;
 };
 
@@ -57,8 +59,10 @@ const polarLayout = (
 	radius: number,
 ): PositionedNode[] => {
 	const n = Math.max(ids.length, 1);
+
 	return ids.map((id, i) => {
 		const angle = (2 * Math.PI * i) / n;
+
 		return {
 			id,
 			x: cx + radius * Math.cos(angle),
@@ -83,13 +87,16 @@ const egoConcentricLayout = (
 	const queue: Array<{ id: string; depth: number }> = [
 		{ id: center, depth: 0 },
 	];
+
 	visited.add(center);
 
 	while (queue.length) {
 		const { id, depth } = queue.shift()!;
+
 		layers[depth].push(id);
 		if (depth === maxDepth) continue;
 		const neighbors = adj.get(id) || new Set();
+
 		for (const nb of neighbors) {
 			if (!visited.has(nb)) {
 				visited.add(nb);
@@ -99,11 +106,13 @@ const egoConcentricLayout = (
 	}
 
 	const positions: Record<string, { x: number; y: number }> = {};
+
 	// Center node
 	positions[center] = { x: cx, y: cy };
 	for (let d = 1; d <= maxDepth; d++) {
 		const radius = baseRadius * d + 30;
 		const placed = polarLayout(layers[d], cx, cy, radius);
+
 		for (const p of placed) positions[p.id] = { x: p.x, y: p.y };
 	}
 
@@ -119,7 +128,9 @@ const globalCircleLayout = (
 	const radius = Math.min(container.width, container.height) / 2.8;
 	const placed = polarLayout(ids, cx, cy, radius);
 	const positions: Record<string, { x: number; y: number }> = {};
+
 	for (const p of placed) positions[p.id] = { x: p.x, y: p.y };
+
 	return positions;
 };
 
@@ -142,10 +153,13 @@ export const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 	useEffect(() => {
 		const update = () => {
 			const rect = containerRef.current?.getBoundingClientRect();
+
 			if (rect) setSize({ width: rect.width, height: rect.height });
 		};
+
 		update();
 		window.addEventListener('resize', update);
+
 		return () => window.removeEventListener('resize', update);
 	}, []);
 
@@ -154,24 +168,29 @@ export const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 
 	const addressToAccount = useMemo(() => {
 		const map = new Map<string, Account>();
+
 		for (const acc of accounts) map.set(acc.eth_addr.toLowerCase(), acc);
+
 		return map;
 	}, [accounts]);
 
 	const nodeIds = useMemo(() => {
 		// Include all accounts that appear either in accounts list or edges
 		const set = new Set<string>();
+
 		for (const acc of accounts) set.add(acc.eth_addr.toLowerCase());
 		for (const e of edgesData) {
 			set.add(e.from.toLowerCase());
 			set.add(e.to.toLowerCase());
 		}
+
 		return Array.from(set);
 	}, [accounts, edgesData]);
 
 	const positions = useMemo(() => {
 		if (mode === 'ego' && centerAddress) {
 			const center = centerAddress.toLowerCase();
+
 			return egoConcentricLayout(
 				center,
 				edgesData,
@@ -179,6 +198,7 @@ export const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				maxDepth,
 			);
 		}
+
 		return globalCircleLayout(nodeIds, { width, height: innerHeight });
 	}, [mode, centerAddress, edgesData, nodeIds, width, innerHeight, maxDepth]);
 
@@ -235,10 +255,10 @@ export const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				)}
 				<ReactFlow
 					fitView
-					nodes={nodes}
 					edges={edges}
-					minZoom={0.4}
 					maxZoom={2}
+					minZoom={0.4}
+					nodes={nodes}
 				>
 					<Controls />
 					<Background />

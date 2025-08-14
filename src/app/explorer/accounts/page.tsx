@@ -189,7 +189,7 @@ const AccountPage: React.FC = () => {
 									{formatBalanceToEth(account.balance)}
 								</td>
 								<td className="px-6 py-2 text-left font-normal">
-									{formatScore(account.score)}
+									{formatScore(account.score_int)}
 								</td>
 								{isConnected && (
 									<td className="whitespace-nowrap px-6 py-2 text-left font-normal">

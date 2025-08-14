@@ -84,7 +84,8 @@ const AccountDetailsPage: React.FC = () => {
 		try {
 			setIsUpdatingScore(true);
 
-			const newScore = (account.score ? parseInt(account.score) : 0) + 1;
+			const newScore =
+				(account.score_int ? parseInt(account.score_int) : 0) + 1;
 
 			const hash = await handleUpdateScore(account.eth_addr, newScore);
 
@@ -406,7 +407,7 @@ const AccountDetailsPage: React.FC = () => {
 										<h3
 											className={`text-2xl font-bold ${currentThemeStyles.text}`}
 										>
-											{account.score}
+											{account.score_int}
 										</h3>
 									</div>
 								</div>
@@ -416,7 +417,7 @@ const AccountDetailsPage: React.FC = () => {
 									<div
 										className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-600"
 										style={{
-											width: `${Math.min(parseInt(account.score || '0') * 10, 100)}%`,
+											width: `${Math.min(parseInt(account.score_int || '0') * 10, 100)}%`,
 										}}
 									/>
 								</div>
@@ -472,10 +473,10 @@ const AccountDetailsPage: React.FC = () => {
 							<div>
 								<h3 className="text-lg font-medium">Connections</h3>
 								<AccountNetworkGraph
-									mode="ego"
 									accounts={accountsData?.accounts || []}
 									centerAddress={account.eth_addr}
 									maxDepth={3}
+									mode="ego"
 								/>
 							</div>
 						)}

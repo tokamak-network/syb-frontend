@@ -30,11 +30,13 @@ const parseL1UserTx = (
 ): { type: number; from: string; to: string } | null => {
 	if (!l1UserTx || l1UserTx.length < 2 + 2 + 40 + 40) return null;
 	const identifier = parseInt(l1UserTx.slice(2, 4), 16);
+
 	if (identifier !== 3 && identifier !== 4) return null;
 	const fromHex = l1UserTx.slice(4, 44);
 	const toHex = l1UserTx.slice(44, 84);
 	const from = `0x${fromHex}`.toLowerCase();
 	const to = `0x${toHex}`.toLowerCase();
+
 	return { type: identifier, from, to };
 };
 
@@ -51,6 +53,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 		queryKey: ['vouchGraph', fromBlock.toString()],
 		queryFn: async () => {
 			const client = getPublicClient(config);
+
 			if (!client) throw new Error('Failed to create public client');
 
 			const contractAddress = formatAs0xAddress(contracts.sybilSepolia.address);
@@ -67,10 +70,13 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 
 			for (const log of logs) {
 				const l1UserTx = log.args.l1UserTx as `0x${string}` | undefined;
+
 				if (!l1UserTx) continue;
 				const parsed = parseL1UserTx(l1UserTx);
+
 				if (!parsed) continue;
 				const key = `${parsed.from}->${parsed.to}`;
+
 				if (parsed.type === 3) {
 					edgeSet.add(key);
 				} else if (parsed.type === 4) {
@@ -80,6 +86,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 
 			const edges: VouchEdge[] = Array.from(edgeSet).map((k) => {
 				const [from, to] = k.split('->');
+
 				return { from, to };
 			});
 
