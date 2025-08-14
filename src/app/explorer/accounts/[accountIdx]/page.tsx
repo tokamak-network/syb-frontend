@@ -9,6 +9,7 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 import Jazzicon from 'react-jazzicon';
 
 import { Button, PageLoader } from '@/components';
+import { AccountNetworkGraph } from '@/components/graphs';
 import { useWallet, useScoreUpdate, useSepoliaTransactions } from '@/hooks';
 import { useVouchData } from '@/hooks/useVouchData';
 import { fetchAccountByID, fetchAccounts } from '@/utils';
@@ -463,6 +464,19 @@ const AccountDetailsPage: React.FC = () => {
 										{isUpdatingScore ? 'Updating...' : 'Increase Trust Score'}
 									</Button>
 								</div>
+							</div>
+						)}
+
+						{/* Ego network graph (3 layers) */}
+						{account && (
+							<div>
+								<h3 className="text-lg font-medium">Connections</h3>
+								<AccountNetworkGraph
+									mode="ego"
+									accounts={accountsData?.accounts || []}
+									centerAddress={account.eth_addr}
+									maxDepth={3}
+								/>
 							</div>
 						)}
 

@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { UserActivityLineChart, Label } from '@/components';
-import { fetchTransactions } from '@/utils/fetch';
-import { TransactionResponse } from '@/types';
+import { fetchTransactions, fetchAccounts } from '@/utils';
+import { TransactionResponse, AccountsResponse } from '@/types';
+import { AccountNetworkGraph } from '@/components/graphs';
+import { useTheme } from '@/context';
 
 const HomePage: React.FC = () => {
 	const [lastTransaction, setLastTransaction] = useState<string | null>(null);
@@ -12,6 +15,8 @@ const HomePage: React.FC = () => {
 	const [lastBlockTime, setLastBlockTime] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const { theme } = useTheme();
 
 	useEffect(() => {
 		const getTransactionData = async () => {
@@ -72,46 +77,96 @@ const HomePage: React.FC = () => {
 	}, []);
 
 	return (
-		<div className="flex w-full flex-col justify-between space-x-5 space-y-10 md:flex-row md:space-y-0">
-			<div className="flex flex-col space-y-14 font-narnoor md:w-[500px]">
-				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5">
-					<p className="text-3xl text-primaryText">Last Block</p>
-					{isLoading ? (
-						<p className="text-xl text-secondaryText">Loading...</p>
-					) : error ? (
-						<p className="text-xl text-red-500">{error}</p>
-					) : (
-						<p className="text-xl text-secondaryText">
-							<span className="text-3xl">
-								#{lastBlock?.toLocaleString() || 'N/A'}
-							</span>
-							{lastBlockTime && ` (${lastBlockTime})`}
-						</p>
-					)}
+		<div className="w-full space-y-10">
+			<section className="w-full rounded-xl border border-tableBorder bg-slate-900/30 p-5">
+				<h2 className="mb-5 text-2xl font-semibold text-primaryText">
+					Network Activity
+				</h2>
+				<div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+					<div className="flex h-[350px] flex-col justify-between">
+						<div className="rounded-lg border border-tableBorder bg-slate-800/40 p-4">
+							<p className="text-lg font-medium text-primaryText">Last Block</p>
+							{isLoading ? (
+								<p className="mt-2 text-secondaryText">Loading...</p>
+							) : error ? (
+								<p className="mt-2 text-red-500">{error}</p>
+							) : (
+								<p className="mt-2">
+									<span
+										className={`text-2xl font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-100'}`}
+									>
+										#{lastBlock?.toLocaleString() || 'N/A'}
+									</span>
+									{lastBlockTime && (
+										<span
+											className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} ml-1`}
+										>
+											({lastBlockTime})
+										</span>
+									)}
+								</p>
+							)}
+						</div>
+						<div className="rounded-lg border border-tableBorder bg-slate-800/40 p-4">
+							<p className="text-lg font-medium text-primaryText">
+								Last Transaction
+							</p>
+							{isLoading ? (
+								<p className="mt-2 text-secondaryText">Loading...</p>
+							) : error ? (
+								<p className="mt-2 text-red-500">{error}</p>
+							) : (
+								<Label
+									className={`mt-2 text-xl ${theme === 'light' ? 'text-gray-800' : 'text-gray-100'}`}
+									explore={false}
+									isTransaction={true}
+									navigateToAccount={true}
+									shorten="full"
+									value={lastTransaction || 'N/A'}
+								/>
+							)}
+						</div>
+					</div>
+					{/* Chart */}
+					<div className="md:col-span-2">
+						<div className="h-full rounded-lg border border-tableBorder bg-slate-800/40">
+							<UserActivityLineChart />
+						</div>
+					</div>
 				</div>
-				<div className="flex w-full flex-col space-y-14 rounded-lg border-2 border-tableBorder px-2.5 pt-5 md:w-[500px]">
-					<p className="text-3xl text-primaryText">Last Transaction</p>
-					{isLoading ? (
-						<p className="text-xl text-secondaryText">Loading...</p>
-					) : error ? (
-						<p className="text-xl text-red-500">{error}</p>
-					) : (
-						<Label
-							className="text-3xl text-secondaryText"
-							explore={false}
-							isTransaction={true}
-							navigateToAccount={true}
-							shorten="full"
-							value={lastTransaction || 'N/A'}
-						/>
-					)}
-				</div>
-			</div>
-			<div className="w-full">
-				<UserActivityLineChart />
-			</div>
+			</section>
+
+			<section className="w-full rounded-xl border border-tableBorder bg-slate-900/30 p-5">
+				<HomeNetworkGraph />
+			</section>
 		</div>
 	);
 };
 
 export default HomePage;
+
+const HomeNetworkGraph: React.FC = () => {
+	const { data, isLoading, error } = useQuery<AccountsResponse>({
+		queryKey: ['accounts'],
+		queryFn: fetchAccounts,
+		staleTime: 30000,
+		refetchInterval: 30000,
+	});
+
+	if (isLoading) return null;
+	if (error || !data?.accounts) return null;
+
+	return (
+		<div className="mt-8">
+			<p className="mb-3 text-3xl font-semibold text-primaryText">
+				Account Network
+			</p>
+			<AccountNetworkGraph
+				mode="global"
+				accounts={data.accounts}
+				height={560}
+				className="bg-gradient-to-b from-slate-900/40 to-slate-800/40"
+			/>
+		</div>
+	);
+};
