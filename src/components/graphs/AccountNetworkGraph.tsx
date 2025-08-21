@@ -351,7 +351,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 		<div className={`relative w-full ${className}`} style={{ height }}>
 			<ReactFlowProvider>
 				{showLegend && (
-					<div className="bg-tableBackground/95 absolute left-4 top-4 z-50 rounded-lg border border-tableBorder p-3 text-xs text-tableTextSecondary shadow-lg backdrop-blur-sm">
+					<div className="bg-tableBackground/95 absolute left-4 top-4 z-30 rounded-lg border border-tableBorder p-3 text-xs text-tableTextSecondary shadow-lg backdrop-blur-sm">
 						<div className="mb-2 font-semibold text-tableTextPrimary">
 							Vouch Network
 						</div>
