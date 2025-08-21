@@ -40,22 +40,79 @@ body {
 	background-color: #f7f6fe;
 }
 
-.react-flow__handle {
-	display: none;
+/* ReactFlow Edge and Node Styling */
+.react-flow__edge {
+	pointer-events: all;
 }
 
-.tooltip {
-	transition: opacity 0.3s ease;
-	opacity: 0;
+.react-flow__edge-path {
+	fill: none;
+	stroke-width: 3;
+	stroke-linecap: round;
+	stroke-linejoin: round;
 }
 
-.tooltip-visible {
-	opacity: 1;
+.react-flow__edge.selected .react-flow__edge-path {
+	stroke: #8b5cf6 !important;
+	stroke-width: 4;
 }
 
-.react-flow__edge-path.highlited {
-	animation: dash 1s linear infinite;
+.react-flow__edge:hover .react-flow__edge-path {
+	stroke-width: 4;
+	filter: brightness(1.2);
 }
+
+.react-flow__edge-textwrapper {
+	pointer-events: all;
+}
+
+.react-flow__edge-text {
+	pointer-events: none;
+	user-select: none;
+	font-size: 10px;
+	font-weight: 500;
+}
+
+/* Ensure markers (arrows) are visible */
+.react-flow__arrowhead {
+	fill: currentColor;
+}
+
+/* Node hover effects */
+.react-flow__node:hover {
+	z-index: 1000;
+}
+
+.react-flow__node.selected {
+	z-index: 1001;
+}
+
+/* Background styling to match theme */
+.react-flow__background {
+	opacity: 0.4;
+}
+
+/* Control button styling */
+.react-flow__controls {
+	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.react-flow__controls button {
+	background-color: var(--table-background) !important;
+	border-color: var(--table-border) !important;
+	color: var(--table-text-primary) !important;
+}
+
+.react-flow__controls button:hover {
+	background-color: var(--table-hover) !important;
+}
+
+/* MiniMap styling */
+.react-flow__minimap {
+	background-color: var(--table-background) !important;
+	border-color: var(--table-border) !important;
+}
+
 
 @keyframes dash {
 	to {

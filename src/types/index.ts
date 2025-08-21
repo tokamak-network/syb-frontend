@@ -115,6 +115,7 @@ export interface NetworkType {
 }
 
 export interface Account {
+	user_op_hash: any;
 	idx: string;
 	balance: string;
 	score: string;

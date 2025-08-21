@@ -8,6 +8,14 @@ export const SybilSepoliaABI = [
 		name: 'AccessControlUnauthorizedAccount',
 		type: 'error',
 	},
+	{
+		inputs: [
+			{ internalType: 'address', name: 'from', type: 'address' },
+			{ internalType: 'address', name: 'to', type: 'address' },
+		],
+		name: 'AlreadyVouched',
+		type: 'error',
+	},
 	{ inputs: [], name: 'BatchNotFull', type: 'error' },
 	{ inputs: [], name: 'EthTransferFailed', type: 'error' },
 	{ inputs: [], name: 'InsufficientBalance', type: 'error' },
@@ -253,13 +261,6 @@ export const SybilSepoliaABI = [
 		name: 'deposit',
 		outputs: [],
 		stateMutability: 'payable',
-		type: 'function',
-	},
-	{
-		inputs: [{ internalType: 'uint32', name: '', type: 'uint32' }],
-		name: 'exitRootMap',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
 		type: 'function',
 	},
 	{

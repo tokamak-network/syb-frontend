@@ -2,6 +2,7 @@ import { readContract, getPublicClient } from '@wagmi/core';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { parseAbiItem } from 'viem';
+import { sepolia } from 'wagmi/chains';
 
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { config } from '@/config';
@@ -47,9 +48,8 @@ export const useVouchData = () => {
 				if (!fromAddress || !toAddress) return false;
 
 				try {
-					const contractAddress = formatAs0xAddress(
-						contracts.sybilSepolia.address,
-					);
+					const contractAddress = contracts.sybilSepolia
+						.address as `0x${string}`;
 					const formattedFromAddress = formatAs0xAddress(fromAddress);
 					const formattedToAddress = formatAs0xAddress(toAddress);
 
@@ -87,9 +87,9 @@ export const useVouchData = () => {
 		toAddress: string,
 	): Promise<{ txHash: string | null; timestamp: string }> => {
 		try {
-			const contractAddress = formatAs0xAddress(contracts.sybilSepolia.address);
+			const contractAddress = contracts.sybilSepolia.address as `0x${string}`;
 
-			const client = getPublicClient(config);
+			const client = getPublicClient(config, { chainId: sepolia.id });
 
 			if (!client) {
 				throw new Error('Failed to create client');
@@ -98,7 +98,7 @@ export const useVouchData = () => {
 			// First try to find direct vouch/unvouch function calls
 			const vouchEvents = await client.getLogs({
 				address: contractAddress,
-				fromBlock: 5000000n, // Adjust based on contract deployment
+				fromBlock: 8980000n, // Adjust based on contract deployment
 				toBlock: 'latest',
 				event: parseAbiItem(
 					'event L1UserTxEvent(uint32 indexed queueIndex, uint8 indexed position, bytes l1UserTx)',
@@ -164,7 +164,7 @@ export const useVouchData = () => {
 			// If no match found in logs, try to find direct vouch function calls
 			const directVouchCalls = await client.getLogs({
 				address: contractAddress,
-				fromBlock: 5000000n,
+				fromBlock: 8980000n,
 				toBlock: 'latest',
 				// Use parseAbiItem to properly structure the filter
 				event: parseAbiItem(
@@ -232,9 +232,8 @@ export const useVouchData = () => {
 				if (!targetAddress || !possibleVouchers.length) return [];
 
 				try {
-					const contractAddress = formatAs0xAddress(
-						contracts.sybilSepolia.address,
-					);
+					const contractAddress = contracts.sybilSepolia
+						.address as `0x${string}`;
 					const formattedTarget = formatAs0xAddress(targetAddress);
 					const voucherAddresses: string[] = [];
 
@@ -332,9 +331,8 @@ export const useVouchData = () => {
 				if (!voucherAddress || !possibleRecipients.length) return [];
 
 				try {
-					const contractAddress = formatAs0xAddress(
-						contracts.sybilSepolia.address,
-					);
+					const contractAddress = contracts.sybilSepolia
+						.address as `0x${string}`;
 					const formattedVoucher = formatAs0xAddress(voucherAddress);
 					const vouchedAddresses: string[] = [];
 

@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { UserActivityLineChart, Label } from '@/components';
 import { fetchTransactions, fetchAccounts } from '@/utils';
 import { TransactionResponse, AccountsResponse } from '@/types';
-import { AccountNetworkGraph } from '@/components/graphs';
+import AccountNetworkGraph from '@/components/graphs/AccountNetworkGraph';
 
 const HomePage: React.FC = () => {
 	const [lastTransaction, setLastTransaction] = useState<string | null>(null);
@@ -150,15 +150,16 @@ const HomeNetworkGraph: React.FC = () => {
 	if (error || !data?.accounts) return null;
 
 	return (
-		<div className="mt-8">
+		<div className="mt-8 h-[600px]">
 			<p className="mb-3 text-3xl font-semibold text-primaryText">
 				Account Network
 			</p>
 			<AccountNetworkGraph
 				accounts={data.accounts}
 				className="bg-gradient-to-b from-slate-900/40 to-slate-800/40"
-				height={560}
+				height={660}
 				mode="global"
+				showLegend={true}
 			/>
 		</div>
 	);
