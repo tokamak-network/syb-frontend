@@ -7,8 +7,6 @@ import { sepolia } from 'wagmi/chains';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { config } from '@/config';
 
-import { useWallet } from './useWallet';
-
 interface VouchData {
 	hasVouched: boolean;
 	isLoading: boolean;
@@ -28,14 +26,7 @@ const formatAs0xAddress = (address: string): `0x${string}` => {
 		: (`0x${address}` as `0x${string}`);
 };
 
-// Event signature for L1UserTxEvent and direct function calls
-const L1_USER_TX_EVENT =
-	'event L1UserTxEvent(uint32 indexed queueIndex, uint8 indexed position, bytes l1UserTx)';
-const VOUCH_EVENT_SIGNATURE =
-	'0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f';
-
 export const useVouchData = () => {
-	const { address, chain } = useWallet();
 	const [error, setError] = useState<Error | null>(null);
 
 	/**

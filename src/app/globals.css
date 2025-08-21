@@ -94,7 +94,7 @@ body {
 
 /* Control button styling */
 .react-flow__controls {
-	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .react-flow__controls button {
@@ -112,7 +112,6 @@ body {
 	background-color: var(--table-background) !important;
 	border-color: var(--table-border) !important;
 }
-
 
 @keyframes dash {
 	to {

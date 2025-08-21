@@ -7,8 +7,6 @@ import { config } from '@/config';
 import { contracts, SybilSepoliaABI } from '@/contracts';
 
 export interface VouchEdge {
-	voucher: any;
-	vouchee: any;
 	from: string;
 	to: string;
 }
@@ -66,7 +64,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 				return { edges: [] };
 			}
 
-			let logs: any[] = [];
+			let logs: unknown[] = [];
 			try {
 				// Get the latest block number
 				const latestBlock = await client.getBlockNumber();
@@ -103,7 +101,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 						);
 
 						// Try different event signatures to find the right one
-						let chunkLogs: any[] = [];
+						let chunkLogs: unknown[] = [];
 
 						// Try TxEvent first
 						try {
@@ -180,10 +178,19 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 				console.log('Processing log:', log);
 
 				// Handle TxEvent format
-				if (log.args && 'identifier' in log.args) {
-					const identifier = log.args.identifier as number;
-					const fromIdx = log.args.from as number;
-					const toIdx = log.args.to as number;
+				if (
+					log &&
+					typeof log === 'object' &&
+					'args' in log &&
+					log.args &&
+					typeof log.args === 'object' &&
+					log.args !== null &&
+					'identifier' in log.args
+				) {
+					const args = log.args as Record<string, unknown>;
+					const identifier = args.identifier as number;
+					const fromIdx = args.from as number;
+					const toIdx = args.to as number;
 
 					console.log(
 						'TxEvent found - identifier:',
@@ -196,16 +203,31 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 
 					console.log('Checking identifier:', identifier);
 
-					// Let's process ALL TxEvents for debugging to see what we get
-					console.log('Processing TxEvent (debug mode - all identifiers)...');
-
-					// For debugging, let's process any identifier
-					if (true) {
-						// Process all for now
+					// Process vouch (3/33) and unvouch (4/34) events
+					if (
+						identifier === 3 ||
+						identifier === 4 ||
+						identifier === 33 ||
+						identifier === 34
+					) {
 						try {
 							// Get the transaction that created this log
+							const transactionHash =
+								log &&
+								typeof log === 'object' &&
+								log !== null &&
+								'transactionHash' in log
+									? ((log as Record<string, unknown>)
+											.transactionHash as `0x${string}`)
+									: undefined;
+
+							if (!transactionHash) {
+								console.log('No transaction hash found in log');
+								continue;
+							}
+
 							const transaction = await client.getTransaction({
-								hash: log.transactionHash,
+								hash: transactionHash,
 							});
 
 							console.log('Transaction data:', transaction);
@@ -239,52 +261,61 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 
 										const key = `${senderAddress.toLowerCase()}->${targetAddress.toLowerCase()}`;
 
-										// For debugging, let's add ALL edges regardless of identifier
-										console.log(
-											`Adding edge for identifier ${identifier}:`,
-											key,
-										);
-										edgeSet.add(key);
-
-										// Keep the original logic commented for reference
-										// if (identifier === 3 || identifier === 33) {
-										//   console.log('Adding vouch edge:', key);
-										//   edgeSet.add(key);
-										// } else if (identifier === 4 || identifier === 34) {
-										//   console.log('Removing vouch edge:', key);
-										//   edgeSet.delete(key);
-										// }
+										// Handle vouch and unvouch properly
+										if (identifier === 3 || identifier === 33) {
+											console.log('Adding vouch edge:', key);
+											edgeSet.add(key);
+										} else if (identifier === 4 || identifier === 34) {
+											console.log('Removing vouch edge:', key);
+											edgeSet.delete(key);
+										}
 									}
 								} catch (decodeError) {
 									console.log(
 										'Failed to decode transaction input:',
 										decodeError,
 									);
-									// Fallback to using indices - for debugging, add all
+									// Fallback to using indices
 									const key = `idx${fromIdx}->idx${toIdx}`;
-									console.log(
-										`Adding fallback edge for identifier ${identifier}:`,
-										key,
-									);
-									edgeSet.add(key);
+									if (identifier === 3 || identifier === 33) {
+										console.log('Adding fallback vouch edge:', key);
+										edgeSet.add(key);
+									} else if (identifier === 4 || identifier === 34) {
+										console.log('Removing fallback vouch edge:', key);
+										edgeSet.delete(key);
+									}
 								}
 							}
 						} catch (txError) {
 							console.log('Failed to get transaction:', txError);
-							// Fallback to using indices - for debugging, add all
+							// Fallback to using indices
 							const key = `idx${fromIdx}->idx${toIdx}`;
-							console.log(
-								`Adding transaction fallback edge for identifier ${identifier}:`,
-								key,
-							);
-							edgeSet.add(key);
+							if (identifier === 3 || identifier === 33) {
+								console.log('Adding transaction fallback vouch edge:', key);
+								edgeSet.add(key);
+							} else if (identifier === 4 || identifier === 34) {
+								console.log('Removing transaction fallback vouch edge:', key);
+								edgeSet.delete(key);
+							}
 						}
 					}
 					continue;
 				}
 
 				// Handle legacy l1UserTx format (fallback)
-				const l1UserTx = log.args?.l1UserTx as `0x${string}` | undefined;
+				const l1UserTx =
+					log &&
+					typeof log === 'object' &&
+					log !== null &&
+					'args' in log &&
+					log.args &&
+					typeof log.args === 'object' &&
+					log.args !== null &&
+					'l1UserTx' in log.args
+						? ((log.args as Record<string, unknown>).l1UserTx as
+								| `0x${string}`
+								| undefined)
+						: undefined;
 
 				if (!l1UserTx) {
 					console.log('No l1UserTx or TxEvent found in log args');
