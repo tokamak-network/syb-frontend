@@ -6,6 +6,7 @@ const getBaseURL = () => {
 		// Client-side: use proxy route
 		return '/sequencer';
 	}
+
 	// Server-side: use direct API URL if available
 	return process.env.NEXT_PUBLIC_API_URL
 		? `${process.env.NEXT_PUBLIC_API_URL}/api/v1`
@@ -40,6 +41,7 @@ axiosInstance.interceptors.response.use(
 			baseURL: error.config?.baseURL,
 			message: error.message,
 		});
+
 		return Promise.reject(error);
 	},
 );

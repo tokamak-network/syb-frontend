@@ -48,6 +48,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 		queryKey: ['vouchGraph', fromBlock.toString()],
 		queryFn: async () => {
 			const client = getPublicClient(config, { chainId: sepolia.id });
+
 			console.log('Client:', client);
 
 			if (!client) throw new Error('Failed to create public client');
@@ -61,13 +62,16 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 				console.warn(
 					'useVouchGraph - Contract address not configured, returning empty edges',
 				);
+
 				return { edges: [] };
 			}
 
-			let logs: unknown[] = [];
+			const logs: unknown[] = [];
+
 			try {
 				// Get the latest block number
 				const latestBlock = await client.getBlockNumber();
+
 				console.log('Latest block:', latestBlock);
 
 				// If fromBlock is too old compared to latest block, use a more recent starting point
@@ -101,7 +105,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 						);
 
 						// Try different event signatures to find the right one
-						let chunkLogs: unknown[] = [];
+						const chunkLogs: unknown[] = [];
 
 						// Try TxEvent first
 						try {
@@ -111,6 +115,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 								toBlock: currentToBlock,
 								event: parseAbiItem(TX_EVENT),
 							});
+
 							console.log(
 								`Found ${txEventLogs.length} TxEvent logs:`,
 								txEventLogs,
@@ -130,6 +135,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 									'event Vouch(address indexed from, address indexed to)',
 								),
 							});
+
 							console.log(
 								`Found ${vouchLogs.length} Vouch event logs:`,
 								vouchLogs,
@@ -166,6 +172,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 				}
 			} catch (error) {
 				console.error('useVouchGraph - Error fetching logs:', error);
+
 				return { edges: [] };
 			}
 
@@ -277,6 +284,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 									);
 									// Fallback to using indices
 									const key = `idx${fromIdx}->idx${toIdx}`;
+
 									if (identifier === 3 || identifier === 33) {
 										console.log('Adding fallback vouch edge:', key);
 										edgeSet.add(key);
@@ -290,6 +298,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 							console.log('Failed to get transaction:', txError);
 							// Fallback to using indices
 							const key = `idx${fromIdx}->idx${toIdx}`;
+
 							if (identifier === 3 || identifier === 33) {
 								console.log('Adding transaction fallback vouch edge:', key);
 								edgeSet.add(key);
@@ -324,6 +333,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 
 				console.log('Found l1UserTx:', l1UserTx);
 				const parsed = parseL1UserTx(l1UserTx);
+
 				console.log('Parsed l1UserTx:', parsed);
 
 				if (!parsed) {
@@ -349,6 +359,7 @@ export const useVouchGraph = (options?: UseVouchGraphOptions) => {
 			});
 
 			console.log('Final processed edges:', edges);
+
 			return { edges };
 		},
 		staleTime: 60_000,

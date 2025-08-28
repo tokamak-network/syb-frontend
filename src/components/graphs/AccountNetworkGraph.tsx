@@ -94,6 +94,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 			accounts.forEach((account) => {
 				if (account && account.eth_addr) {
 					const addr = account.eth_addr.toLowerCase();
+
 					allAddresses.add(addr);
 					accountMap.set(addr, account);
 				}
@@ -111,6 +112,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 		}
 
 		const addressArray = Array.from(allAddresses);
+
 		console.log('All unique addresses for nodes:', addressArray);
 
 		return addressArray.map((address, index) => {
@@ -129,11 +131,13 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 
 			// Better positioning algorithm
 			let position;
+
 			if (isCenter) {
 				position = { x: centerX, y: centerY };
 			} else if (addressArray.length <= 8) {
 				// Small networks: simple circle
 				const angle = (2 * Math.PI * index) / addressArray.length;
+
 				position = {
 					x: centerX + radius * Math.cos(angle),
 					y: centerY + radius * Math.sin(angle),
@@ -146,6 +150,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				const angle =
 					(2 * Math.PI * posInRing) /
 					Math.min(8, addressArray.length - ring * 8);
+
 				position = {
 					x: centerX + ringRadius * Math.cos(angle),
 					y: centerY + ringRadius * Math.sin(angle),
@@ -187,6 +192,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 	const initialEdges: Edge[] = useMemo(() => {
 		if (!vouchData?.edges || !accounts) {
 			console.log('No vouch data or accounts available');
+
 			return [];
 		}
 
@@ -213,6 +219,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 			.map((edge, index) => {
 				if (!edge) {
 					console.log('Null edge at index:', index);
+
 					return null;
 				}
 
@@ -227,6 +234,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 					toAddr = edge.to.toLowerCase();
 				} else {
 					console.log('Unknown edge format:', edge);
+
 					return null;
 				}
 
@@ -264,6 +272,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				};
 
 				console.log('Created edge object:', edgeObj);
+
 				return edgeObj;
 			})
 			.filter((edge): edge is Edge => edge !== null);
@@ -273,6 +282,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 			processedEdges.length,
 			processedEdges,
 		);
+
 		return processedEdges;
 	}, [vouchData, accounts]);
 
@@ -315,6 +325,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				},
 				className: 'stroke-2 stroke-gray-400',
 			};
+
 			setEdges((eds) => addEdge(newEdge, eds));
 		},
 		[setEdges],
@@ -327,7 +338,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				style={{ height }}
 			>
 				<div className="text-center">
-					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-purple-500"></div>
+					<div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-purple-500" />
 					<p className="mt-4 text-slate-400">Loading vouch network...</p>
 				</div>
 			</div>
@@ -357,19 +368,19 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 						</div>
 						<div className="space-y-1">
 							<div className="flex items-center gap-2">
-								<div className="h-3 w-3 rounded bg-blue-500"></div>
+								<div className="h-3 w-3 rounded bg-blue-500" />
 								<span>Center Account</span>
 							</div>
 							<div className="flex items-center gap-2">
-								<div className="h-3 w-3 rounded bg-emerald-500"></div>
+								<div className="h-3 w-3 rounded bg-emerald-500" />
 								<span>Active Account</span>
 							</div>
 							<div className="flex items-center gap-2">
-								<div className="h-3 w-3 rounded bg-gray-500"></div>
+								<div className="h-3 w-3 rounded bg-gray-500" />
 								<span>Other Account</span>
 							</div>
 							<div className="flex items-center gap-2">
-								<div className="h-0.5 w-4 bg-purple-400"></div>
+								<div className="h-0.5 w-4 bg-purple-400" />
 								<span>Vouch Connection</span>
 							</div>
 							<div className="mt-2 border-t border-tableBorder pt-2 text-xs">
@@ -382,36 +393,36 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 				)}
 
 				<ReactFlow
-					nodes={nodes}
-					edges={edges}
-					onNodesChange={onNodesChange}
-					onEdgesChange={onEdgesChange}
-					onConnect={onConnect}
 					fitView
+					defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+					edges={edges}
+					elementsSelectable={true}
 					fitViewOptions={{
 						padding: 0.2,
 						includeHiddenNodes: false,
 						minZoom: 0.5,
 						maxZoom: 1.5,
 					}}
-					nodesDraggable={true}
-					nodesConnectable={false}
-					elementsSelectable={true}
-					minZoom={0.2}
 					maxZoom={3}
-					defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+					minZoom={0.2}
+					nodes={nodes}
+					nodesConnectable={false}
+					nodesDraggable={true}
 					style={{
 						backgroundColor: 'var(--table-background)',
 						width: '100%',
 						height: '100%',
 					}}
+					onConnect={onConnect}
+					onEdgesChange={onEdgesChange}
+					onNodesChange={onNodesChange}
 				>
 					<Background
-						variant={BackgroundVariant.Dots}
+						color="var(--table-border)"
 						gap={24}
 						size={2}
-						color="var(--table-border)"
 						style={{ opacity: 0.3 }}
+						variant={BackgroundVariant.Dots}
 					/>
 					<Controls className="rounded-lg border border-tableBorder bg-tableBackground shadow-lg" />
 					<MiniMap
@@ -421,6 +432,7 @@ const AccountNetworkGraph: React.FC<AccountNetworkGraphProps> = ({
 							if (node.style?.backgroundColor) {
 								return node.style.backgroundColor as string;
 							}
+
 							return 'var(--table-text-secondary)';
 						}}
 						style={{
