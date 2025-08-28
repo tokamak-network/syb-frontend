@@ -1,0 +1,16 @@
+// utils/clipboard.ts
+
+/**
+ * Copy text to clipboard
+ * @param text Text to copy
+ * @returns Promise that resolves when text is copied
+ */
+export const copyToClipboard = async (text: string): Promise<boolean> => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    console.error('Failed to copy text: ', error);
+    return false;
+  }
+};

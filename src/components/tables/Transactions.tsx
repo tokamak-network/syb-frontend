@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IoMdArrowDropdown } from 'react-icons/io';
+import { FiCopy } from 'react-icons/fi';
 
 import TxTypes from '@/components/tables/TxType';
 import { ActionType, Order, Transaction } from '@/types';
@@ -13,6 +14,7 @@ import {
 	toChecksumAddress,
 	formatBalanceToEth,
 } from '@/utils/format';
+import { copyToClipboard } from '@/utils/clipboard';
 import { Button, Dropdown } from '@/components';
 
 interface Props {
@@ -42,6 +44,7 @@ export const TransactionsTable: React.FC<Props> = ({
 
 	const [internalCurrentPage, setInternalCurrentPage] = useState<number>(1);
 	const [internalItemsPerPage, setInternalItemsPerPage] = useState<number>(10);
+	const [copySuccess, setCopySuccess] = useState<string | null>(null);
 
 	const currentPage =
 		externalCurrentPage !== undefined
@@ -115,6 +118,16 @@ export const TransactionsTable: React.FC<Props> = ({
 		}
 	};
 
+	const handleCopyTxHash = async (txHash: string, event: React.MouseEvent) => {
+		event.stopPropagation();
+		const success = await copyToClipboard(`0x${txHash}`);
+
+		if (success) {
+			setCopySuccess(txHash);
+			setTimeout(() => setCopySuccess(null), 2000);
+		}
+	};
+
 	const shouldShowToAddress = (txType: ActionType): boolean => {
 		return ![
 			ActionType.DEPOSIT,
@@ -181,14 +194,31 @@ export const TransactionsTable: React.FC<Props> = ({
 												: 'N/A'}
 										</span>
 										{transaction.tx_hash && (
-											<Button
-												className="h-6 rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-600"
-												onClick={(e) =>
-													handleOpenSepoliaExplorer(transaction.tx_hash!, e)
-												}
-											>
-												Sepolia
-											</Button>
+											<>
+												<Button
+													className="h-6 rounded bg-gray-500 px-2 py-1 text-xs text-white hover:bg-gray-600"
+													title="Copy transaction hash"
+													onClick={(e) =>
+														handleCopyTxHash(transaction.tx_hash!, e)
+													}
+												>
+													<div className="flex items-center">
+														{copySuccess === transaction.tx_hash ? (
+															<span>✓</span>
+														) : (
+															<FiCopy size={14} />
+														)}
+													</div>
+												</Button>
+												<Button
+													className="h-6 rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-600"
+													onClick={(e) =>
+														handleOpenSepoliaExplorer(transaction.tx_hash!, e)
+													}
+												>
+													Sepolia
+												</Button>
+											</>
 										)}
 									</div>
 								</td>
