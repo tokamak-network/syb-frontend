@@ -1,18 +1,21 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { FaEye } from 'react-icons/fa';
 
-import { Button, TransactionDropDown, PageLoader } from '@/components';
+import { Button, TransactionDropDown, PageLoader, Modal } from '@/components';
 import {
 	fetchAccounts,
 	fetchTransactionsPaginated,
-	formatAddress,
-	formatFullTime,
 	formatTransactionHash,
+	formatTimestamp,
+	formatWeiValue,
+	formatFullEthAddress,
 } from '@/utils';
-import { Transaction, Order } from '@/types';
+import { Transaction, Order, ActionStatus } from '@/types';
+import TxTypes from '@/components/tables/TxType';
+import TxStatus from '@/components/tables/TxStatus';
 
 const ExplorerPage: React.FC = () => {
 	const [isNavigating] = useState<boolean>(false);
@@ -21,8 +24,9 @@ const ExplorerPage: React.FC = () => {
 	const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
 	const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 	const [hasMoreTransactions, setHasMoreTransactions] = useState<boolean>(true);
-
-	const router = useRouter();
+	const [selectedTransaction, setSelectedTransaction] =
+		useState<Transaction | null>(null);
+	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
 	const {
 		data: transactionHistory,
@@ -73,6 +77,18 @@ const ExplorerPage: React.FC = () => {
 		}
 	}, [currentPage, isLoadingMore, hasMoreTransactions]);
 
+	// Handle opening transaction details modal
+	const handleViewTransaction = (transaction: Transaction) => {
+		setSelectedTransaction(transaction);
+		setIsModalOpen(true);
+	};
+
+	// Handle closing modal
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedTransaction(null);
+	};
+
 	if (isLoadingTx || isLoadingAccounts || isNavigating) return <PageLoader />;
 
 	const filteredTransactions = allTransactions.filter((tx) => {
@@ -100,10 +116,10 @@ const ExplorerPage: React.FC = () => {
 										<thead className="sticky top-0 z-10 bg-tableHeader text-xs uppercase text-tableTextSecondary">
 											<tr>
 												<th className="px-6 py-3">Tx Hash</th>
-												<th className="px-6 py-3">Type</th>
-												<th className="px-6 py-3">From</th>
-												<th className="px-6 py-3">To</th>
-												<th className="px-6 py-3">Time</th>
+												<th className="px-6 py-3">Event</th>
+												<th className="px-6 py-3">Block</th>
+												<th className="px-6 py-3">Age</th>
+												<th className="px-6 py-3">Actions</th>
 											</tr>
 										</thead>
 										<tbody className="bg-tableBackground">
@@ -115,29 +131,26 @@ const ExplorerPage: React.FC = () => {
 															index % 2 === 0
 																? 'bg-tableBackground'
 																: 'bg-tableRowBackground'
-														} cursor-pointer hover:bg-tableHover`}
-														onClick={() =>
-															router.push(`/explorer/txs/${String(tx.tx_hash)}`)
-														}
+														} hover:bg-tableHover`}
 													>
 														<td className="px-6 py-4 font-medium">
-															{formatTransactionHash(String(tx.tx_hash))}
+															{tx.tx_hash
+																? formatTransactionHash(String(tx.tx_hash))
+																: '-'}
 														</td>
 														<td className="px-6 py-4">{tx.type}</td>
+														<td className="px-6 py-4">{tx.block_number}</td>
 														<td className="px-6 py-4">
-															{formatAddress(tx.from_eth_addr)}
+															{formatTimestamp(new Date(tx.timestamp * 1000))}
 														</td>
 														<td className="px-6 py-4">
-															{[
-																'deposit',
-																'createaccountdeposit',
-																'withdraw',
-															].includes(tx.type.toLowerCase())
-																? '-'
-																: formatAddress(tx.to_eth_addr || '')}
-														</td>
-														<td className="px-6 py-4">
-															{formatFullTime(new Date(tx.timestamp * 1000))}
+															<button
+																className="flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+																title="View transaction details"
+																onClick={() => handleViewTransaction(tx)}
+															>
+																<FaEye size={16} />
+															</button>
 														</td>
 													</tr>
 												))}
@@ -212,6 +225,86 @@ const ExplorerPage: React.FC = () => {
 					</Button>
 				</div> */}
 			</div>
+
+			{/* Transaction Details Modal */}
+			<Modal
+				className="max-w-2xl"
+				isOpen={isModalOpen}
+				title="Transaction Details"
+				onClose={handleCloseModal}
+			>
+				{selectedTransaction && (
+					<div className="space-y-4">
+						<div>
+							<strong>Transaction Hash:</strong>{' '}
+							<span className="font-mono text-sm">
+								{selectedTransaction.tx_hash
+									? formatTransactionHash(String(selectedTransaction.tx_hash))
+									: '-'}
+							</span>
+						</div>
+
+						<div className="flex items-center space-x-2">
+							<strong>Type:</strong>
+							<TxTypes txType={selectedTransaction.type} />
+						</div>
+
+						<div className="flex items-center space-x-2">
+							<strong>Status:</strong>
+							<TxStatus
+								status={
+									selectedTransaction.is_tx_forged
+										? ActionStatus.FORGED
+										: ActionStatus.PENDING
+								}
+							/>
+						</div>
+
+						<div>
+							<strong>From:</strong>{' '}
+							<span className="font-mono text-sm">
+								{formatFullEthAddress(selectedTransaction.from_eth_addr)}
+							</span>
+						</div>
+
+						<div>
+							<strong>To:</strong>{' '}
+							<span className="font-mono text-sm">
+								{selectedTransaction.to_eth_addr
+									? formatFullEthAddress(selectedTransaction.to_eth_addr)
+									: '-'}
+							</span>
+						</div>
+
+						<div>
+							<strong>Block Number:</strong> {selectedTransaction.block_number}
+						</div>
+
+						<div>
+							<strong>Value:</strong>{' '}
+							{formatWeiValue(selectedTransaction.amount)}
+						</div>
+
+						<div>
+							<strong>Fee:</strong>{' '}
+							{formatWeiValue(selectedTransaction.gas_fee)}
+						</div>
+
+						<div>
+							<strong>Timestamp:</strong>{' '}
+							{formatTimestamp(new Date(selectedTransaction.timestamp * 1000))}
+						</div>
+
+						<div>
+							<strong>Batch Number:</strong> {selectedTransaction.batch_num}
+						</div>
+
+						<div>
+							<strong>Position:</strong> {selectedTransaction.position}
+						</div>
+					</div>
+				)}
+			</Modal>
 		</div>
 	);
 };
