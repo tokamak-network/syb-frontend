@@ -129,9 +129,9 @@ const HomePage: React.FC = () => {
 				</div>
 			</section>
 
-			<section className="w-full rounded-xl border border-tableBorder bg-background p-5">
+			{/* <section className="w-full rounded-xl border border-tableBorder bg-background p-5">
 				<HomeNetworkGraph />
-			</section>
+			</section> */}
 		</div>
 	);
 };

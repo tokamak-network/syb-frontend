@@ -15,7 +15,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({
 
 	return (
 		<div
-			className={`mb-10 flex min-h-screen flex-col gap-7 px-4 md:px-8 lg:px-16 xl:px-20`}
+			className={`flex min-h-screen flex-col gap-7 px-4 md:px-8 lg:px-16 xl:px-20`}
 		>
 			<Header
 				isMegaMenuOpen={isMegaMenuOpen}

@@ -63,7 +63,7 @@ const ExplorerPage: React.FC = () => {
 			<div className="flex gap-8 md:flex-col md:gap-10 lg:flex-row">
 				<div className="w-full">
 					<TransactionDropDown value={txOption} onChange={setTxOption} />
-					<div className="mt-4 space-y-1">
+					<div className="mt-1 space-y-3">
 						{txError ? (
 							<div className="text-center text-red-500">
 								Transaction endpoint is not available right now.
@@ -127,7 +127,7 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						)}
 						<Button
-							className="w-full"
+							className="mt-4 w-full"
 							onClick={() => handleNavigation('/explorer/txs')}
 						>
 							Show All Transactions
@@ -136,8 +136,8 @@ const ExplorerPage: React.FC = () => {
 				</div>
 
 				<div className="w-full">
-					<h2 className="py-1 text-xl font-bold">Active Accounts</h2>
-					<div className="mt-4">
+					<h2 className="text-xl font-bold">Active Accounts</h2>
+					<div className="mt-3">
 						{accountsError ? (
 							<div className="text-center text-red-500">
 								Account endpoint is not available right now.
