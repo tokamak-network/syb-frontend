@@ -1,23 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
 import { Button, TransactionDropDown, PageLoader } from '@/components';
 import {
 	fetchAccounts,
-	fetchTransactions,
+	fetchTransactionsPaginated,
 	formatAddress,
-	formatAmount,
 	formatFullTime,
 	formatTransactionHash,
 } from '@/utils';
-import { Account } from '@/types';
+import { Transaction, Order } from '@/types';
 
 const ExplorerPage: React.FC = () => {
-	const [isNavigating, setIsNavigating] = useState<boolean>(false);
+	const [isNavigating] = useState<boolean>(false);
 	const [txOption, setTxOption] = useState<string>('all');
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
+	const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+	const [hasMoreTransactions, setHasMoreTransactions] = useState<boolean>(true);
 
 	const router = useRouter();
 
@@ -26,37 +29,59 @@ const ExplorerPage: React.FC = () => {
 		isLoading: isLoadingTx,
 		error: txError,
 	} = useQuery({
-		queryKey: ['transactions'],
-		queryFn: () => fetchTransactions(),
+		queryKey: ['transactions', currentPage],
+		queryFn: () => fetchTransactionsPaginated(currentPage, 20, Order.DESC),
 		staleTime: 30000,
 		refetchInterval: 30000,
+		enabled: currentPage === 1, // Only auto-fetch for first page
 	});
 
-	const {
-		data: accountsData,
-		isLoading: isLoadingAccounts,
-		error: accountsError,
-	} = useQuery({
+	const { isLoading: isLoadingAccounts } = useQuery({
 		queryKey: ['accounts'],
 		queryFn: fetchAccounts,
 	});
 
+	// Effect to handle initial data loading
+	useEffect(() => {
+		if (transactionHistory && currentPage === 1) {
+			setAllTransactions(transactionHistory.transactions);
+			setHasMoreTransactions(transactionHistory.transactions.length === 20);
+		}
+	}, [transactionHistory, currentPage]);
+
+	// Load more transactions function
+	const loadMoreTransactions = useCallback(async () => {
+		if (isLoadingMore || !hasMoreTransactions) return;
+
+		setIsLoadingMore(true);
+		const nextPage = currentPage + 1;
+
+		try {
+			const newData = await fetchTransactionsPaginated(
+				nextPage,
+				20,
+				Order.DESC,
+			);
+
+			setAllTransactions((prev) => [...prev, ...newData.transactions]);
+			setCurrentPage(nextPage);
+			setHasMoreTransactions(newData.transactions.length === 20);
+		} catch {
+			// Error handling for loading more transactions
+		} finally {
+			setIsLoadingMore(false);
+		}
+	}, [currentPage, isLoadingMore, hasMoreTransactions]);
+
 	if (isLoadingTx || isLoadingAccounts || isNavigating) return <PageLoader />;
 
-	const accounts = accountsData?.accounts || [];
-
-	const filteredTransactions = transactionHistory?.transactions.filter((tx) => {
+	const filteredTransactions = allTransactions.filter((tx) => {
 		if (txOption === 'all') return true;
 		if (txOption === 'pending') return tx.is_tx_forged === false;
 		if (txOption === 'forged') return tx.is_tx_forged === true;
 
 		return false;
 	});
-
-	const handleNavigation = (path: string) => {
-		setIsNavigating(true);
-		router.push(path);
-	};
 
 	return (
 		<div className="max-w-full overflow-hidden">
@@ -126,16 +151,19 @@ const ExplorerPage: React.FC = () => {
 								{transactionHistory.pendingItems} pending transactions
 							</div>
 						)}
-						<Button
-							className="mt-4 w-full"
-							onClick={() => handleNavigation('/explorer/txs')}
-						>
-							Show All Transactions
-						</Button>
+						{hasMoreTransactions && (
+							<Button
+								className="mt-4 w-full"
+								disabled={isLoadingMore}
+								onClick={loadMoreTransactions}
+							>
+								{isLoadingMore ? 'Loading...' : 'Load More'}
+							</Button>
+						)}
 					</div>
 				</div>
 
-				<div className="w-full">
+				{/* <div className="w-full">
 					<h2 className="text-xl font-bold">Active Accounts</h2>
 					<div className="mt-3">
 						{accountsError ? (
@@ -182,7 +210,7 @@ const ExplorerPage: React.FC = () => {
 					>
 						Show All Accounts
 					</Button>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
