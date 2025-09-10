@@ -123,19 +123,7 @@ export const formatTimestamp = (timestamp: string | Date): string => {
 	const date = new Date(timestamp);
 	const timeAgo = formatDistanceToNow(date, { addSuffix: true });
 
-	// Format the full date for display in parentheses
-	const month = date.toLocaleString('en-US', { month: 'short' });
-	const day = date.getDate();
-	const year = date.getFullYear();
-	const hours = date.getHours();
-	const minutes = date.getMinutes().toString().padStart(2, '0');
-	const seconds = date.getSeconds().toString().padStart(2, '0');
-	const ampm = hours >= 12 ? 'PM' : 'AM';
-	const formattedHours = (hours % 12 || 12).toString().padStart(2, '0');
-
-	const fullDate = `${month}-${day}-${year} ${formattedHours}:${minutes}:${seconds} ${ampm} +UTC`;
-
-	return `${timeAgo} (${fullDate})`;
+	return timeAgo;
 };
 
 export const validateAddress = (address: string): `0x${string}` => {

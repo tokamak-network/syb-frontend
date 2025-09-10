@@ -139,18 +139,18 @@ describe('formatTimestamp', () => {
 		jest.useRealTimers();
 	});
 
-	it('should format timestamp with time ago and full date', () => {
+	it('should format timestamp with time ago only', () => {
 		const timestamp = new Date('2025-02-18T20:44:23'); // 16 minutes ago
 		const result = formatTimestamp(timestamp);
 
-		expect(result).toMatch(/16 minutes ago \(Feb-18-2025 08:44:23 PM \+UTC\)/);
+		expect(result).toBe('16 minutes ago');
 	});
 
 	it('should handle string timestamp input', () => {
 		const timestamp = '2025-02-18T20:44:23';
 		const result = formatTimestamp(timestamp);
 
-		expect(result).toMatch(/16 minutes ago \(Feb-18-2025 08:44:23 PM \+UTC\)/);
+		expect(result).toBe('16 minutes ago');
 	});
 });
 
