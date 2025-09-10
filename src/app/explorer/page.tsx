@@ -92,7 +92,7 @@ const ExplorerPage: React.FC = () => {
 							</div>
 						) : (
 							<div className="overflow-x-auto">
-								<div className="max-h-96 overflow-y-auto">
+								<div className="overflow-y-auto">
 									<table className="w-full rounded-lg border border-tableBorder text-left text-sm text-tableTextPrimary shadow-sm">
 										<thead className="sticky top-0 z-10 bg-tableHeader text-xs uppercase text-tableTextSecondary">
 											<tr>
