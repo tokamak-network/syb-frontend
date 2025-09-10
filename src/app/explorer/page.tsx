@@ -12,6 +12,7 @@ import {
 	formatTransactionHash,
 } from '@/utils';
 import { Transaction, Order } from '@/types';
+import TxTypes from '@/components/tables/TxType';
 
 const ExplorerPage: React.FC = () => {
 	const [isNavigating] = useState<boolean>(false);
@@ -119,7 +120,9 @@ const ExplorerPage: React.FC = () => {
 																? formatTransactionHash(String(tx.tx_hash))
 																: '-'}
 														</td>
-														<td className="px-6 py-4">{tx.type}</td>
+														<td className="px-6 py-4">
+															<TxTypes txType={tx.type} />
+														</td>
 														<td className="px-6 py-4">{tx.block_number}</td>
 														<td className="px-6 py-4">
 															{formatTimestamp(new Date(tx.timestamp * 1000))}
