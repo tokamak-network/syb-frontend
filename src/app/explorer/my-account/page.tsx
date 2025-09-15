@@ -12,13 +12,7 @@ import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
 import { useVouchData } from '@/hooks/useVouchData';
 import { SybilSepoliaABI, contracts } from '@/contracts';
-import { formatEthAddress } from '@/utils';
-
-type Voucher = {
-	address: string;
-	timestamp: string;
-	txHash: string;
-};
+import { formatFullEthAddress } from '@/utils';
 
 const MyAccountPage: React.FC = () => {
 	const {
@@ -39,15 +33,33 @@ const MyAccountPage: React.FC = () => {
 	const [isClient, setIsClient] = useState(false);
 
 	// Read the user's contract balance (deposited amount)
-	const { data: contractBalance, isLoading: isContractBalanceLoading } =
-		useReadContract({
-			address: formatEthAddress(
-				contracts.sybilSepolia.address,
-			) as `0x${string}`,
-			abi: SybilSepoliaABI,
-			functionName: 'accountInfo',
-			args: address ? [address] : undefined,
-		});
+	const {
+		data: accountInfo,
+		isLoading: isContractBalanceLoading,
+		error: accountInfoError,
+	} = useReadContract({
+		address: formatFullEthAddress(
+			contracts.sybilSepolia.address,
+		) as `0x${string}`,
+		abi: SybilSepoliaABI,
+		functionName: 'accountInfo',
+		args: address ? [address] : undefined,
+	});
+
+	// Extract balance from the accountInfo tuple [balance, idx]
+	const contractBalance = accountInfo ? accountInfo[0] : BigInt(0);
+
+	// Debug logging
+	useEffect(() => {
+		if (accountInfo) {
+			console.log('Account Info:', accountInfo);
+			console.log('Contract Balance (wei):', contractBalance.toString());
+			console.log(
+				'Formatted Balance (ETH):',
+				ethers.formatEther(contractBalance.toString()),
+			);
+		}
+	}, [accountInfo, contractBalance]);
 
 	// Format the deposited amount to ETH
 	const formattedDepositAmount = contractBalance
@@ -66,14 +78,12 @@ const MyAccountPage: React.FC = () => {
 	}, []);
 
 	const {
-		vouchers,
 		vouchersWithTx,
 		isLoading: isVouchersLoading,
 		error: vouchersError,
 	} = useVouchersFor(address || '', allAccounts);
 
 	const {
-		vouchedAddresses,
 		vouchedWithTx,
 		isLoading: isVouchedLoading,
 		error: vouchedError,
@@ -201,12 +211,15 @@ const MyAccountPage: React.FC = () => {
 						>
 							{isContractBalanceLoading ? (
 								<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
+							) : accountInfoError ? (
+								<div className="text-red-500">
+									Error loading contract balance: {accountInfoError.message}
+								</div>
 							) : (
 								<>
 									{formattedDepositAmount}{' '}
 									{currencySymbol || chain?.nativeCurrency?.symbol || 'ETH'}
-									{contractBalance &&
-									BigInt(contractBalance.toString()) > BigInt(0) ? (
+									{contractBalance > BigInt(0) ? (
 										<div className="mt-2 text-sm text-green-500">
 											You have funds deposited in the contract
 										</div>
