@@ -6,6 +6,7 @@ import { sepolia } from 'wagmi/chains';
 
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { config } from '@/config';
+import { formatFullEthAddress, validateAddress } from '@/utils';
 
 interface VouchData {
 	hasVouched: boolean;
@@ -19,11 +20,13 @@ interface VouchTransaction {
 	timestamp: string;
 }
 
-// Helper to ensure address is in correct 0x format
+// Helper to ensure address is properly formatted and validated
 const formatAs0xAddress = (address: string): `0x${string}` => {
-	return address.startsWith('0x')
-		? (address as `0x${string}`)
-		: (`0x${address}` as `0x${string}`);
+	if (!address) {
+		throw new Error('Address cannot be empty');
+	}
+
+	return validateAddress(address);
 };
 
 export const useVouchData = () => {
@@ -39,11 +42,23 @@ export const useVouchData = () => {
 				if (!fromAddress || !toAddress) return false;
 
 				try {
-					const contractAddress = contracts.sybilSepolia
-						.address as `0x${string}`;
+					// Check if contract address is valid
+					if (
+						!contracts.sybilSepolia.address ||
+						contracts.sybilSepolia.address === ''
+					) {
+						console.warn('Contract address not configured');
+
+						return false;
+					}
+
+					const contractAddress = formatFullEthAddress(
+						contracts.sybilSepolia.address,
+					);
 					const formattedFromAddress = formatAs0xAddress(fromAddress);
 					const formattedToAddress = formatAs0xAddress(toAddress);
 
+					// Try to read the vouches mapping
 					const result = await readContract(config, {
 						address: contractAddress,
 						abi: SybilSepoliaABI,
@@ -53,14 +68,26 @@ export const useVouchData = () => {
 
 					return !!result;
 				} catch (err) {
-					console.error('Error checking vouch status:', err);
-					setError(err instanceof Error ? err : new Error(String(err)));
+					// Check if it's an RPC error
+					if (err instanceof Error && err.message.includes('Internal error')) {
+						console.warn(
+							`RPC provider error when checking vouch status between ${fromAddress} and ${toAddress}. This may be a temporary RPC issue.`,
+						);
+					} else {
+						console.warn(
+							`Could not check vouch status between ${fromAddress} and ${toAddress}:`,
+							err,
+						);
+					}
 
+					// Return false instead of throwing to gracefully handle contract issues
 					return false;
 				}
 			},
 			enabled: !!fromAddress && !!toAddress,
 			staleTime: 30000,
+			retry: 2, // Retry failed requests up to 2 times
+			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000), // Exponential backoff
 		});
 
 		return {
@@ -223,14 +250,30 @@ export const useVouchData = () => {
 				if (!targetAddress || !possibleVouchers.length) return [];
 
 				try {
-					const contractAddress = contracts.sybilSepolia
-						.address as `0x${string}`;
+					// Check if contract address is valid
+					if (
+						!contracts.sybilSepolia.address ||
+						contracts.sybilSepolia.address === ''
+					) {
+						console.warn('Contract address not configured');
+						return [];
+					}
+
+					const contractAddress = formatFullEthAddress(
+						contracts.sybilSepolia.address,
+					);
 					const formattedTarget = formatAs0xAddress(targetAddress);
 					const voucherAddresses: string[] = [];
 
 					// Sequential calls for now (can be optimized with multicall)
 					for (const voucher of possibleVouchers) {
 						try {
+							// Skip invalid addresses
+							if (!voucher || voucher.length !== 42) {
+								console.warn(`Skipping invalid address: ${voucher}`);
+								continue;
+							}
+
 							const formattedVoucher = formatAs0xAddress(voucher);
 
 							const result = await readContract(config, {
@@ -244,7 +287,18 @@ export const useVouchData = () => {
 								voucherAddresses.push(voucher);
 							}
 						} catch (err) {
-							console.error(`Error checking vouch for ${voucher}:`, err);
+							// Check if it's an RPC error
+							if (
+								err instanceof Error &&
+								err.message.includes('Internal error')
+							) {
+								console.warn(
+									`RPC provider error when checking vouch for ${voucher}. This may be a temporary RPC issue.`,
+								);
+							} else {
+								console.warn(`Could not check vouch for ${voucher}:`, err);
+							}
+							// Continue with other addresses even if one fails
 						}
 					}
 
@@ -258,6 +312,8 @@ export const useVouchData = () => {
 			},
 			enabled: !!targetAddress && possibleVouchers.length > 0,
 			staleTime: 30000,
+			retry: 2,
+			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
 		});
 
 		// Then fetch transaction details for each voucher
@@ -322,13 +378,29 @@ export const useVouchData = () => {
 				if (!voucherAddress || !possibleRecipients.length) return [];
 
 				try {
-					const contractAddress = contracts.sybilSepolia
-						.address as `0x${string}`;
+					// Check if contract address is valid
+					if (
+						!contracts.sybilSepolia.address ||
+						contracts.sybilSepolia.address === ''
+					) {
+						console.warn('Contract address not configured');
+						return [];
+					}
+
+					const contractAddress = formatFullEthAddress(
+						contracts.sybilSepolia.address,
+					);
 					const formattedVoucher = formatAs0xAddress(voucherAddress);
 					const vouchedAddresses: string[] = [];
 
 					for (const recipient of possibleRecipients) {
 						try {
+							// Skip invalid addresses
+							if (!recipient || recipient.length !== 42) {
+								console.warn(`Skipping invalid address: ${recipient}`);
+								continue;
+							}
+
 							const formattedRecipient = formatAs0xAddress(recipient);
 
 							const result = await readContract(config, {
@@ -342,7 +414,18 @@ export const useVouchData = () => {
 								vouchedAddresses.push(recipient);
 							}
 						} catch (err) {
-							console.error(`Error checking vouch for ${recipient}:`, err);
+							// Check if it's an RPC error
+							if (
+								err instanceof Error &&
+								err.message.includes('Internal error')
+							) {
+								console.warn(
+									`RPC provider error when checking vouch for ${recipient}. This may be a temporary RPC issue.`,
+								);
+							} else {
+								console.warn(`Could not check vouch for ${recipient}:`, err);
+							}
+							// Continue with other addresses even if one fails
 						}
 					}
 
@@ -356,6 +439,8 @@ export const useVouchData = () => {
 			},
 			enabled: !!voucherAddress && possibleRecipients.length > 0,
 			staleTime: 30000,
+			retry: 2,
+			retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
 		});
 
 		// Then fetch transaction details for each vouched address

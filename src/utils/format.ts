@@ -222,6 +222,17 @@ export const convertWeiToGweiAndEther = (
 };
 
 /**
+ * Formats a balance value to 2 decimal places for better UX
+ * @param balance - The balance value (can be string or number)
+ * @returns {string} - The formatted balance with 2 decimal places
+ */
+export const formatBalance = (balance: string | number): string => {
+	const balanceNum =
+		typeof balance === 'string' ? parseFloat(balance) : balance;
+	return balanceNum.toFixed(2);
+};
+
+/**
  * Converts an Ethereum address to its proper EIP-55 checksummed format.
  * @param address - The Ethereum address (can be lowercase or mixed case).
  * @returns {string} - The checksummed Ethereum address.

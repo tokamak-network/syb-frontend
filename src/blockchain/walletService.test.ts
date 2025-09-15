@@ -5,12 +5,8 @@ import { depositETH, withdrawETH } from './walletService';
 // Mock ethers
 jest.mock('ethers', () => ({
 	ethers: {
-		providers: {
-			Web3Provider: jest.fn(),
-		},
-		utils: {
-			parseEther: jest.fn(),
-		},
+		BrowserProvider: jest.fn(),
+		parseEther: jest.fn(),
 	},
 }));
 
@@ -28,13 +24,11 @@ describe('walletService', () => {
 		}));
 
 		// Mock ethers behavior
-		(ethers.providers.Web3Provider as unknown as jest.Mock).mockImplementation(
-			() => ({
-				getSigner: mockGetSigner,
-			}),
-		);
+		(ethers.BrowserProvider as unknown as jest.Mock).mockImplementation(() => ({
+			getSigner: mockGetSigner,
+		}));
 
-		(ethers.utils.parseEther as jest.Mock).mockImplementation(
+		(ethers.parseEther as jest.Mock).mockImplementation(
 			(value: string) => value,
 		);
 
@@ -59,11 +53,9 @@ describe('walletService', () => {
 			await depositETH(amount, platformAddress);
 
 			// Assertions
-			expect(ethers.providers.Web3Provider).toHaveBeenCalledWith(
-				window.ethereum,
-			);
+			expect(ethers.BrowserProvider).toHaveBeenCalledWith(window.ethereum);
 			expect(mockGetSigner).toHaveBeenCalled();
-			expect(ethers.utils.parseEther).toHaveBeenCalledWith(amount.toString());
+			expect(ethers.parseEther).toHaveBeenCalledWith(amount.toString());
 			expect(mockSendTransaction).toHaveBeenCalledWith({
 				to: platformAddress,
 				value: amount.toString(),
@@ -115,11 +107,9 @@ describe('walletService', () => {
 			await withdrawETH(amount, userAddress);
 
 			// Assertions
-			expect(ethers.providers.Web3Provider).toHaveBeenCalledWith(
-				window.ethereum,
-			);
+			expect(ethers.BrowserProvider).toHaveBeenCalledWith(window.ethereum);
 			expect(mockGetSigner).toHaveBeenCalled();
-			expect(ethers.utils.parseEther).toHaveBeenCalledWith(amount.toString());
+			expect(ethers.parseEther).toHaveBeenCalledWith(amount.toString());
 			expect(mockSendTransaction).toHaveBeenCalledWith({
 				to: userAddress,
 				value: amount.toString(),

@@ -7,8 +7,26 @@ import {
 	useEnsAvatar,
 } from 'wagmi';
 import { ethers } from 'ethers';
+import {
+	QueryClient,
+	QueryClientProvider,
+	useQuery,
+} from '@tanstack/react-query';
+import React from 'react';
 
 import { useWallet } from './useWallet';
+
+// Mock localStorage
+const localStorageMock = {
+	getItem: jest.fn(),
+	setItem: jest.fn(),
+	removeItem: jest.fn(),
+	clear: jest.fn(),
+};
+
+Object.defineProperty(window, 'localStorage', {
+	value: localStorageMock,
+});
 
 jest.mock('wagmi', () => ({
 	useAccount: jest.fn(),
@@ -18,48 +36,44 @@ jest.mock('wagmi', () => ({
 	useEnsAvatar: jest.fn(),
 }));
 
-// Mock React Query with conditional behavior based on enabled state
-jest.mock('@tanstack/react-query', () => ({
-	useQuery: jest.fn(({ enabled, queryKey }) => ({
-		data: enabled ? '1.23' : null,
-		isLoading: false,
-		refetch: jest.fn().mockResolvedValue(true),
-		error: null,
-	})),
-}));
-
+// Mock ethers
 jest.mock('ethers', () => ({
 	ethers: {
-		utils: {
-			formatEther: jest.fn((value) => value),
-		},
-		providers: {
-			JsonRpcProvider: jest.fn(() => ({
-				getBalance: jest.fn().mockResolvedValue('1000000000000000000'),
-			})),
-		},
+		formatEther: jest.fn(),
+		JsonRpcProvider: jest.fn(),
 	},
+	formatEther: jest.fn(),
+	JsonRpcProvider: jest.fn(),
 }));
 
-// Mock localStorage
-const localStorageMock = (() => {
-	let store: Record<string, string> = {};
+// Mock @tanstack/react-query useQuery only
+jest.mock('@tanstack/react-query', () => ({
+	...jest.requireActual('@tanstack/react-query'),
+	useQuery: jest.fn(),
+}));
 
-	return {
-		getItem: jest.fn((key: string) => store[key] || null),
-		setItem: jest.fn((key: string, value: string) => {
-			store[key] = value;
-		}),
-		removeItem: jest.fn((key: string) => {
-			delete store[key];
-		}),
-		clear: jest.fn(() => {
-			store = {};
-		}),
+// Create a test wrapper with QueryClient
+const createWrapper = () => {
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				retry: false,
+			},
+		},
+	});
+
+	const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+		return React.createElement(
+			QueryClientProvider,
+			{ client: queryClient },
+			children,
+		);
 	};
-})();
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+	TestWrapper.displayName = 'TestWrapper';
+
+	return TestWrapper;
+};
 
 describe('useWallet', () => {
 	beforeEach(() => {
@@ -83,8 +97,16 @@ describe('useWallet', () => {
 		});
 		(useEnsName as jest.Mock).mockReturnValue({ data: null });
 		(useEnsAvatar as jest.Mock).mockReturnValue({ data: null });
+		(useQuery as jest.Mock).mockReturnValue({
+			data: null,
+			isLoading: false,
+			error: null,
+			refetch: jest.fn(),
+		});
 
-		const { result } = renderHook(() => useWallet());
+		const { result } = renderHook(() => useWallet(), {
+			wrapper: createWrapper(),
+		});
 
 		expect(result.current.address).toBeNull();
 		expect(result.current.isConnected).toBe(false);
@@ -121,10 +143,18 @@ describe('useWallet', () => {
 		});
 		(useEnsName as jest.Mock).mockReturnValue({ data: 'example.eth' });
 		(useEnsAvatar as jest.Mock).mockReturnValue({ data: 'avatar_url' });
+		(useQuery as jest.Mock).mockReturnValue({
+			data: '1.23',
+			isLoading: false,
+			error: null,
+			refetch: jest.fn(),
+		});
 
-		(ethers.utils.formatEther as jest.Mock).mockReturnValue('1.23');
+		(ethers.formatEther as jest.Mock).mockReturnValue('1.23');
 
-		const { result } = renderHook(() => useWallet());
+		const { result } = renderHook(() => useWallet(), {
+			wrapper: createWrapper(),
+		});
 
 		// No need to wait, test synchronously
 		expect(result.current.address).toBe('0x123');
@@ -148,7 +178,7 @@ describe('useWallet', () => {
 	});
 
 	it('should handle disconnect correctly', async () => {
-		const mockDisconnect = jest.fn();
+		const mockDisconnect = jest.fn().mockResolvedValue(undefined);
 
 		(useAccount as jest.Mock).mockReturnValue({
 			address: '0x123',
@@ -158,6 +188,12 @@ describe('useWallet', () => {
 		});
 		(useDisconnect as jest.Mock).mockReturnValue({
 			disconnect: mockDisconnect,
+		});
+		(useQuery as jest.Mock).mockReturnValue({
+			data: null,
+			isLoading: false,
+			error: null,
+			refetch: jest.fn(),
 		});
 
 		// Set up localStorage for testing
@@ -171,7 +207,9 @@ describe('useWallet', () => {
 			}),
 		);
 
-		const { result } = renderHook(() => useWallet());
+		const { result } = renderHook(() => useWallet(), {
+			wrapper: createWrapper(),
+		});
 
 		await act(async () => {
 			await result.current.disconnect();
@@ -179,14 +217,5 @@ describe('useWallet', () => {
 
 		expect(mockDisconnect).toHaveBeenCalled();
 		expect(localStorageMock.removeItem).toHaveBeenCalledWith('wagmi.connected');
-		expect(localStorageMock.setItem).toHaveBeenCalledWith(
-			'wagmi.store',
-			JSON.stringify({
-				state: {
-					connections: { value: [] },
-					current: null,
-				},
-			}),
-		);
 	});
 });

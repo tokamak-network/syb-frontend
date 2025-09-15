@@ -5,11 +5,11 @@ export const depositETH = async (amount: number, platformAddress: string) => {
 		if (!window.ethereum) {
 			throw new Error('MetaMask is not installed');
 		}
-		const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-		const signer = provider.getSigner();
+		const provider = new ethers.BrowserProvider(window.ethereum as any);
+		const signer = await provider.getSigner();
 		const transaction = await signer.sendTransaction({
 			to: platformAddress,
-			value: ethers.utils.parseEther(amount.toString()),
+			value: ethers.parseEther(amount.toString()),
 		});
 
 		await transaction.wait();
@@ -22,11 +22,11 @@ export const depositETH = async (amount: number, platformAddress: string) => {
 
 export const withdrawETH = async (amount: number, userAddress: string) => {
 	try {
-		const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-		const signer = provider.getSigner();
+		const provider = new ethers.BrowserProvider(window.ethereum as any);
+		const signer = await provider.getSigner();
 		const transaction = await signer.sendTransaction({
 			to: userAddress,
-			value: ethers.utils.parseEther(amount.toString()),
+			value: ethers.parseEther(amount.toString()),
 		});
 
 		await transaction.wait();

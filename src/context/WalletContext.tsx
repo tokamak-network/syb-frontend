@@ -33,14 +33,14 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 	const connectWallet = async () => {
 		if (isMetaMaskInstalled) {
 			try {
-				const provider = new ethers.providers.Web3Provider(
-					window.ethereum as any,
-				);
+				const provider = new ethers.BrowserProvider(window.ethereum as any);
 
 				await provider.send('eth_requestAccounts', []);
-				const signer = provider.getSigner();
+				const signer = await provider.getSigner();
 				const userAddress = await signer.getAddress();
-				const userBalance = ethers.utils.formatEther(await signer.getBalance());
+				const userBalance = ethers.formatEther(
+					await provider.getBalance(userAddress),
+				);
 
 				setAccount(userAddress);
 				setBalance(userBalance);
@@ -57,12 +57,10 @@ export const WalletProvider: React.FC<{ children: ReactNode }> = ({
 	const updateBalance = async () => {
 		if (account) {
 			try {
-				const provider = new ethers.providers.Web3Provider(
-					window.ethereum as any,
-				);
+				const provider = new ethers.BrowserProvider(window.ethereum as any);
 				const balance = await provider.getBalance(account);
 
-				setBalance(ethers.utils.formatEther(balance));
+				setBalance(ethers.formatEther(balance));
 			} catch (error) {
 				console.error('Failed to fetch balance:', error);
 			}

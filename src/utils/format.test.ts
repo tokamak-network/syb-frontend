@@ -2,6 +2,13 @@ jest.mock('viem', () => ({
 	isAddress: (address: string) => {
 		return /^0x[0-9a-fA-F]{40}$/.test(address);
 	},
+	getAddress: (address: string) => {
+		// Simple checksum implementation for testing
+		if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
+			throw new Error('Invalid address');
+		}
+		return address;
+	},
 }));
 
 import {

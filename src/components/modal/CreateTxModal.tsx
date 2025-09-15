@@ -72,7 +72,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 		if (contractBalance) {
 			console.log('Contract balance updated:', {
 				rawValue: contractBalance[0].toString(),
-				formattedValue: ethers.utils.formatEther(contractBalance[0].toString()),
+				formattedValue: ethers.formatEther(contractBalance[0].toString()),
 				hasBalance: BigInt(contractBalance[0].toString()) > BigInt(0),
 			});
 			setHasContractBalance(BigInt(contractBalance[0].toString()) > BigInt(0));
@@ -177,7 +177,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 
 		// Check if withdraw amount exceeds contract balance
 		if (txType === 'withdraw' && contractBalance) {
-			const contractBalanceEth = ethers.utils.formatEther(
+			const contractBalanceEth = ethers.formatEther(
 				contractBalance[0].toString(),
 			);
 
@@ -445,8 +445,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 								{hasContractBalance && contractBalance ? (
 									<span className="text-green-500">
 										Deposited Amount:{' '}
-										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
-										ETH
+										{ethers.formatEther(contractBalance[0].toString())} ETH
 									</span>
 								) : (
 									<span className="text-yellow-500">
@@ -530,17 +529,14 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 								<div className="text-xs text-gray-400">
 									<div>
 										Available contract balance:{' '}
-										{ethers.utils.formatEther(contractBalance[0].toString())}{' '}
-										ETH
+										{ethers.formatEther(contractBalance[0].toString())} ETH
 									</div>
 									{txAmount && parseFloat(txAmount) > 0 && (
 										<div
 											className={
 												parseFloat(txAmount) >
 												parseFloat(
-													ethers.utils.formatEther(
-														contractBalance[0].toString(),
-													),
+													ethers.formatEther(contractBalance[0].toString()),
 												)
 													? 'mt-1 text-red-400'
 													: 'mt-1 text-green-400'
@@ -548,7 +544,7 @@ export const CreateTxModal: React.FC<CreateTxModalProps> = ({
 										>
 											{parseFloat(txAmount) >
 											parseFloat(
-												ethers.utils.formatEther(contractBalance[0].toString()),
+												ethers.formatEther(contractBalance[0].toString()),
 											)
 												? 'Amount exceeds contract balance'
 												: 'Valid amount'}

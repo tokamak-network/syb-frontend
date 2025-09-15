@@ -20,7 +20,12 @@ export const l1TestNetwork: NetworkType = {
 	nativeCurrency: sepolia.nativeCurrency,
 	rpcUrls: {
 		default: {
-			http: sepolia.rpcUrls.default.http,
+			http: [
+				'https://winter-rough-crater.ethereum-sepolia.quiknode.pro/3da374849d0ff20af00f43a20e418f8adb46a7de/',
+			],
+			webSocket: [
+				'wss://winter-rough-crater.ethereum-sepolia.quiknode.pro/3da374849d0ff20af00f43a20e418f8adb46a7de/',
+			],
 		},
 	},
 	blockExplorers: sepolia.blockExplorers,

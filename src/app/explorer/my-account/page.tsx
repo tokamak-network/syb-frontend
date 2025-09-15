@@ -36,6 +36,7 @@ const MyAccountPage: React.FC = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [allAccounts, setAllAccounts] = useState<string[]>([]);
 	const [proofs, setProofs] = useState<string[]>([]);
+	const [isClient, setIsClient] = useState(false);
 
 	// Read the user's contract balance (deposited amount)
 	const { data: contractBalance, isLoading: isContractBalanceLoading } =
@@ -50,10 +51,11 @@ const MyAccountPage: React.FC = () => {
 
 	// Format the deposited amount to ETH
 	const formattedDepositAmount = contractBalance
-		? ethers.utils.formatEther(contractBalance.toString())
+		? ethers.formatEther(contractBalance.toString())
 		: '0';
 
 	useEffect(() => {
+		setIsClient(true);
 		setAllAccounts([
 			'0xC0dFB22a00F12123B257d97033a93C0580a7f5a1',
 			'0x83D6C639AC4CB3833d60b3CB4dbCd234baBD501D',
@@ -104,6 +106,16 @@ const MyAccountPage: React.FC = () => {
 			setIsLoading(false);
 		}
 	}, [isConnected, address]);
+
+	if (!isClient) {
+		return (
+			<div className="container mx-auto mt-24 p-6">
+				<div className="flex justify-center p-10">
+					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2" />
+				</div>
+			</div>
+		);
+	}
 
 	if (!isConnected) {
 		return (
