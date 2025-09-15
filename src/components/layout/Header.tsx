@@ -86,8 +86,13 @@ export const Header: React.FC<{
 		if (address) {
 			await navigator.clipboard.writeText(address);
 			addToast('success', 'Address copied to clipboard!', '');
+			setMenuStates((prev) => ({ ...prev, isWalletMenuOpen: false }));
 		}
 	}, [address, addToast]);
+
+	const closeWalletMenu = useCallback(() => {
+		setMenuStates((prev) => ({ ...prev, isWalletMenuOpen: false }));
+	}, []);
 
 	const handleCreateTxModalToggle = useCallback(() => {
 		setMenuStates((prev) => ({
@@ -272,6 +277,7 @@ export const Header: React.FC<{
 								<Link
 									className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 									href="/explorer/my-account"
+									onClick={closeWalletMenu}
 								>
 									My Account
 								</Link>
@@ -348,6 +354,7 @@ export const Header: React.FC<{
 						<Link
 							className="block w-full rounded-md px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
 							href="/explorer/my-account"
+							onClick={closeWalletMenu}
 						>
 							My Account
 						</Link>
