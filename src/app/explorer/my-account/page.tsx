@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 
 import { useWallet } from '@/hooks/useWallet';
 import { Button } from '@/components/button';
+import { Avatar } from '@/components/common';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils/cn';
@@ -52,12 +53,7 @@ const MyAccountPage: React.FC = () => {
 	// Debug logging
 	useEffect(() => {
 		if (accountInfo) {
-			console.log('Account Info:', accountInfo);
-			console.log('Contract Balance (wei):', contractBalance.toString());
-			console.log(
-				'Formatted Balance (ETH):',
-				ethers.formatEther(contractBalance.toString()),
-			);
+			// Debug logging removed for production
 		}
 	}, [accountInfo, contractBalance]);
 
@@ -104,8 +100,7 @@ const MyAccountPage: React.FC = () => {
 			try {
 				setProofs(['Proof1: 0x8f4e2c1a...', 'Proof2: 0x3b7d9e6f...']);
 				setIsLoading(false);
-			} catch (error) {
-				console.error('Error fetching account data:', error);
+			} catch {
 				setIsLoading(false);
 			}
 		};
@@ -159,6 +154,22 @@ const MyAccountPage: React.FC = () => {
 				</div>
 			) : (
 				<>
+					<div className="mb-8 rounded-lg border p-6 shadow-md">
+						<div className="mb-6 flex items-center space-x-4">
+							<Avatar
+								address={address || ''}
+								className="ring-2 ring-gray-300"
+								size="lg"
+							/>
+							<div>
+								<h2 className="text-xl font-semibold">Account Avatar</h2>
+								<p className="text-sm text-gray-500">
+									Avatar based on your wallet address
+								</p>
+							</div>
+						</div>
+					</div>
+
 					<div className="mb-8 rounded-lg border p-6 shadow-md">
 						<h2 className="mb-4 text-xl font-semibold">Account Address</h2>
 						<div
@@ -260,10 +271,13 @@ const MyAccountPage: React.FC = () => {
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200">
-										{usersIVouchedFor.map((user, index) => (
+										{usersIVouchedFor.map((user: any, index: number) => (
 											<tr key={index}>
 												<td className="whitespace-nowrap px-6 py-4 font-mono">
-													{user.address}
+													<div className="flex items-center space-x-2">
+														<Avatar address={user.address} size="sm" />
+														<span>{user.address}</span>
+													</div>
 												</td>
 												<td className="whitespace-nowrap px-6 py-4">
 													{user.timestamp}
@@ -326,10 +340,13 @@ const MyAccountPage: React.FC = () => {
 										</tr>
 									</thead>
 									<tbody className="divide-y divide-gray-200">
-										{usersVouchedForMe.map((user, index) => (
+										{usersVouchedForMe.map((user: any, index: number) => (
 											<tr key={index}>
 												<td className="whitespace-nowrap px-6 py-4 font-mono">
-													{user.address}
+													<div className="flex items-center space-x-2">
+														<Avatar address={user.address} size="sm" />
+														<span>{user.address}</span>
+													</div>
 												</td>
 												<td className="whitespace-nowrap px-6 py-4">
 													{user.timestamp}

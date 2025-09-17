@@ -1,3 +1,4 @@
+export * from './Avatar';
 export * from './SearchBar';
 export * from './DateSelector';
 export * from './Tooltip';

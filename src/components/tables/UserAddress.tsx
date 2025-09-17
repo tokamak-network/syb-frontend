@@ -4,6 +4,7 @@ import React from 'react';
 import { FiUser, FiCopy } from 'react-icons/fi';
 
 import { useToast } from '@/context';
+import { Avatar } from '@/components/common';
 
 import { Label } from '../common';
 
@@ -22,7 +23,7 @@ export const UserAddress: React.FC<UserAddressProps> = ({ address, type }) => {
 
 	return (
 		<div className="flex items-center space-x-2">
-			<FiUser className="text-blue-500" size={20} />
+			<Avatar address={address} size="sm" />
 			<Label
 				explore={false}
 				isTransaction={type === 'tx'}

@@ -15,7 +15,7 @@ import {
 	formatBalanceToEth,
 } from '@/utils/format';
 import { copyToClipboard } from '@/utils/clipboard';
-import { Button, Dropdown } from '@/components';
+import { Button, Dropdown, Avatar } from '@/components';
 
 interface Props {
 	filteredTransactions: Transaction[];
@@ -231,23 +231,33 @@ export const TransactionsTable: React.FC<Props> = ({
 										: 'N/A'}
 								</td>
 								<td className="px-6 py-2">
-									<div className="group relative">
-										{formatEthAddress(transaction.from_eth_addr)}
-										<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-											{transaction.from_eth_addr
-												? toChecksumAddress(transaction.from_eth_addr)
-												: 'N/A'}
+									<div className="group relative flex items-center space-x-2">
+										{transaction.from_eth_addr && (
+											<Avatar address={transaction.from_eth_addr} size="sm" />
+										)}
+										<div>
+											{formatEthAddress(transaction.from_eth_addr)}
+											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+												{transaction.from_eth_addr
+													? toChecksumAddress(transaction.from_eth_addr)
+													: 'N/A'}
+											</div>
 										</div>
 									</div>
 								</td>
 								<td className="px-6 py-2">
 									{shouldShowToAddress(transaction.type) ? (
-										<div className="group relative">
-											{formatEthAddress(transaction.to_eth_addr)}
-											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-												{transaction.to_eth_addr
-													? toChecksumAddress(transaction.to_eth_addr)
-													: 'N/A'}
+										<div className="group relative flex items-center space-x-2">
+											{transaction.to_eth_addr && (
+												<Avatar address={transaction.to_eth_addr} size="sm" />
+											)}
+											<div>
+												{formatEthAddress(transaction.to_eth_addr)}
+												<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+													{transaction.to_eth_addr
+														? toChecksumAddress(transaction.to_eth_addr)
+														: 'N/A'}
+												</div>
 											</div>
 										</div>
 									) : (
