@@ -3,25 +3,28 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { ethers } from 'ethers';
 import { FiArrowUp, FiThumbsUp, FiCopy } from 'react-icons/fi';
 import { BiCoin, BiMedal } from 'react-icons/bi';
 import { IoArrowBackSharp } from 'react-icons/io5';
-import Jazzicon from 'react-jazzicon';
+import { useReadContract, usePublicClient } from 'wagmi';
 
 import { Button, PageLoader } from '@/components';
-import { AccountNetworkGraph } from '@/components/graphs';
+import { Avatar } from '@/components/common';
 import { useWallet, useScoreUpdate, useSepoliaTransactions } from '@/hooks';
 import { useVouchData } from '@/hooks/useVouchData';
 import { fetchAccountByID, fetchAccounts } from '@/utils';
 import { cn } from '@/utils/cn';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const/themeStyles';
+import { SybilSepoliaABI, contracts } from '@/contracts';
+import { formatFullEthAddress } from '@/utils';
 
 const AccountDetailsPage: React.FC = () => {
 	const params = useParams();
 	const router = useRouter();
 	const accountIdx = decodeURIComponent(params.accountIdx as string);
-	const { isConnected, address } = useWallet();
+	const { isConnected, address, chain } = useWallet();
 	const { handleUpdateScore } = useScoreUpdate();
 	const { handleVouch } = useSepoliaTransactions();
 	const [isUpdatingScore, setIsUpdatingScore] = useState(false);
@@ -64,6 +67,62 @@ const AccountDetailsPage: React.FC = () => {
 		refetchInterval: 30000,
 	});
 
+	// Read the contract balance (deposited amount) for this account
+	const {
+		data: accountInfo,
+		isLoading: isContractBalanceLoading,
+		error: accountInfoError,
+	} = useReadContract({
+		address: formatFullEthAddress(
+			contracts.sybilSepolia.address,
+		) as `0x${string}`,
+		abi: SybilSepoliaABI,
+		functionName: 'accountInfo',
+		args: account?.eth_addr ? [account.eth_addr as `0x${string}`] : undefined,
+	});
+
+	// Extract balance from the accountInfo tuple [balance, idx]
+	const contractBalance = accountInfo ? accountInfo[0] : BigInt(0);
+
+	// Format the deposited amount to ETH
+	const formattedDepositAmount = contractBalance
+		? ethers.formatEther(contractBalance.toString())
+		: '0';
+
+	// Get public client for balance queries
+	const publicClient = usePublicClient({ chainId: chain?.id || 11155111 });
+
+	// Query native ETH balance from the blockchain
+	const {
+		data: nativeBalance,
+		isLoading: isNativeBalanceLoading,
+		error: nativeBalanceError,
+	} = useQuery({
+		queryKey: ['nativeBalance', account?.eth_addr, chain?.id],
+		queryFn: async () => {
+			if (!account?.eth_addr || !publicClient) return '0';
+
+			try {
+				const balanceResult = await publicClient.getBalance({
+					address: account.eth_addr as `0x${string}`,
+				});
+
+				// Convert from wei to ether
+				const balanceInEth = ethers.formatEther(balanceResult);
+
+				return balanceInEth;
+			} catch {
+				// Error handled by UI feedback
+				return '0';
+			}
+		},
+		enabled: !!account?.eth_addr && !!publicClient,
+		staleTime: 30000, // 30 seconds
+		refetchInterval: 30000, // Refetch every 30 seconds
+	});
+
+	const nativeEthBalance = nativeBalance || '0';
+
 	const allAccountAddresses = useMemo(() => {
 		if (!accountsData?.accounts) return [];
 
@@ -71,12 +130,6 @@ const AccountDetailsPage: React.FC = () => {
 			.map((acc: any) => acc.eth_addr)
 			.filter(Boolean);
 	}, [accountsData]);
-
-	const avatarSeed = useMemo(() => {
-		if (!account?.eth_addr) return 0;
-
-		return parseInt(account.eth_addr.slice(2, 10), 16);
-	}, [account?.eth_addr]);
 
 	const onUpdateScore = async () => {
 		if (!account) return;
@@ -87,12 +140,11 @@ const AccountDetailsPage: React.FC = () => {
 			const newScore =
 				(account.score_int ? parseInt(account.score_int) : 0) + 1;
 
-			const hash = await handleUpdateScore(account.eth_addr, newScore);
+			await handleUpdateScore(account.eth_addr, newScore);
 
-			console.log('Score updated successfully:', hash);
 			await refetch();
-		} catch (error) {
-			console.error('Failed to update score:', error);
+		} catch {
+			// Error handled by UI feedback
 		} finally {
 			setIsUpdatingScore(false);
 		}
@@ -103,12 +155,11 @@ const AccountDetailsPage: React.FC = () => {
 
 		try {
 			setIsVouching(true);
-			const hash = await handleVouch(account.eth_addr);
+			await handleVouch(account.eth_addr);
 
-			console.log('Vouched successfully:', hash);
 			await refetch();
-		} catch (error) {
-			console.error('Failed to vouch:', error);
+		} catch {
+			// Error handled by UI feedback
 		} finally {
 			setIsVouching(false);
 		}
@@ -132,7 +183,7 @@ const AccountDetailsPage: React.FC = () => {
 		} else if (screenWidth < 1024) {
 			return `${address.slice(0, 10)}...${address.slice(-8)}`;
 		} else {
-			return `${address.slice(0, 14)}...${address.slice(-12)}`;
+			return `${address}`;
 		}
 	};
 
@@ -165,26 +216,58 @@ const AccountDetailsPage: React.FC = () => {
 	const getIconBgColor = (color: string) => {
 		switch (theme) {
 			case 'light':
-				return color === 'blue' ? 'bg-blue-100' : 'bg-purple-100';
+				return color === 'blue'
+					? 'bg-blue-100'
+					: color === 'green'
+						? 'bg-green-100'
+						: 'bg-purple-100';
 			case 'dark':
-				return color === 'blue' ? 'bg-blue-500/20' : 'bg-purple-500/20';
+				return color === 'blue'
+					? 'bg-blue-500/20'
+					: color === 'green'
+						? 'bg-green-500/20'
+						: 'bg-purple-500/20';
 			case 'dim':
-				return color === 'blue' ? 'bg-blue-400/20' : 'bg-purple-400/20';
+				return color === 'blue'
+					? 'bg-blue-400/20'
+					: color === 'green'
+						? 'bg-green-400/20'
+						: 'bg-purple-400/20';
 			default:
-				return color === 'blue' ? 'bg-blue-500/20' : 'bg-purple-500/20';
+				return color === 'blue'
+					? 'bg-blue-500/20'
+					: color === 'green'
+						? 'bg-green-500/20'
+						: 'bg-purple-500/20';
 		}
 	};
 
 	const getIconColor = (color: string) => {
 		switch (theme) {
 			case 'light':
-				return color === 'blue' ? 'text-blue-600' : 'text-purple-600';
+				return color === 'blue'
+					? 'text-blue-600'
+					: color === 'green'
+						? 'text-green-600'
+						: 'text-purple-600';
 			case 'dark':
-				return color === 'blue' ? 'text-blue-400' : 'text-purple-400';
+				return color === 'blue'
+					? 'text-blue-400'
+					: color === 'green'
+						? 'text-green-400'
+						: 'text-purple-400';
 			case 'dim':
-				return color === 'blue' ? 'text-blue-300' : 'text-purple-300';
+				return color === 'blue'
+					? 'text-blue-300'
+					: color === 'green'
+						? 'text-green-300'
+						: 'text-purple-300';
 			default:
-				return color === 'blue' ? 'text-blue-400' : 'text-purple-400';
+				return color === 'blue'
+					? 'text-blue-400'
+					: color === 'green'
+						? 'text-green-400'
+						: 'text-purple-400';
 		}
 	};
 
@@ -317,8 +400,8 @@ const AccountDetailsPage: React.FC = () => {
 						>
 							<div className="relative">
 								<div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 opacity-75 blur" />
-								<div className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-gray-800 bg-gray-700">
-									<Jazzicon diameter={112} seed={avatarSeed} />
+								<div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-4 border-gray-800 bg-gray-700">
+									<Avatar address={account.eth_addr} size="xl" />
 								</div>
 							</div>
 
@@ -354,7 +437,7 @@ const AccountDetailsPage: React.FC = () => {
 						</div>
 
 						{/* Stats cards */}
-						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+						<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 							<div
 								className={`flex flex-col rounded-xl ${getCardBg()} p-6 shadow-lg backdrop-blur-sm transition-transform hover:scale-[1.02]`}
 							>
@@ -368,12 +451,18 @@ const AccountDetailsPage: React.FC = () => {
 										<p
 											className={`text-sm font-medium ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}
 										>
-											Balance
+											Account Balance
 										</p>
 										<h3
 											className={`text-2xl font-bold ${currentThemeStyles.text}`}
 										>
-											{account.balance}
+											{isNativeBalanceLoading ? (
+												<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
+											) : nativeBalanceError ? (
+												<span className="text-red-500">Error</span>
+											) : (
+												`${parseFloat(nativeEthBalance).toFixed(4)} ETH`
+											)}
 										</h3>
 									</div>
 								</div>
@@ -383,7 +472,47 @@ const AccountDetailsPage: React.FC = () => {
 									<div
 										className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"
 										style={{
-											width: `${Math.min(parseInt(account.balance) / 10, 100)}%`,
+											width: `${Math.min(parseFloat(nativeEthBalance) * 10, 100)}%`,
+										}}
+									/>
+								</div>
+							</div>
+
+							<div
+								className={`flex flex-col rounded-xl ${getCardBg()} p-6 shadow-lg backdrop-blur-sm transition-transform hover:scale-[1.02]`}
+							>
+								<div className="mb-4 flex items-center">
+									<div
+										className={`mr-4 flex h-12 w-12 items-center justify-center rounded-full ${getIconBgColor('green')} p-3`}
+									>
+										<BiCoin className={getIconColor('green')} size={28} />
+									</div>
+									<div>
+										<p
+											className={`text-sm font-medium ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}
+										>
+											Deposited Balance
+										</p>
+										<h3
+											className={`text-2xl font-bold ${currentThemeStyles.text}`}
+										>
+											{isContractBalanceLoading ? (
+												<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
+											) : accountInfoError ? (
+												<span className="text-red-500">Error</span>
+											) : (
+												`${parseFloat(formattedDepositAmount).toFixed(4)} ETH`
+											)}
+										</h3>
+									</div>
+								</div>
+								<div
+									className={`mt-auto h-1.5 w-full overflow-hidden rounded-full ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-700'}`}
+								>
+									<div
+										className="h-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600"
+										style={{
+											width: `${Math.min(parseFloat(formattedDepositAmount) * 10, 100)}%`,
 										}}
 									/>
 								</div>
@@ -469,7 +598,7 @@ const AccountDetailsPage: React.FC = () => {
 						)}
 
 						{/* Ego network graph (3 layers) */}
-						{account && (
+						{/* {account && (
 							<div>
 								<h3 className="text-lg font-medium">Connections</h3>
 								<AccountNetworkGraph
@@ -479,7 +608,7 @@ const AccountDetailsPage: React.FC = () => {
 									mode="ego"
 								/>
 							</div>
-						)}
+						)} */}
 
 						{/* Voucher sections */}
 						{account && (
