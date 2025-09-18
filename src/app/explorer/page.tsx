@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Button, TransactionDropDown, PageLoader } from '@/components';
 import { TransactionDetailsPopover } from '@/components/common/TransactionDetailsPopover';
+import { Avatar } from '@/components/common';
 import {
 	fetchAccounts,
 	fetchTransactionsPaginated,
@@ -99,6 +100,7 @@ const ExplorerPage: React.FC = () => {
 											<tr>
 												<th className="px-6 py-3">Tx Hash</th>
 												<th className="px-6 py-3">Event</th>
+												<th className="px-6 py-3">Details</th>
 												<th className="px-6 py-3">Block</th>
 												<th className="px-6 py-3">Age</th>
 												<th className="px-6 py-3">Actions</th>
@@ -122,6 +124,20 @@ const ExplorerPage: React.FC = () => {
 														</td>
 														<td className="px-6 py-4">
 															<TxTypes txType={tx.type} />
+														</td>
+														<td className="px-6 py-4">
+															<div className="flex items-center space-x-2">
+																<div className="flex items-center space-x-1">
+																	<Avatar
+																		address={tx.from_eth_addr}
+																		size="sm"
+																	/>
+																	<span className="text-xs text-gray-500">
+																		→
+																	</span>
+																	<Avatar address={tx.to_eth_addr} size="sm" />
+																</div>
+															</div>
 														</td>
 														<td className="px-6 py-4">{tx.block_number}</td>
 														<td className="px-6 py-4">
