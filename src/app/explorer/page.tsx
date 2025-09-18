@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 import { Button, TransactionDropDown, PageLoader } from '@/components';
 import { TransactionDetailsPopover } from '@/components/common/TransactionDetailsPopover';
@@ -16,6 +17,7 @@ import { Transaction, Order } from '@/types';
 import TxTypes from '@/components/tables/TxType';
 
 const ExplorerPage: React.FC = () => {
+	const router = useRouter();
 	const [isNavigating] = useState<boolean>(false);
 	const [txOption, setTxOption] = useState<string>('all');
 	const [currentPage, setCurrentPage] = useState<number>(1);
@@ -71,6 +73,14 @@ const ExplorerPage: React.FC = () => {
 			setIsLoadingMore(false);
 		}
 	}, [currentPage, isLoadingMore, hasMoreTransactions]);
+
+	// Handle avatar click navigation
+	const handleAvatarClick = useCallback(
+		(accountIdx: number) => {
+			router.push(`/explorer/accounts/${accountIdx}`);
+		},
+		[router],
+	);
 
 	if (isLoadingTx || isLoadingAccounts || isNavigating) return <PageLoader />;
 
@@ -129,11 +139,18 @@ const ExplorerPage: React.FC = () => {
 															<div className="flex items-center space-x-2">
 																<div className="flex items-center space-x-1">
 																	<div className="group relative">
-																		<Avatar
-																			address={tx.from_eth_addr}
-																			className="group-hover:ring-dashed transition-all duration-200 group-hover:ring-2 group-hover:ring-gray-400 group-hover:ring-offset-1"
-																			size="sm"
-																		/>
+																		<button
+																			className="cursor-pointer rounded-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+																			onClick={() =>
+																				handleAvatarClick(tx.from_idx)
+																			}
+																		>
+																			<Avatar
+																				address={tx.from_eth_addr}
+																				className="group-hover:ring-dashed transition-all duration-200 group-hover:ring-2 group-hover:ring-gray-400 group-hover:ring-offset-1"
+																				size="sm"
+																			/>
+																		</button>
 																		<div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
 																			From: {tx.from_eth_addr}
 																		</div>
@@ -142,11 +159,18 @@ const ExplorerPage: React.FC = () => {
 																		→
 																	</span>
 																	<div className="group relative">
-																		<Avatar
-																			address={tx.to_eth_addr}
-																			className="group-hover:ring-dashed transition-all duration-200 group-hover:ring-2 group-hover:ring-gray-400 group-hover:ring-offset-1"
-																			size="sm"
-																		/>
+																		<button
+																			className="cursor-pointer rounded-full transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+																			onClick={() =>
+																				handleAvatarClick(tx.to_idx)
+																			}
+																		>
+																			<Avatar
+																				address={tx.to_eth_addr}
+																				className="group-hover:ring-dashed transition-all duration-200 group-hover:ring-2 group-hover:ring-gray-400 group-hover:ring-offset-1"
+																				size="sm"
+																			/>
+																		</button>
 																		<div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
 																			To: {tx.to_eth_addr}
 																		</div>
