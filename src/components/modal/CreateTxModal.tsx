@@ -1,11 +1,12 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { ethers } from 'ethers';
 
 import { Input, Select, Button, Modal } from '@/components';
-import { useWallet } from '@/hooks/useWallet';
-import { useSepoliaTransactions } from '@/hooks/useSepolia';
+import { useWallet, useSepoliaTransactions } from '@/hooks';
 import { useToast } from '@/context';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { formatFullEthAddress } from '@/utils';

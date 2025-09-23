@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import React from 'react';
 import './globals.css';
 
-import { AppProviders } from '@/providers/AppProviders';
-import { Layout } from '@/components/layout';
+import { AppProviders } from '@/providers';
+import { Layout } from '@/components';
 
 export const metadata: Metadata = {
 	title: 'SYB',

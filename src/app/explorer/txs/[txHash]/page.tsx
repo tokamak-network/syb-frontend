@@ -6,8 +6,7 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 import { FiExternalLink } from 'react-icons/fi';
 
-import TxTypes from '@/components/tables/TxType';
-import TxStatus from '@/components/tables/TxStatus';
+import { TxType as TxTypes, TxStatus } from '@/components/tables';
 import { Button, PageLoader } from '@/components';
 import {
 	convertWeiToGweiAndEther,
@@ -18,7 +17,7 @@ import {
 	formatFullEthAddress,
 } from '@/utils';
 import { ActionStatus, ActionType } from '@/types';
-import { useWallet } from '@/hooks/useWallet';
+import { useWallet } from '@/hooks';
 
 const TransactionDetailsPage: React.FC = () => {
 	const { txHash } = useParams();

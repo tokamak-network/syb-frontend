@@ -10,13 +10,13 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 import { useReadContract, usePublicClient } from 'wagmi';
 
 import { Button, PageLoader } from '@/components';
-import { Avatar } from '@/components/common';
+import { Avatar } from '@/components';
 import { useWallet, useScoreUpdate, useSepoliaTransactions } from '@/hooks';
-import { useVouchData } from '@/hooks/useVouchData';
+import { useVouchData } from '@/hooks';
 import { fetchAccountByID, fetchAccounts } from '@/utils';
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useTheme } from '@/context';
-import { themeStyles } from '@/const/themeStyles';
+import { themeStyles } from '@/const';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { formatFullEthAddress } from '@/utils';
 

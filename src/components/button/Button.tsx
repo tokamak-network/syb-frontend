@@ -4,9 +4,9 @@ import React, { forwardRef, useState, useEffect } from 'react';
 import { ImSpinner2 } from 'react-icons/im';
 import { IconType } from 'react-icons';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 import { useTheme } from '@/context';
-import { themeStyles } from '@/const/themeStyles';
+import { themeStyles } from '@/const';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children: React.ReactNode;

@@ -1,7 +1,8 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 
-import { useVouchData } from '@/hooks/useVouchData';
-import { useWallet } from '@/hooks/useWallet';
+import { useVouchData, useWallet } from '@/hooks';
 
 interface VouchedUsersProps {
 	possibleUsers?: string[];

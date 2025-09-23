@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { UserActivityLineChart, Label } from '@/components';
 import { fetchTransactions, fetchAccounts } from '@/utils';
 import { TransactionResponse, AccountsResponse } from '@/types';
-import AccountNetworkGraph from '@/components/graphs/AccountNetworkGraph';
+import { AccountNetworkGraph } from '@/components/graphs';
 
 const HomePage: React.FC = () => {
 	const [lastTransaction, setLastTransaction] = useState<string | null>(null);

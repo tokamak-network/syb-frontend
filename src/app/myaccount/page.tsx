@@ -4,12 +4,12 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
-import { apiRequest } from '@/utils/api';
+import { apiRequest } from '@/utils';
 import { ChangePasswordModal, ChangeUsernameModal } from '@/components';
 import { Button, PageLoader, SearchBarComponent, Tabs } from '@/components';
 import { pinata } from '@/config';
 import { useToast } from '@/context';
-import { useWallet } from '@/hooks/useWallet';
+import { useWallet } from '@/hooks';
 
 const MyAccount: React.FC = () => {
 	const { data: session, status } = useSession();

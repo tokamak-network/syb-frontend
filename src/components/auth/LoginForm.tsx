@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 import { useTheme, useToast } from '@/context';
-import { Button } from '@/components/button';
+import { Button } from '@/components';
 import { inputThemeStyles } from '@/const';
 
 interface LoginFormInputs {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 
 interface DropdownProps<T> {

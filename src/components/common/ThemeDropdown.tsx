@@ -1,8 +1,8 @@
 import React from 'react';
 import { FaSun, FaMoon, FaAdjust } from 'react-icons/fa';
 
-import { useTheme } from '@/context/ThemeContext';
-import { cn } from '@/utils/cn';
+import { useTheme } from '@/context';
+import { cn } from '@/utils';
 
 import { Dropdown } from './DropDown';
 

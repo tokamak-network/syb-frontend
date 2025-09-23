@@ -4,7 +4,7 @@ import React from 'react';
 import { FiUser, FiCopy } from 'react-icons/fi';
 
 import { useToast } from '@/context';
-import { Avatar } from '@/components/common';
+import { Avatar } from '@/components';
 
 import { Label } from '../common';
 

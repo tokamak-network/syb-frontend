@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { config } from '@/config';
 import { NETWORKS } from '@/const';
-import { formatBalance } from '@/utils/format';
+import { formatBalance } from '@/utils';
 
 export const useWallet = () => {
 	const { address, isConnected, chain, chainId } = useAccount();

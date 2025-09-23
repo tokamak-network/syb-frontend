@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { useTheme } from '@/context/ThemeContext';
-import { cn } from '@/utils/cn';
-import { themeStyles } from '@/const/themeStyles';
+import { useTheme } from '@/context';
+import { cn } from '@/utils';
+import { themeStyles } from '@/const';
 
 export const navButtonStyles = (
 	currentThemeStyles: { text: string; hoverText: string },

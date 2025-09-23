@@ -2,7 +2,7 @@ import React from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
 import { FaChevronDown } from 'react-icons/fa';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 interface SelectProps {
 	label?: string;

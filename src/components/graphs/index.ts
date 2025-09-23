@@ -1,3 +1,3 @@
 export * from './UserActivityChart';
-export * from './UserGraph';
-export * from './AccountNetworkGraph';
+export { default as UserGraph } from './UserGraph';
+export { default as AccountNetworkGraph } from './AccountNetworkGraph';

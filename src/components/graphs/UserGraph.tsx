@@ -12,16 +12,15 @@ import {
 	addEdge,
 	ReactFlowProvider,
 } from '@xyflow/react';
-
-import { useWallet } from '@/context/WalletContext';
+import { useWallet } from '@/context';
 
 import '@xyflow/react/dist/style.css';
 
-import { useUserStore } from '@/store/userStore';
+import { useUserStore } from '@/store';
 import { Button, Tooltip } from '@/components';
 import { calculateNodePositions } from '@/utils';
 import { UserEdge, UserNode } from '@/types';
-import { Modal } from '@/components/modal';
+import { Modal } from '@/components';
 
 import { NodeContextMenu } from '../contextmenu';
 

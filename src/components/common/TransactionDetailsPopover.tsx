@@ -6,9 +6,8 @@ import * as Popover from '@radix-ui/react-popover';
 
 import { formatTimestamp, formatWeiValue, formatFullEthAddress } from '@/utils';
 import { Transaction, ActionStatus } from '@/types';
-import TxTypes from '@/components/tables/TxType';
-import TxStatus from '@/components/tables/TxStatus';
-import { useTheme } from '@/context/ThemeContext';
+import { TxType as TxTypes, TxStatus } from '@/components/tables';
+import { useTheme } from '@/context';
 
 interface TransactionDetailsPopoverProps {
 	transaction: Transaction;

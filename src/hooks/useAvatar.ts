@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { apiRequest } from '@/utils/api';
+import { apiRequest } from '@/utils';
 import { useToast } from '@/context';
 // import { createPinataClient } from '@/config/pinata.client'; // Not needed for current implementation
 

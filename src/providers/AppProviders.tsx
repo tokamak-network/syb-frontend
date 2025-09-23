@@ -5,11 +5,11 @@ import { createConfig, http, WagmiProvider } from 'wagmi';
 import { metaMask } from 'wagmi/connectors';
 import { SessionProvider } from 'next-auth/react';
 
-import { ToastProvider } from '@/context';
-import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
+import { ToastProvider, ThemeProvider } from '@/context';
 import { mainNetwork, l1TestNetwork, l2TestNetwork } from '@/types';
-import { ThemeProvider } from '@/context/ThemeContext';
 import { ErrorBoundary } from '@/components';
+
+import { ReactQueryProvider } from './ReactQueryProvider';
 
 interface AppProvidersProps {
 	children: React.ReactNode;

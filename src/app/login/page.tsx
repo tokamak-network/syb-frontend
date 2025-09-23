@@ -2,10 +2,8 @@
 
 import React, { useState } from 'react';
 
-import { Tabs } from '@/components/common/Tabs';
-import { LoginForm } from '@/components/auth/LoginForm';
-import { SignupForm } from '@/components/auth/SignupForm';
-import { SocialAuth } from '@/components/auth/SocialAuth';
+import { Tabs } from '@/components/common';
+import { LoginForm, SignupForm, SocialAuth } from '@/components/auth';
 
 const LoginPage: React.FC = () => {
 	const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');

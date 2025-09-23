@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
 import { useTheme, useToast } from '@/context';
-import { apiRequest } from '@/utils/api';
+import { apiRequest } from '@/utils';
 import { Button } from '@/components';
 import { inputThemeStyles } from '@/const';
 

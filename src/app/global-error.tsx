@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { ErrorDisplay } from '@/components/errors';
+import { ErrorDisplay } from '@/components';
 
 export default function GlobalError({
 	error,

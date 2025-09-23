@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 interface TableDropdownProps {
 	items: number[];

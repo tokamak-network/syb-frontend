@@ -10,3 +10,5 @@ export * from './modal';
 export * from './button';
 export * from './auth';
 export * from './errors';
+export * from './slider';
+export { default as VouchedUsers } from './VouchedUsers';

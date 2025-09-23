@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import { apiRequest } from '@/utils/api';
+import { apiRequest } from '@/utils';
 import { useToast } from '@/context';
 
 import { Button } from '../button';

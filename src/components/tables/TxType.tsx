@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionType } from '@/types';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/context';
 
 interface TxTypesProps {
 	txType: ActionType;

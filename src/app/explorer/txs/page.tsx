@@ -18,7 +18,7 @@ import {
 	fetchTransactionsPaginated,
 	fetchTransactionsByAccount,
 } from '@/utils';
-import { useWallet } from '@/hooks/useWallet';
+import { useWallet } from '@/hooks';
 import { Order } from '@/types';
 
 const TransactionsPage: React.FC = () => {

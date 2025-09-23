@@ -6,11 +6,11 @@ import { FaPlus } from 'react-icons/fa6';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { ThemeDropdown } from '@/components/common';
+import { ThemeDropdown } from '@/components';
 import { useTheme, useToast } from '@/context';
 import { themeStyles } from '@/const';
-import { cn } from '@/utils/cn';
-import { useWallet } from '@/hooks/useWallet';
+import { cn } from '@/utils';
+import { useWallet } from '@/hooks';
 
 import { Button, NavLinkButton, LinkButton, navButtonStyles } from '../button';
 import { CreateTxModal } from '../modal';

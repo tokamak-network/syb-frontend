@@ -6,17 +6,16 @@ import { useQuery } from '@tanstack/react-query';
 import { IoArrowBackSharp } from 'react-icons/io5';
 
 import { Button, PageLoader, SearchBarComponent, Modal } from '@/components';
-import { useWallet } from '@/hooks/useWallet';
-import { useSepoliaTransactions } from '@/hooks/useSepolia';
+import { useWallet, useSepoliaTransactions } from '@/hooks';
 import { useScoreUpdate } from '@/hooks';
-import { apiRequest } from '@/utils/api';
+import { apiRequest } from '@/utils';
 import { Account, AccountsResponse } from '@/types';
 import { useToast } from '@/context';
 import {
 	formatScore,
 	convertBigIntToNumber,
 	formatBalanceToEth,
-} from '@/utils/format';
+} from '@/utils';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();

@@ -3,8 +3,8 @@
 import React from 'react';
 import { IconType } from 'react-icons';
 
-import { cn } from '@/utils/cn';
-import { useTheme } from '@/context/ThemeContext';
+import { cn } from '@/utils';
+import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
 
 interface LinkButtonProps

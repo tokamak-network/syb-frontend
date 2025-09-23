@@ -19,7 +19,7 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import { Account } from '@/types';
-import { useVouchGraph } from '@/hooks/useVouchGraph';
+import { useVouchGraph } from '@/hooks';
 
 type Mode = 'global' | 'ego';
 

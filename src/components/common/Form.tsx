@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
 	className?: string;

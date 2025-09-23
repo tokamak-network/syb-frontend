@@ -5,8 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import { Button, TransactionDropDown, PageLoader } from '@/components';
-import { TransactionDetailsPopover } from '@/components/common/TransactionDetailsPopover';
-import { Avatar } from '@/components/common';
+import { TransactionDetailsPopover, Avatar } from '@/components/common';
 import {
 	fetchAccounts,
 	fetchTransactionsPaginated,
@@ -14,7 +13,7 @@ import {
 	formatTransactionHash,
 } from '@/utils';
 import { Transaction, Order } from '@/types';
-import TxTypes from '@/components/tables/TxType';
+import { TxType as TxTypes } from '@/components/tables';
 
 const ExplorerPage: React.FC = () => {
 	const router = useRouter();

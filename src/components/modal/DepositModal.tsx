@@ -8,9 +8,9 @@ import * as Label from '@radix-ui/react-label';
 import { useForm, Controller } from 'react-hook-form';
 import { FaChevronDown } from 'react-icons/fa';
 
-import { useWallet } from '@/context/WalletContext';
+import { useWallet } from '@/context';
 import { Button, Modal } from '@/components';
-import { NETWORKS } from '@/const/networks';
+import { NETWORKS } from '@/const';
 import { depositETH } from '@/blockchain';
 
 interface DepositModalProps {

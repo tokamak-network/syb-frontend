@@ -5,13 +5,12 @@ import { FiExternalLink } from 'react-icons/fi';
 import { useReadContract } from 'wagmi';
 import { ethers } from 'ethers';
 
-import { useWallet } from '@/hooks/useWallet';
-import { Button } from '@/components/button';
-import { Avatar } from '@/components/common';
+import { useWallet } from '@/hooks';
+import { Button, Avatar } from '@/components';
 import { useTheme } from '@/context';
 import { themeStyles } from '@/const';
-import { cn } from '@/utils/cn';
-import { useVouchData } from '@/hooks/useVouchData';
+import { cn } from '@/utils';
+import { useVouchData } from '@/hooks';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { formatFullEthAddress } from '@/utils';
 

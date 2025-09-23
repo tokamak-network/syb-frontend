@@ -20,7 +20,7 @@ import {
 	TimeScale,
 } from 'chart.js';
 
-import { fetchTransactions } from '@/utils/fetch';
+import { fetchTransactions } from '@/utils';
 import { Transaction, TransactionResponse } from '@/types';
 import { ZoomPluginOptions } from '@/types/chart';
 

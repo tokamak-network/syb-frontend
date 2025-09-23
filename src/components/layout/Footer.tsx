@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { cn } from '@/utils/cn';
+import { cn } from '@/utils';
 
 export const Footer: React.FC<{ className?: string }> = ({ className }) => {
 	return (

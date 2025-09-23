@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { IoMdArrowDropdown } from 'react-icons/io';
 import { FiCopy } from 'react-icons/fi';
 
-import TxTypes from '@/components/tables/TxType';
+import { TxType as TxTypes } from '@/components/tables';
 import { ActionType, Order, Transaction } from '@/types';
 import {
 	formatTransactionHash,
@@ -13,8 +13,8 @@ import {
 	formatEthAddress,
 	toChecksumAddress,
 	formatBalanceToEth,
-} from '@/utils/format';
-import { copyToClipboard } from '@/utils/clipboard';
+	copyToClipboard,
+} from '@/utils';
 import { Button, Dropdown, Avatar } from '@/components';
 
 interface Props {

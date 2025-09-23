@@ -7,7 +7,7 @@ import {
 } from 'react-icons/ai';
 
 import { ActionStatus } from '@/types';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/context';
 
 interface TxStatusProps {
 	status: ActionStatus;

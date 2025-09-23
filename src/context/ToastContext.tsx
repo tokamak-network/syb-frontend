@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-import { Toast } from '@/components/common';
+import { Toast } from '@/components';
 
 interface ToastData {
 	id: string;
