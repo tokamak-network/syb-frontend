@@ -4,7 +4,11 @@ import React, { useState, useEffect } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useRouter } from 'next/navigation';
 
-import { shortenAddress, formatTransactionHash } from '@/utils';
+import {
+	shortenAddress,
+	formatTransactionHash,
+	formatAddressForDisplay,
+} from '@/utils';
 
 interface LabelProps {
 	value: string;
@@ -100,13 +104,7 @@ export const Label: React.FC<LabelProps> = ({
 						className="w-[300px] break-words rounded bg-gray-800 px-2 py-1 text-sm text-white shadow-lg"
 						side="top"
 					>
-						{isTransaction
-							? value.startsWith('0x')
-								? value
-								: `0x${value}`
-							: value.startsWith('0x')
-								? `0x${value.slice(2).toUpperCase()}`
-								: value.toUpperCase()}
+						{formatAddressForDisplay(value)}
 						<Tooltip.Arrow className="fill-gray-800" />
 					</Tooltip.Content>
 				</Tooltip.Portal>

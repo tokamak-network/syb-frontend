@@ -11,6 +11,7 @@ import {
 	fetchTransactionsPaginated,
 	formatTimestamp,
 	formatTransactionHash,
+	formatAddressForDisplay,
 } from '@/utils';
 import { Transaction, Order } from '@/types';
 import { TxType as TxTypes } from '@/components/tables';
@@ -151,7 +152,10 @@ const ExplorerPage: React.FC = () => {
 																			/>
 																		</button>
 																		<div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-																			From: {tx.from_eth_addr}
+																			From:{' '}
+																			{formatAddressForDisplay(
+																				tx.from_eth_addr,
+																			)}
 																		</div>
 																	</div>
 																	<span className="text-xs text-gray-500">
@@ -171,7 +175,8 @@ const ExplorerPage: React.FC = () => {
 																			/>
 																		</button>
 																		<div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
-																			To: {tx.to_eth_addr}
+																			To:{' '}
+																			{formatAddressForDisplay(tx.to_eth_addr)}
 																		</div>
 																	</div>
 																</div>

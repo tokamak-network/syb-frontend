@@ -155,6 +155,55 @@ export const formatFullEthAddress = (address: string): `0x${string}` => {
 	return toChecksumAddress(`0x${cleanAddress}`) as `0x${string}`;
 };
 
+/**
+ * Checks if an address is the Sybil contract address or zero address
+ * @param address - The Ethereum address to check
+ * @returns {boolean} - True if the address is the Sybil contract or zero address
+ */
+export const isSybilContractAddress = (address: string): boolean => {
+	if (!address) return true;
+
+	// Normalize the address by ensuring it has 0x prefix for comparison
+	const normalizedAddress = address.startsWith('0x') ? address : `0x${address}`;
+
+	// Check for zero addresses
+	if (
+		normalizedAddress === '0x0000000000000000000000000000000000000000' ||
+		normalizedAddress === '0x00000000000000000' ||
+		normalizedAddress === '0x0' ||
+		address === ''
+	) {
+		return true;
+	}
+
+	// Check if it matches the actual Sybil contract address
+	const sybilContractAddress =
+		process.env.NEXT_PUBLIC_SYBIL_SEPOLIA_CONTRACT_ADDRESS;
+
+	if (
+		sybilContractAddress &&
+		normalizedAddress.toLowerCase() === sybilContractAddress.toLowerCase()
+	) {
+		return true;
+	}
+
+	return false;
+};
+
+/**
+ * Formats an address for display, showing "Sybil Contract" for Sybil contract addresses
+ * @param address - The Ethereum address to format
+ * @returns {string} - The formatted address or "Sybil Contract"
+ */
+export const formatAddressForDisplay = (address: string): string => {
+	if (isSybilContractAddress(address)) {
+		return 'Sybil Contract';
+	}
+
+	// Ensure the address has the 0x prefix
+	return address.startsWith('0x') ? address : `0x${address}`;
+};
+
 export const convertToUint40Format = (amount: string): bigint => {
 	const amountInWei = parseFloat(amount) * 1e18;
 
@@ -229,6 +278,7 @@ export const convertWeiToGweiAndEther = (
 export const formatBalance = (balance: string | number): string => {
 	const balanceNum =
 		typeof balance === 'string' ? parseFloat(balance) : balance;
+
 	return balanceNum.toFixed(2);
 };
 

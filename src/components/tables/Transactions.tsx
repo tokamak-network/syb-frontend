@@ -14,6 +14,7 @@ import {
 	toChecksumAddress,
 	formatBalanceToEth,
 	copyToClipboard,
+	formatAddressForDisplay,
 } from '@/utils';
 import { Button, Dropdown, Avatar } from '@/components';
 
@@ -238,9 +239,7 @@ export const TransactionsTable: React.FC<Props> = ({
 										<div>
 											{formatEthAddress(transaction.from_eth_addr)}
 											<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-												{transaction.from_eth_addr
-													? toChecksumAddress(transaction.from_eth_addr)
-													: 'N/A'}
+												{formatAddressForDisplay(transaction.from_eth_addr)}
 											</div>
 										</div>
 									</div>
@@ -254,9 +253,7 @@ export const TransactionsTable: React.FC<Props> = ({
 											<div>
 												{formatEthAddress(transaction.to_eth_addr)}
 												<div className="absolute bottom-full mb-2 hidden w-max rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
-													{transaction.to_eth_addr
-														? toChecksumAddress(transaction.to_eth_addr)
-														: 'N/A'}
+													{formatAddressForDisplay(transaction.to_eth_addr)}
 												</div>
 											</div>
 										</div>

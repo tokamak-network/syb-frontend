@@ -4,7 +4,12 @@ import React, { useState } from 'react';
 import { FaEye } from 'react-icons/fa';
 import * as Popover from '@radix-ui/react-popover';
 
-import { formatTimestamp, formatWeiValue, formatFullEthAddress } from '@/utils';
+import {
+	formatTimestamp,
+	formatWeiValue,
+	formatFullEthAddress,
+	formatAddressForDisplay,
+} from '@/utils';
 import { Transaction, ActionStatus } from '@/types';
 import { TxType as TxTypes, TxStatus } from '@/components/tables';
 import { useTheme } from '@/context';
@@ -96,7 +101,7 @@ export const TransactionDetailsPopover: React.FC<
 								<div
 									className={`mt-1 break-all font-mono text-xs ${theme === 'light' ? 'text-gray-600' : theme === 'dark' ? 'text-gray-400' : 'text-gray-300'}`}
 								>
-									{formatFullEthAddress(transaction.from_eth_addr)}
+									{formatAddressForDisplay(transaction.from_eth_addr)}
 								</div>
 							</div>
 
@@ -110,7 +115,7 @@ export const TransactionDetailsPopover: React.FC<
 									className={`mt-1 break-all font-mono text-xs ${theme === 'light' ? 'text-gray-600' : theme === 'dark' ? 'text-gray-400' : 'text-gray-300'}`}
 								>
 									{transaction.to_eth_addr
-										? formatFullEthAddress(transaction.to_eth_addr)
+										? formatAddressForDisplay(transaction.to_eth_addr)
 										: '-'}
 								</div>
 							</div>
