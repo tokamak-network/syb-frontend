@@ -12,6 +12,7 @@ import {
 	addEdge,
 	ReactFlowProvider,
 } from '@xyflow/react';
+
 import { useWallet } from '@/context';
 
 import '@xyflow/react/dist/style.css';
