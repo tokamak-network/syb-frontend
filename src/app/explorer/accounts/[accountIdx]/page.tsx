@@ -346,13 +346,17 @@ const AccountDetailsPage: React.FC = () => {
 
 		return (
 			<div>
-				<ul className="space-y-2">
+				<div className="flex flex-wrap gap-3">
 					{vouchedAddresses.map((address) => (
-						<li key={address} className="rounded-md border p-2">
-							<span className="font-mono">{address}</span>
-						</li>
+						<div
+							key={address}
+							className="group relative rounded-lg border p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+							title={address}
+						>
+							<Avatar address={address} size="sm" />
+						</div>
 					))}
-				</ul>
+				</div>
 			</div>
 		);
 	};
@@ -391,13 +395,21 @@ const AccountDetailsPage: React.FC = () => {
 
 		return (
 			<div>
-				<ul className="space-y-2">
+				<div className="flex flex-wrap gap-3">
 					{vouchers.map((address) => (
-						<li key={address} className="rounded-md border p-2">
-							<span className="font-mono">{address}</span>
-						</li>
+						<div
+							key={address}
+							className="group relative rounded-lg border p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+							title={address}
+						>
+							<Avatar address={address} size="sm" />
+							{/* Full address tooltip */}
+							<div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 transform rounded bg-gray-800 px-2 py-1 text-xs text-white group-hover:block">
+								{address}
+							</div>
+						</div>
 					))}
-				</ul>
+				</div>
 			</div>
 		);
 	};
