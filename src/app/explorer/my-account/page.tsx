@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 import { useReadContract } from 'wagmi';
 import { ethers } from 'ethers';
+import { useQuery } from '@tanstack/react-query';
 
-import { useWallet } from '@/hooks';
+import { useWallet, useScoreUpdate } from '@/hooks';
 import { Button, Avatar } from '@/components';
-import { useTheme } from '@/context';
+import { useTheme, useToast } from '@/context';
 import { themeStyles } from '@/const';
 import { cn } from '@/utils';
 import { useVouchData } from '@/hooks';
@@ -26,11 +27,15 @@ const MyAccountPage: React.FC = () => {
 	const { theme } = useTheme();
 	const currentThemeStyles = themeStyles[theme];
 	const { useVouchersFor, useAddressesVouchedFor } = useVouchData();
+	const { proveScore } = useScoreUpdate(address);
+	const { addToast } = useToast();
 
 	const [isLoading, setIsLoading] = useState(true);
 	const [allAccounts, setAllAccounts] = useState<string[]>([]);
 	const [proofs, setProofs] = useState<string[]>([]);
 	const [isClient, setIsClient] = useState(false);
+	const [isUpdatingScore, setIsUpdatingScore] = useState(false);
+	const [batchNumber, setBatchNumber] = useState<number>(1);
 
 	// Read the user's contract balance (deposited amount)
 	const {
@@ -60,6 +65,23 @@ const MyAccountPage: React.FC = () => {
 	const formattedDepositAmount = contractBalance
 		? ethers.formatEther(contractBalance.toString())
 		: '0';
+
+	// Fetch current batch number for score operations
+	const { data: currentBatchNumber } = useQuery({
+		queryKey: ['currentBatchNumber'],
+		queryFn: async () => {
+			// You might want to add an endpoint to get the current batch number
+			// For now, using a default value or getting it from smart contract
+			return 1; // This should be replaced with actual batch number from API
+		},
+	});
+
+	// Update batch number when data is available
+	React.useEffect(() => {
+		if (currentBatchNumber) {
+			setBatchNumber(currentBatchNumber);
+		}
+	}, [currentBatchNumber]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -92,6 +114,32 @@ const MyAccountPage: React.FC = () => {
 
 	const usersVouchedForMe = vouchersWithTx;
 	const usersIVouchedFor = vouchedWithTx;
+
+	// Function to handle score update
+	const onUpdateScore = async () => {
+		if (!address) return;
+
+		try {
+			setIsUpdatingScore(true);
+
+			// Call proveScoreMerkleProof which internally calls updateScore
+			const hash = await proveScore(batchNumber);
+
+			addToast(
+				'success',
+				'Score Update Successful',
+				`Your score has been updated successfully. Transaction hash: ${hash}`,
+			);
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Score Update Failed',
+				error.message || 'Failed to update score',
+			);
+		} finally {
+			setIsUpdatingScore(false);
+		}
+	};
 
 	useEffect(() => {
 		const fetchAccountData = async () => {
@@ -240,6 +288,33 @@ const MyAccountPage: React.FC = () => {
 									)}
 								</>
 							)}
+						</div>
+					</div>
+
+					<div className="mb-8 rounded-lg border p-6 shadow-md">
+						<h2 className="mb-4 text-xl font-semibold">Score Management</h2>
+						<div className="flex items-center justify-between">
+							<div>
+								<p className="mb-2 text-sm text-gray-500">
+									Update your trust score using Merkle proof verification
+								</p>
+								<p className="text-xs text-gray-400">
+									This will call proveScoreMerkleProof which internally updates
+									your score
+								</p>
+							</div>
+							<Button
+								className={cn(
+									'rounded-xl border border-transparent bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 text-white shadow-lg transition-all hover:from-purple-700 hover:to-purple-800',
+									'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-purple-600 disabled:hover:to-purple-700',
+									'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900',
+								)}
+								disabled={isUpdatingScore}
+								isLoading={isUpdatingScore}
+								onClick={onUpdateScore}
+							>
+								{isUpdatingScore ? 'Updating...' : 'Update Trust Score'}
+							</Button>
 						</div>
 					</div>
 

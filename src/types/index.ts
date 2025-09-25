@@ -164,3 +164,21 @@ export interface TransactionByHashResponse {
 	message: string;
 	transaction: Transaction;
 }
+
+export interface ScoreMerkleProofResponse {
+	Idx: string;
+	ScoreRoot: string;
+	Score: string;
+	Siblings: string[];
+}
+
+export interface ScoreUpdateRequest {
+	userAddress: string;
+	accountIndex: number;
+}
+
+export interface ScoreUpdateResult {
+	txHash: string;
+	success: boolean;
+	error?: string;
+}

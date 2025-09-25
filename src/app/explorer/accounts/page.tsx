@@ -6,16 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import { IoArrowBackSharp } from 'react-icons/io5';
 
 import { Button, PageLoader, SearchBarComponent, Modal } from '@/components';
-import { useWallet, useSepoliaTransactions } from '@/hooks';
-import { useScoreUpdate } from '@/hooks';
+import { useWallet, useSepoliaTransactions, useScoreUpdate } from '@/hooks';
 import { apiRequest } from '@/utils';
 import { Account, AccountsResponse } from '@/types';
 import { useToast } from '@/context';
-import {
-	formatScore,
-	convertBigIntToNumber,
-	formatBalanceToEth,
-} from '@/utils';
+import { formatScore, formatBalanceToEth } from '@/utils';
 
 const AccountPage: React.FC = () => {
 	const router = useRouter();
@@ -23,11 +18,10 @@ const AccountPage: React.FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 	const [isVouchModalOpen, setIsVouchModalOpen] = useState<boolean>(false);
-	const [isScoreModalOpen, setIsScoreModalOpen] = useState<boolean>(false);
 	const [isVouchLoading, setIsVouchLoading] = useState<boolean>(false);
-	const [isScoreLoading, setIsScoreLoading] = useState<boolean>(false);
+	const [batchNumber, setBatchNumber] = useState<number>(1); // Default batch number
 	const { handleVouch } = useSepoliaTransactions();
-	const { handleUpdateScore } = useScoreUpdate();
+	const { proveScore } = useScoreUpdate(address);
 	const { addToast } = useToast();
 
 	const {
@@ -46,16 +40,59 @@ const AccountPage: React.FC = () => {
 		},
 	});
 
+	// Fetch current batch number for score operations
+	const { data: currentBatchNumber } = useQuery({
+		queryKey: ['currentBatchNumber'],
+		queryFn: async () => {
+			// You might want to add an endpoint to get the current batch number
+			// For now, using a default value or getting it from smart contract
+			return 1; // This should be replaced with actual batch number from API
+		},
+	});
+
+	// Update batch number when data is available
+	React.useEffect(() => {
+		if (currentBatchNumber) {
+			setBatchNumber(currentBatchNumber);
+		}
+	}, [currentBatchNumber]);
+
 	// Function to handle opening the vouch modal
 	const openVouchModal = (account: Account) => {
 		setSelectedAccount(account);
 		setIsVouchModalOpen(true);
 	};
 
-	// Function to handle opening the score update modal
-	const openScoreModal = (account: Account) => {
-		setSelectedAccount(account);
-		setIsScoreModalOpen(true);
+	// Function to handle score update for user's own account
+	const handleScoreUpdate = async (account: Account) => {
+		if (!address || address.toLowerCase() !== account.eth_addr.toLowerCase()) {
+			addToast(
+				'error',
+				'Unauthorized',
+				'You can only update your own account score',
+			);
+
+			return;
+		}
+
+		try {
+			// Call proveScoreMerkleProof which internally calls updateScore
+			const hash = await proveScore(batchNumber);
+
+			addToast(
+				'success',
+				'Score Update Successful',
+				`Your score has been updated successfully. Transaction hash: ${hash}`,
+			);
+
+			refetch(); // Refresh the account list
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Score Update Failed',
+				error.message || 'Failed to update score',
+			);
+		}
 	};
 
 	// Function to handle vouching for an account
@@ -83,37 +120,6 @@ const AccountPage: React.FC = () => {
 			);
 		} finally {
 			setIsVouchLoading(false);
-		}
-	};
-
-	// Function to handle updating score for an account
-	const handleUpdateScoreForAccount = async () => {
-		if (!selectedAccount) return;
-
-		setIsScoreLoading(true);
-		try {
-			// Calculate new score (increment by 1)
-			const newScore = convertBigIntToNumber(selectedAccount.score) + 1;
-
-			const hash = await handleUpdateScore(selectedAccount.eth_addr, newScore);
-
-			addToast(
-				'success',
-				'Score Update Successful',
-				`You have successfully updated the score for account ${selectedAccount.idx}. Transaction hash: ${hash}`,
-			);
-
-			setIsScoreModalOpen(false);
-			setSelectedAccount(null);
-			refetch(); // Refresh the account list
-		} catch (error: any) {
-			addToast(
-				'error',
-				'Score Update Failed',
-				error.message || 'Failed to update score for account',
-			);
-		} finally {
-			setIsScoreLoading(false);
 		}
 	};
 
@@ -206,15 +212,19 @@ const AccountPage: React.FC = () => {
 											>
 												Vouch
 											</Button>
-											<Button
-												className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-												onClick={(e) => {
-													e.stopPropagation();
-													openScoreModal(account);
-												}}
-											>
-												Update Score
-											</Button>
+											{/* Only show score update button for user's own account */}
+											{address?.toLowerCase() ===
+												account.eth_addr.toLowerCase() && (
+												<Button
+													className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+													onClick={(e) => {
+														e.stopPropagation();
+														handleScoreUpdate(account);
+													}}
+												>
+													Update Score
+												</Button>
+											)}
 										</div>
 									</td>
 								)}
@@ -276,71 +286,6 @@ const AccountPage: React.FC = () => {
 									onClick={handleVouchForAccount}
 								>
 									{isVouchLoading ? 'Processing...' : 'Confirm Vouch'}
-								</Button>
-							</div>
-						</>
-					)}
-				</div>
-			</Modal>
-
-			{/* Update Score Confirmation Modal */}
-			<Modal
-				className="max-w-md"
-				isOpen={isScoreModalOpen}
-				title="Update Score Confirmation"
-				onClose={() => setIsScoreModalOpen(false)}
-			>
-				<div className="flex flex-col space-y-4">
-					{selectedAccount && (
-						<>
-							<p className="text-center text-white">
-								Are you sure you want to update the score for this account?
-							</p>
-
-							<div className="rounded-md bg-gray-800 p-4">
-								<div className="grid grid-cols-2 gap-2">
-									<p className="text-sm text-gray-400">Account ID:</p>
-									<p className="text-sm font-medium text-white">
-										{selectedAccount.idx}
-									</p>
-
-									<p className="text-sm text-gray-400">Address:</p>
-									<p className="overflow-hidden text-ellipsis text-sm font-medium text-white">
-										{selectedAccount.eth_addr}
-									</p>
-
-									<p className="text-sm text-gray-400">Current Score:</p>
-									<p className="text-sm font-medium text-white">
-										{formatScore(selectedAccount.score)}
-									</p>
-
-									<p className="text-sm text-gray-400">New Score:</p>
-									<p className="text-sm font-medium text-white">
-										{convertBigIntToNumber(selectedAccount.score) + 1}
-									</p>
-								</div>
-							</div>
-
-							<div className="mt-2 text-xs text-gray-400">
-								<p>
-									Updating the score will increase the account&apos;s reputation
-									in the network. This action cannot be undone.
-								</p>
-							</div>
-
-							<div className="flex justify-center space-x-4 pt-4">
-								<Button
-									className="bg-gray-600 hover:bg-gray-700"
-									onClick={() => setIsScoreModalOpen(false)}
-								>
-									Cancel
-								</Button>
-								<Button
-									className="bg-green-500 hover:bg-green-600"
-									disabled={isScoreLoading}
-									onClick={handleUpdateScoreForAccount}
-								>
-									{isScoreLoading ? 'Processing...' : 'Confirm Update'}
 								</Button>
 							</div>
 						</>

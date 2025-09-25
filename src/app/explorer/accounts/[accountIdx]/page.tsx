@@ -15,7 +15,7 @@ import { useWallet, useScoreUpdate, useSepoliaTransactions } from '@/hooks';
 import { useVouchData } from '@/hooks';
 import { fetchAccountByID, fetchAccounts } from '@/utils';
 import { cn } from '@/utils';
-import { useTheme } from '@/context';
+import { useTheme, useToast } from '@/context';
 import { themeStyles } from '@/const';
 import { SybilSepoliaABI, contracts } from '@/contracts';
 import { formatFullEthAddress } from '@/utils';
@@ -25,12 +25,13 @@ const AccountDetailsPage: React.FC = () => {
 	const router = useRouter();
 	const accountIdx = decodeURIComponent(params.accountIdx as string);
 	const { isConnected, address, chain } = useWallet();
-	const { handleUpdateScore } = useScoreUpdate();
 	const { handleVouch } = useSepoliaTransactions();
 	const [isUpdatingScore, setIsUpdatingScore] = useState(false);
 	const [isVouching, setIsVouching] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [batchNumber, setBatchNumber] = useState<number>(1); // Default batch number
 	const { theme } = useTheme();
+	const { addToast } = useToast();
 	const currentThemeStyles = themeStyles[theme];
 	const [screenWidth, setScreenWidth] = useState<number>(0);
 
@@ -60,12 +61,32 @@ const AccountDetailsPage: React.FC = () => {
 		enabled: !!accountIdx,
 	});
 
+	// Initialize score update hook with account address
+	const { proveScore } = useScoreUpdate(account?.eth_addr);
+
 	const { data: accountsData } = useQuery({
 		queryKey: ['accounts'],
 		queryFn: fetchAccounts,
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});
+
+	// Fetch current batch number for score operations
+	const { data: currentBatchNumber } = useQuery({
+		queryKey: ['currentBatchNumber'],
+		queryFn: async () => {
+			// You might want to add an endpoint to get the current batch number
+			// For now, using a default value or getting it from smart contract
+			return 1; // This should be replaced with actual batch number from API
+		},
+	});
+
+	// Update batch number when data is available
+	React.useEffect(() => {
+		if (currentBatchNumber) {
+			setBatchNumber(currentBatchNumber);
+		}
+	}, [currentBatchNumber]);
 
 	// Read the contract balance (deposited amount) for this account
 	const {
@@ -134,17 +155,36 @@ const AccountDetailsPage: React.FC = () => {
 	const onUpdateScore = async () => {
 		if (!account) return;
 
+		// Only allow users to update their own account score
+		if (!address || address.toLowerCase() !== account.eth_addr.toLowerCase()) {
+			addToast(
+				'error',
+				'Unauthorized',
+				'You can only update your own account score',
+			);
+
+			return;
+		}
+
 		try {
 			setIsUpdatingScore(true);
 
-			const newScore =
-				(account.score_int ? parseInt(account.score_int) : 0) + 1;
+			// Call proveScoreMerkleProof which internally calls updateScore
+			const hash = await proveScore(batchNumber);
 
-			await handleUpdateScore(account.eth_addr, newScore);
+			addToast(
+				'success',
+				'Score Update Successful',
+				`Your score has been updated successfully. Transaction hash: ${hash}`,
+			);
 
 			await refetch();
-		} catch {
-			// Error handled by UI feedback
+		} catch (error: any) {
+			addToast(
+				'error',
+				'Score Update Failed',
+				error.message || 'Failed to update score',
+			);
 		} finally {
 			setIsUpdatingScore(false);
 		}
@@ -580,19 +620,23 @@ const AccountDetailsPage: React.FC = () => {
 									>
 										{isVouching ? 'Vouching...' : 'Vouch for User'}
 									</Button>
-									<Button
-										className={cn(
-											'flex-1 rounded-xl border border-transparent bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 text-white shadow-lg transition-all hover:from-purple-700 hover:to-purple-800',
-											'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-purple-600 disabled:hover:to-purple-700',
-											'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900',
-										)}
-										disabled={isUpdatingScore}
-										isLoading={isUpdatingScore}
-										leftIcon={FiArrowUp}
-										onClick={onUpdateScore}
-									>
-										{isUpdatingScore ? 'Updating...' : 'Increase Trust Score'}
-									</Button>
+									{/* Only show score update button for user's own account */}
+									{address?.toLowerCase() ===
+										account.eth_addr.toLowerCase() && (
+										<Button
+											className={cn(
+												'flex-1 rounded-xl border border-transparent bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 text-white shadow-lg transition-all hover:from-purple-700 hover:to-purple-800',
+												'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:from-purple-600 disabled:hover:to-purple-700',
+												'focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900',
+											)}
+											disabled={isUpdatingScore}
+											isLoading={isUpdatingScore}
+											leftIcon={FiArrowUp}
+											onClick={onUpdateScore}
+										>
+											{isUpdatingScore ? 'Updating...' : 'Update Trust Score'}
+										</Button>
+									)}
 								</div>
 							</div>
 						)}

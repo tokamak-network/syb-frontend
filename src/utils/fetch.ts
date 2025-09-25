@@ -5,6 +5,7 @@ import {
 	TransactionResponse,
 	TransactionByHashResponse,
 	AccountResponse,
+	ScoreMerkleProofResponse,
 } from '@/types';
 
 import { apiRequest } from './api';
@@ -28,7 +29,7 @@ export const fetchTransactionsByAccount = async (
 export const fetchTransactionsPaginated = async (
 	page: number = 1,
 	limit: number = 10,
-	order: Order = Order.DESC,
+	_order: Order = Order.DESC,
 ): Promise<TransactionResponse> => {
 	return apiRequest({
 		method: 'GET',
@@ -78,4 +79,13 @@ export const fetchAccountByAddress = async (
 	});
 
 	return response.account;
+};
+
+export const fetchScoreMerkleProof = async (
+	accountIndex: number,
+): Promise<ScoreMerkleProofResponse> => {
+	return apiRequest({
+		method: 'GET',
+		url: `/scoremerkleproof/${accountIndex}`,
+	});
 };

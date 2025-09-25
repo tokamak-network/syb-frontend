@@ -11,4 +11,5 @@ export * from './button';
 export * from './auth';
 export * from './errors';
 export * from './slider';
+export * from './score';
 export { default as VouchedUsers } from './VouchedUsers';
