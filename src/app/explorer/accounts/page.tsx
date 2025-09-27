@@ -19,7 +19,6 @@ const AccountPage: React.FC = () => {
 	const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 	const [isVouchModalOpen, setIsVouchModalOpen] = useState<boolean>(false);
 	const [isVouchLoading, setIsVouchLoading] = useState<boolean>(false);
-	const [batchNumber, setBatchNumber] = useState<number>(1); // Default batch number
 	const { handleVouch } = useSepoliaTransactions();
 	const { proveScore } = useScoreUpdate(address);
 	const { addToast } = useToast();
@@ -39,23 +38,6 @@ const AccountPage: React.FC = () => {
 			return response;
 		},
 	});
-
-	// Fetch current batch number for score operations
-	const { data: currentBatchNumber } = useQuery({
-		queryKey: ['currentBatchNumber'],
-		queryFn: async () => {
-			// You might want to add an endpoint to get the current batch number
-			// For now, using a default value or getting it from smart contract
-			return 1; // This should be replaced with actual batch number from API
-		},
-	});
-
-	// Update batch number when data is available
-	React.useEffect(() => {
-		if (currentBatchNumber) {
-			setBatchNumber(currentBatchNumber);
-		}
-	}, [currentBatchNumber]);
 
 	// Function to handle opening the vouch modal
 	const openVouchModal = (account: Account) => {
@@ -77,7 +59,7 @@ const AccountPage: React.FC = () => {
 
 		try {
 			// Call proveScoreMerkleProof which internally calls updateScore
-			const hash = await proveScore(batchNumber);
+			const hash = await proveScore();
 
 			addToast(
 				'success',
