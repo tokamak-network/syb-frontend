@@ -13,7 +13,7 @@ import { themeStyles } from '@/const';
 import { cn } from '@/utils';
 import { useVouchData } from '@/hooks';
 import { SybilSepoliaABI, contracts } from '@/contracts';
-import { formatFullEthAddress } from '@/utils';
+import { formatFullEthAddress, fetchAccountByID } from '@/utils';
 
 const MyAccountPage: React.FC = () => {
 	const {
@@ -35,7 +35,6 @@ const MyAccountPage: React.FC = () => {
 	const [proofs, setProofs] = useState<string[]>([]);
 	const [isClient, setIsClient] = useState(false);
 	const [isUpdatingScore, setIsUpdatingScore] = useState(false);
-	const [batchNumber, setBatchNumber] = useState<number>(1);
 
 	// Read the user's contract balance (deposited amount)
 	const {
@@ -54,6 +53,22 @@ const MyAccountPage: React.FC = () => {
 	// Extract balance from the accountInfo tuple [balance, idx]
 	const contractBalance = accountInfo ? accountInfo[0] : BigInt(0);
 
+	// Get account index from smart contract
+	const accountIndex = accountInfo ? accountInfo[1] : null;
+
+	// Fetch user's account data including score using account index
+	const {
+		data: accountData,
+		isLoading: isAccountLoading,
+		error: accountError,
+	} = useQuery({
+		queryKey: ['accountByID', accountIndex],
+		queryFn: () => fetchAccountByID(accountIndex!.toString()),
+		enabled: !!accountIndex,
+		staleTime: 30000,
+		refetchInterval: 30000,
+	});
+
 	// Debug logging
 	useEffect(() => {
 		if (accountInfo) {
@@ -65,23 +80,6 @@ const MyAccountPage: React.FC = () => {
 	const formattedDepositAmount = contractBalance
 		? ethers.formatEther(contractBalance.toString())
 		: '0';
-
-	// Fetch current batch number for score operations
-	const { data: currentBatchNumber } = useQuery({
-		queryKey: ['currentBatchNumber'],
-		queryFn: async () => {
-			// You might want to add an endpoint to get the current batch number
-			// For now, using a default value or getting it from smart contract
-			return 1; // This should be replaced with actual batch number from API
-		},
-	});
-
-	// Update batch number when data is available
-	React.useEffect(() => {
-		if (currentBatchNumber) {
-			setBatchNumber(currentBatchNumber);
-		}
-	}, [currentBatchNumber]);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -123,7 +121,7 @@ const MyAccountPage: React.FC = () => {
 			setIsUpdatingScore(true);
 
 			// Call proveScoreMerkleProof which internally calls updateScore
-			const hash = await proveScore(batchNumber);
+			const hash = await proveScore();
 
 			addToast(
 				'success',
@@ -287,6 +285,46 @@ const MyAccountPage: React.FC = () => {
 										</div>
 									)}
 								</>
+							)}
+						</div>
+					</div>
+
+					<div className="mb-8 rounded-lg border p-6 shadow-md">
+						<h2 className="mb-4 text-xl font-semibold">Trust Score</h2>
+						<div
+							className={cn(
+								'rounded p-4 font-mono',
+								currentThemeStyles.background,
+								currentThemeStyles.text,
+								currentThemeStyles.borderColor,
+							)}
+						>
+							{isAccountLoading ? (
+								<div className="flex items-center space-x-2">
+									<div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2" />
+									<span>Loading score...</span>
+								</div>
+							) : accountError ? (
+								<div className="text-red-500">
+									Error loading score: {accountError.message}
+								</div>
+							) : (
+								<div className="flex items-center justify-between">
+									<div>
+										<div className="text-2xl font-bold">
+											{accountData?.score_int || 0}
+										</div>
+										<div className="text-sm text-gray-500">
+											Current trust score
+										</div>
+									</div>
+									{accountData?.score_int && (
+										<div className="text-right">
+											<div className="text-sm text-gray-500">Account Index</div>
+											<div className="font-semibold">#{accountData.idx}</div>
+										</div>
+									)}
+								</div>
 							)}
 						</div>
 					</div>

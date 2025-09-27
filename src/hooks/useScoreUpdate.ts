@@ -51,7 +51,7 @@ export const useScoreUpdate = (userAddress?: string) => {
 	 *
 	 * @param batchNumber - The batch number containing the score root
 	 */
-	const proveScore = async (batchNumber: number) => {
+	const proveScore = async () => {
 		setIsLoading(true);
 		setError(null);
 
@@ -72,10 +72,10 @@ export const useScoreUpdate = (userAddress?: string) => {
 				abi: SybilSepoliaABI,
 				functionName: 'proveScoreMerkleProof',
 				args: [
-					batchNumber, // numScoreRoot
-					parseInt(proof.Idx), // idx
-					parseInt(proof.Score), // score
-					proof.Siblings.map((s) => BigInt(s)), // Convert string array to BigInt array
+					parseInt(proof.num_score_root), // numScoreRoot
+					parseInt(proof.idx), // idx
+					parseInt(proof.score), // score
+					proof.siblings.map((s) => BigInt(s)), // Convert string array to BigInt array
 				],
 			});
 

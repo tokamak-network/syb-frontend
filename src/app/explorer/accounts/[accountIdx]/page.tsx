@@ -29,7 +29,7 @@ const AccountDetailsPage: React.FC = () => {
 	const [isUpdatingScore, setIsUpdatingScore] = useState(false);
 	const [isVouching, setIsVouching] = useState(false);
 	const [copied, setCopied] = useState(false);
-	const [batchNumber, setBatchNumber] = useState<number>(1); // Default batch number
+
 	const { theme } = useTheme();
 	const { addToast } = useToast();
 	const currentThemeStyles = themeStyles[theme];
@@ -70,23 +70,6 @@ const AccountDetailsPage: React.FC = () => {
 		staleTime: 30000,
 		refetchInterval: 30000,
 	});
-
-	// Fetch current batch number for score operations
-	const { data: currentBatchNumber } = useQuery({
-		queryKey: ['currentBatchNumber'],
-		queryFn: async () => {
-			// You might want to add an endpoint to get the current batch number
-			// For now, using a default value or getting it from smart contract
-			return 1; // This should be replaced with actual batch number from API
-		},
-	});
-
-	// Update batch number when data is available
-	React.useEffect(() => {
-		if (currentBatchNumber) {
-			setBatchNumber(currentBatchNumber);
-		}
-	}, [currentBatchNumber]);
 
 	// Read the contract balance (deposited amount) for this account
 	const {
@@ -170,7 +153,7 @@ const AccountDetailsPage: React.FC = () => {
 			setIsUpdatingScore(true);
 
 			// Call proveScoreMerkleProof which internally calls updateScore
-			const hash = await proveScore(batchNumber);
+			const hash = await proveScore();
 
 			addToast(
 				'success',

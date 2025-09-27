@@ -166,10 +166,10 @@ export interface TransactionByHashResponse {
 }
 
 export interface ScoreMerkleProofResponse {
-	Idx: string;
-	ScoreRoot: string;
-	Score: string;
-	Siblings: string[];
+	idx: string;
+	num_score_root: string;
+	score: string;
+	siblings: string[];
 }
 
 export interface ScoreUpdateRequest {
