@@ -25,7 +25,14 @@ export enum ActionType {
 	WITHDRAW = 'Withdraw',
 	EXPLODE = 'Explode',
 	VOUCH = 'Vouch',
+	UNVOUCH = 'Unvouch',
 	EXIT = 'ForceExit',
+	FORGE_BATCH = 'ForgeBatch',
+	PROVE_SCORE_MERKLE = 'ProveScoreMerkleProof',
+	UPDATE_SCORE = 'UpdateScore',
+	EXPLODE_MULTIPLE = 'ExplodeMultiple',
+	UPDATE_EXPLODE_AMOUNT = 'UpdateExplodeAmount',
+	UPDATE_SCORING_BALANCE = 'UpdateScoringRequiredBalance',
 }
 
 export enum ActionStatus {
