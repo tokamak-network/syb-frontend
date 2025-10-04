@@ -9,7 +9,6 @@ import { FiExternalLink } from 'react-icons/fi';
 import { TxType as TxTypes, TxStatus } from '@/components/tables';
 import { Button, PageLoader } from '@/components';
 import {
-	convertWeiToGweiAndEther,
 	fetchTransactionByHash,
 	formatTimestamp,
 	formatWeiValue,
@@ -50,20 +49,16 @@ const TransactionDetailsPage: React.FC = () => {
 		return <div className="p-8">Transaction not found.</div>;
 	}
 
-	const { gwei, ether } = convertWeiToGweiAndEther(+transaction.gas_fee);
-
-	const txHashToDisplay = formatTransactionHash(
-		transaction.tx_hash ?? '',
-		10,
-		true,
-	);
+	const fullTxHash = transaction.tx_hash?.startsWith('0x')
+		? transaction.tx_hash
+		: `0x${transaction.tx_hash ?? ''}`;
 
 	const getExplorerUrl = () => {
 		if (!chain || !chain.blockExplorers) return null;
 
 		const explorerUrl = chain.blockExplorers.default.url;
 
-		return `${explorerUrl}/tx/${txHashToDisplay}`;
+		return `${explorerUrl}/tx/${fullTxHash}`;
 	};
 
 	const explorerUrl = getExplorerUrl();
@@ -92,11 +87,21 @@ const TransactionDetailsPage: React.FC = () => {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							{formatTransactionHash(txHashToDisplay)}
-							<FiExternalLink className="ml-1" />
+							<span className="break-all font-mono text-sm sm:text-base">
+								<span className="hidden sm:inline">{fullTxHash}</span>
+								<span className="sm:hidden">
+									{formatTransactionHash(fullTxHash, 4)}
+								</span>
+							</span>
+							<FiExternalLink className="ml-1 flex-shrink-0" />
 						</a>
 					) : (
-						txHashToDisplay
+						<span className="break-all font-mono text-sm sm:text-base">
+							<span className="hidden sm:inline">{fullTxHash}</span>
+							<span className="sm:hidden">
+								{formatTransactionHash(fullTxHash, 4)}
+							</span>
+						</span>
 					)}
 				</div>
 				<div className="flex items-center space-x-2">
