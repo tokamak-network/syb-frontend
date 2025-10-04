@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { FaEye } from 'react-icons/fa';
+import Link from 'next/link';
 import * as Popover from '@radix-ui/react-popover';
 
 import {
 	formatTimestamp,
 	formatWeiValue,
-	formatFullEthAddress,
 	formatAddressForDisplay,
 } from '@/utils';
 import { Transaction, ActionStatus } from '@/types';
@@ -60,7 +60,13 @@ export const TransactionDetailsPopover: React.FC<
 								<div
 									className={`mt-1 break-all font-mono text-xs ${theme === 'light' ? 'text-gray-600' : theme === 'dark' ? 'text-gray-400' : 'text-gray-300'}`}
 								>
-									{`0x${transaction.tx_hash}`}
+									<Link
+										className={`hover:underline ${theme === 'light' ? 'text-blue-600 hover:text-blue-800' : 'text-blue-400 hover:text-blue-300'}`}
+										href={`/explorer/txs/${transaction.tx_hash}`}
+										onClick={() => setIsOpen(false)}
+									>
+										{`0x${transaction.tx_hash}`}
+									</Link>
 								</div>
 							</div>
 
